@@ -12,24 +12,16 @@ namespace Brun
     /// </summary>
     public class SynchroWorker : AbstractWorker
     {
-        private static object SynchroRun_LOCK = new object();
-        public SynchroWorker(WorkerOption option = null, WorkerConfig config = null) : base(option, config)
+        
+        public SynchroWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
+            config.AddWorkerObserver(new Observers.SynchroBeforRunObserver());
         }
 
 
         protected override Task Execute()
         {
-            if (Context.endNb < Context.startNb)
-            {
-                lock (SynchroRun_LOCK)
-                {
-                    if (Context.endNb < Context.startNb)
-                    {
-                        Thread.Sleep(5);
-                    }
-                }
-            }
+           
             IBackRun backRun = (BackRun)BrunTool.CreateInstance(_option.BrunType);
             if (_context.Items != null && _option.BrunType.IsSubclassOf(typeof(BackRun)))
             {

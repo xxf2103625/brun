@@ -14,6 +14,7 @@ namespace Brun
         public List<Type> WorkerTypes = new List<Type>()
         {
             typeof(OnceWorker),
+            typeof(SynchroWorker)
         };
     }
 }

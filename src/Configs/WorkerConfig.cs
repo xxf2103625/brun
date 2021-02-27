@@ -38,7 +38,7 @@ namespace Brun
         }
         public IEnumerable<WorkerObserver> GetObservers(WorkerEvents eventName)
         {
-            var list = observers.Where(m => m.evt == eventName);
+            var list = observers.Where(m => m.Evt == eventName);
             return list;
         }
 

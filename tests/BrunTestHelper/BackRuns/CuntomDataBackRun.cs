@@ -11,8 +11,8 @@ namespace BrunTestHelper.BackRuns
     {
         public override Task Run(CancellationToken stoppingToken)
         {
-            int nb = (int)Data["nb"];
-            nb++;
+            string nb = Data["nb"];
+            nb = (int.Parse(nb) + 1).ToString();
             Data["nb"] = nb;
             return Task.CompletedTask;
         }

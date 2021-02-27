@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Brun
 {
     /// <summary>
-    /// 所有后台任务的接口
+    /// 所有后台任务的接口,直接继承这个无法使用自定义Data
     /// </summary>
     public interface IBackRun
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,10 +12,10 @@ namespace Brun
     {
         public Type BrunType { get; set; }
         public Type WorkerType { get; set; }
-        public string WorkerTypeName { get; set; }
+        //public string WorkerTypeName { get; set; }
         public string Key { get; set; }
         public string Name { get; internal set; }
         public string Tag { get; internal set; }
-        public IDictionary<string,object> Data { get; set; }
+        public ConcurrentDictionary<string,string> Data { get; set; }
     }
 }

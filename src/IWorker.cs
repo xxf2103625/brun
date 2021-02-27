@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,12 +40,12 @@ namespace Brun
         string Name { get; }
 
         string Tag { get; }
-        public WorkerContext Context { get; }
-        public IDictionary<string, object> GetData();
+        WorkerContext Context { get; }
+        ConcurrentDictionary<string, string> GetData();
 
-        public object GetData(string key);
-
-        public T GetData<T>(string key);
+        string GetData(string key);
+        [Obsolete("暂不支持", true)]
+        T GetData<T>(string key);
 
     }
 }

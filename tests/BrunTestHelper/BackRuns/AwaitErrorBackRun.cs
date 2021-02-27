@@ -11,7 +11,7 @@ namespace BrunTestHelper.BackRuns
     {
         public async Task Run(CancellationToken stoppingToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            await Task.Delay(TimeSpan.FromSeconds(3),stoppingToken);
             throw new NotImplementedException("测试异常");
         }
     }

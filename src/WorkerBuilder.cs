@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,10 +28,12 @@ namespace Brun
         }
         public static WorkerBuilder Create<Brun>() where Brun : IBackRun
         {
-            WorkerBuilder builder = new WorkerBuilder();
-            //创建了新的对象
-            builder.config = WorkerServer.Instance.ServerConfig.DefaultConfig;
-            builder.option = WorkerServer.Instance.ServerConfig.DefaultOption;
+            WorkerBuilder builder = new WorkerBuilder
+            {
+                //创建了新的对象
+                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+                option = WorkerServer.Instance.ServerConfig.DefaultOption
+            };
             builder.option.BrunType = typeof(Brun);
             return builder;
         }
@@ -93,7 +96,7 @@ namespace Brun
         {
             return SetKey(key).SetName(name).SetTag(tag);
         }
-        public WorkerBuilder SetData(IDictionary<string, object> data)
+        public WorkerBuilder SetData(ConcurrentDictionary<string, string> data)
         {
             option.Data = data;
             return this;
@@ -108,7 +111,7 @@ namespace Brun
                 option.Tag = defaultTag;
 
 
-            if (string.IsNullOrEmpty(option.WorkerTypeName))
+            if (option.WorkerType==null)
                 option.WorkerType = typeof(OnceWorker);
             else
             {

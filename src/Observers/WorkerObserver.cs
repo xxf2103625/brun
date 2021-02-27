@@ -10,10 +10,10 @@ namespace Brun.Observers
     {
         public WorkerObserver(WorkerEvents workerEvent, int order = 100)
         {
-            this.evt = workerEvent;
+            this.Evt = workerEvent;
             Order = order;
         }
-        public WorkerEvents evt { get; }
+        public WorkerEvents Evt { get; }
         public int Order { get; }
         public abstract Task Todo(WorkerContext _context);
     }

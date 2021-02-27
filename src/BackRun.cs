@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace Brun
         /// <summary>
         /// 自定义的数据，在Worker的Context中保存，不同Worker实例的data不同
         /// </summary>
-        public IDictionary<string, object> Data;
+        public ConcurrentDictionary<string, string> Data;
         /// <summary>
         /// 定义长时间任务时，自己用stoppingToken控制任务尽快结束
         /// </summary>

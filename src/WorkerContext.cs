@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Brun.Enums;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace Brun
         //元数据
         private IDictionary<string, object> meta;
         //BackRun自定义的数据
-        private IDictionary<string, object> items;
+        private ConcurrentDictionary<string, string> items;
         //异常堆栈
         private IList<Exception> exceptions;
         //BackRun开始运行计数
@@ -74,6 +75,6 @@ namespace Brun
             items?.Clear();
             exceptions?.Clear();
         }
-        public IDictionary<string, object> Items => items;
+        public ConcurrentDictionary<string, string> Items => items;
     }
 }

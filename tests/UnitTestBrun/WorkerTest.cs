@@ -2,6 +2,7 @@
 using BrunTestHelper.BackRuns;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,15 +28,15 @@ namespace UnitTestBrun
         [TestMethod]
         public async Task TestSimpleRunAsync()
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["nb"] = 0;
+            ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
+            data["nb"] = "0";
             IWorker work = WorkerBuilder.Create<SimpleNumberRun>()
                 .SetData(data)
                 .Build();
             await work.Run();
             //await结果会卡主这个线程,下面包装整await后的回调
             Console.WriteLine($"nb:{work.GetData("nb")}");
-            Assert.AreEqual(100, work.GetData("nb"));
+            Assert.AreEqual("100", work.GetData("nb"));
         }
         [TestMethod]
         public async Task TaskTestErrorRun()
@@ -54,20 +55,37 @@ namespace UnitTestBrun
         {
             IWorker worker = WorkerBuilder.Create<SimpleBackRun>().SetWorkerType(typeof(SynchroWorker))
                 .Build();
-            await worker.Run();
+            for (int i = 0; i < 3; i++)
+            {
+                await worker.Run();
+            }
         }
         [TestMethod]
         public async Task SynchroWorkerManyTest()
         {
             IWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
                 .Build();
-            await worker.Run();
+            for (int i = 0; i < 3; i++)
+            {
+                await worker.Run();
+            }
+        }
+        [TestMethod]
+        public void SynchroWorkerManyDontWaitTest()
+        {
+            IWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+                .Build();
+            for (int i = 0; i < 3; i++)
+            {
+                worker.RunDontWait();
+            }
+            //测试进程会直接结束
         }
         [TestMethod]
         public async Task CuntomDataTest()
         {
-            var data = new Dictionary<string, object>();
-            data["nb"] = 0;
+            var data = new ConcurrentDictionary<string, string>();
+            data["nb"] = "0";
             IWorker worker = WorkerBuilder.Create<CuntomDataBackRun>()
                 .SetData(data)
                 .Build();
@@ -75,8 +93,8 @@ namespace UnitTestBrun
             {
                 await worker.Run();
             }
-            int nb= worker.GetData<int>("nb");
-            Assert.AreEqual(10, nb);
+            string nb = worker.GetData("nb");
+            Assert.AreEqual("10", nb);
         }
     }
 }

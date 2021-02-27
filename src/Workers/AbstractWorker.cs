@@ -2,6 +2,7 @@
 using Brun.Enums;
 using Brun.Observers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ namespace Brun
         protected WorkerConfig _config;
         protected WorkerContext _context;
         protected Task runTask;
+        protected CancellationToken stoppingToken;
         //TODO 管理Task
         private TaskFactory taskFactory;
         public AbstractWorker(WorkerOption option = null, WorkerConfig config = null)
@@ -32,6 +34,7 @@ namespace Brun
             _option = option;
             _config = config;
             _context = new WorkerContext(option, config);
+            stoppingToken = WorkerServer.Instance.StoppingToken;
         }
 
         public virtual Task Destroy()
@@ -100,11 +103,11 @@ namespace Brun
 
         public string Tag => _option.Tag;
         public Type WorkerType => _option.BrunType;
-        public IDictionary<string, object> GetData()
+        public ConcurrentDictionary<string, string> GetData()
         {
             return _context.Items;
         }
-        public object GetData(string key)
+        public string GetData(string key)
         {
             if (_context.Items.ContainsKey(key))
                 return _context.Items[key];
@@ -113,10 +116,11 @@ namespace Brun
         }
         public T GetData<T>(string key)
         {
-            var r = GetData(key);
-            if (r == null)
-                return default;
-            return (T)r;
+            throw new NotImplementedException();
+            //var r = GetData(key);
+            //if (r == null)
+            //    return default;
+            //return (T)r;
         }
         public void Dispose()
         {

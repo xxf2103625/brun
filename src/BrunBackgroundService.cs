@@ -10,12 +10,12 @@ namespace Brun
 {
     public class BrunBackgroundService : IHostedService, IDisposable
     {
-        ILogger<BrunBackgroundService> _logger;
+        readonly ILogger<BrunBackgroundService> _logger;
         private CancellationTokenSource _stoppingCts;
         private Task _executeTask;
-        IServiceProvider _serviceProvider;
-        IHostLifetime _hostLifetime;
-        IHostApplicationLifetime _hostApplicationLifetime;
+        readonly IServiceProvider _serviceProvider;
+        readonly IHostLifetime _hostLifetime;
+        readonly IHostApplicationLifetime _hostApplicationLifetime;
         public BrunBackgroundService(ILogger<BrunBackgroundService> logger, IServiceProvider serviceProvider, IHostLifetime hostLifetime, IHostApplicationLifetime hostApplicationLifetime)
         {
             _logger = logger;
