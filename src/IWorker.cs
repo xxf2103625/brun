@@ -12,6 +12,22 @@ namespace Brun
     public interface IWorker : IDisposable
     {
         /// <summary>
+        /// Worker唯一Id
+        /// </summary>
+        string Key { get; }
+        /// <summary>
+        /// Worker名称，配置时指定，不指定为类型名称
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// Worker分组标签
+        /// </summary>
+        string Tag { get; }
+        /// <summary>
+        /// Worker上下文
+        /// </summary>
+        WorkerContext Context { get; }
+        /// <summary>
         /// 直接运行不用等待,适合web中使用
         /// </summary>
         void RunDontWait();
@@ -24,23 +40,24 @@ namespace Brun
         /// 暂停
         /// </summary>
         /// <returns></returns>
+        [Obsolete("暂不支持", true)]
         Task Pause();
         /// <summary>
         /// 恢复
         /// </summary>
         /// <returns></returns>
+        [Obsolete("暂不支持", true)]
         Task Resume();
         /// <summary>
         /// 销毁
         /// </summary>
         /// <returns></returns>
+        [Obsolete("暂不支持", true)]
         Task Destroy();
-        string Key { get; }
-
-        string Name { get; }
-
-        string Tag { get; }
-        WorkerContext Context { get; }
+        /// <summary>
+        /// 自定义数据
+        /// </summary>
+        /// <returns></returns>
         ConcurrentDictionary<string, string> GetData();
 
         string GetData(string key);

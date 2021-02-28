@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class SimpleBackRun : IBackRun
+    public class SimpleBackRun : BackRun
     {
-        public async Task Run(CancellationToken stoppingToken)
+        public override async Task Run(CancellationToken stoppingToken)
         {
 
             await Task.Delay(TimeSpan.FromSeconds(0.1), stoppingToken);

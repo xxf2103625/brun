@@ -18,7 +18,7 @@ namespace UnitTestBrun
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
-        [TestInitialize]
+        //[TestInitialize]
         public async Task InitAsync()
         {
             tokenSource = new CancellationTokenSource();

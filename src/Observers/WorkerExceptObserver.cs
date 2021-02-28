@@ -15,13 +15,13 @@ namespace Brun.Observers
         private ILogger<WorkerExceptObserver> logger;
         public WorkerExceptObserver() : base(WorkerEvents.Except, 10)
         {
-            
+
         }
         public override Task Todo(WorkerContext _context)
         {
             logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<WorkerExceptObserver>>();
             _context.exceptNb++;
-            logger.LogError("backRun:{0} is except!msg:{1}", _context.Option.BrunType, _context.Exceptions.LastOrDefault()?.Message);
+            logger.LogError("backRun:{0} is except! error count:{1},msg:{2}", _context.Option.BrunType, _context.Exceptions?.Count, _context.Exceptions.LastOrDefault()?.Message);
             return Task.CompletedTask;
         }
     }

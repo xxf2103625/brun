@@ -26,15 +26,15 @@ namespace Brun
         protected WorkerConfig _config;
         protected WorkerContext _context;
         protected Task runTask;
-        protected CancellationToken stoppingToken;
+        //protected CancellationToken stoppingToken;
         //TODO 管理Task
-        private TaskFactory taskFactory;
-        public AbstractWorker(WorkerOption option = null, WorkerConfig config = null)
+        //protected TaskFactory taskFactory;
+        public AbstractWorker(WorkerOption option, WorkerConfig config)
         {
             _option = option;
             _config = config;
             _context = new WorkerContext(option, config);
-            stoppingToken = WorkerServer.Instance.StoppingToken;
+            //stoppingToken = WorkerServer.Instance.StoppingToken;
         }
 
         public virtual Task Destroy()
@@ -59,43 +59,17 @@ namespace Brun
         {
             runTask = Run();
         }
-        protected abstract Task Execute();
-        public async Task Run()
+        //protected abstract Task Execute();
+        public abstract Task Run();
+
+        protected async Task Observe(WorkerEvents workerEvents)
         {
-            IEnumerable<WorkerObserver> startRunObservers = _config.GetObservers(WorkerEvents.StartRun);
-            foreach (var item in startRunObservers.OrderBy(m => m.Order))
+            foreach (var item in _config.GetObservers(workerEvents).OrderBy(m => m.Order))
             {
                 await item.Todo(_context);
             }
-            try
-            {
-                await Execute();
-                //IBackRun backRun = (BackRun)BrunTool.CreateInstance(_option.BrunType);
-                //if (_context.Items != null && _option.BrunType.IsSubclassOf(typeof(BackRun)))
-                //{
-                //    ((BackRun)backRun).Data = _context.Items;
-                //}
-                //runTask = backRun.Run(WorkerServer.Instance.StoppingToken);
-                //await runTask;
-            }
-            catch (Exception ex)
-            {
-                _context.ExceptFromRun(ex);
-                IEnumerable<WorkerObserver> exceptRunObservers = _config.GetObservers(WorkerEvents.Except);
-                foreach (var item in exceptRunObservers.OrderBy(m => m.Order))
-                {
-                    await item.Todo(_context);
-                }
-            }
-            finally
-            {
-                IEnumerable<WorkerObserver> endRunObservers = _config.GetObservers(WorkerEvents.EndRun);
-                foreach (var item in endRunObservers.OrderBy(m => m.Order))
-                {
-                    await item.Todo(_context);
-                }
-            }
         }
+
         public WorkerContext Context => _context;
         public string Key => _option.Key;
 
@@ -149,10 +123,7 @@ namespace Brun
             this.Context.Dispose();
         }
 
-        internal void SetTaskFactory(TaskFactory factory)
-        {
-            taskFactory = factory;
-        }
+
 
         public Task RunningTask => runTask;
     }

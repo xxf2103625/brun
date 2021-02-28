@@ -1,4 +1,5 @@
-﻿using Brun.Commons;
+﻿using Brun.BaskRuns;
+using Brun.Commons;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,7 +27,7 @@ namespace Brun
         {
             //TODO 覆盖部分默认的Config
         }
-        public static WorkerBuilder Create<Brun>() where Brun : IBackRun
+        public static WorkerBuilder Create<TBackRun>() where TBackRun : BackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder
             {
@@ -34,7 +35,19 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultOption
             };
-            builder.option.BrunType = typeof(Brun);
+            builder.option.BrunType = typeof(TBackRun);
+            return builder;
+        }
+        public static WorkerBuilder CreateQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun,new()
+        {
+            WorkerBuilder builder = new WorkerBuilder
+            {
+                //创建了新的对象
+                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+                option = WorkerServer.Instance.ServerConfig.DefaultOption
+            };
+            builder.option.BrunType = typeof(TQueueBackRun);
+            builder.option.WorkerType = typeof(QueueWorker);
             return builder;
         }
         public WorkerBuilder SetConfig(Action<WorkerConfig> configure)
@@ -111,18 +124,18 @@ namespace Brun
                 option.Tag = defaultTag;
 
 
-            if (option.WorkerType==null)
+            if (option.WorkerType == null)
                 option.WorkerType = typeof(OnceWorker);
             else
             {
-                if (!WorkerServer.Instance.ServerConfig.WorkerTypes.Any(m => m == option.WorkerType))
+                if (!option.WorkerType.IsSubclassOf(typeof(AbstractWorker)))
                 {
-                    throw new NotSupportedException($"not allow this worktype:{option.WorkerType.FullName}");
+                    throw new NotSupportedException($"not allow this workertype:{option.WorkerType.FullName}");
                 }
             }
-            
+
             AbstractWorker worker = (AbstractWorker)BrunTool.CreateInstance(option.WorkerType, args: new object[] { option, config });
-            worker.SetTaskFactory(WorkerServer.Instance.TaskFactory);
+            //worker.SetTaskFactory(WorkerServer.Instance.TaskFactory);
             WorkerServer.Instance.Worders.Add(worker);
             return worker;
         }

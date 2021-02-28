@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace Brun
     /// </summary>
     public interface IBackRun
     {
+        ConcurrentDictionary<string, string> Data { get; set; }
         Task Run(CancellationToken stoppingToken);
     }
 }

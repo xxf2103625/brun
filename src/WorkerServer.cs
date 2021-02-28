@@ -1,4 +1,5 @@
 ﻿using Brun.Observers;
+using Brun;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -65,17 +66,30 @@ namespace Brun
         {
             return worders.Where(m => m.Tag == tag);
         }
+        public IQueueWorker GetQueueWorker(string key)
+        {
+            IWorker worker = worders.Where(m=>m.Context.Option.WorkerType==typeof(QueueWorker)).FirstOrDefault(m => m.Key == key);
+            if (worker == null)
+            {
+                logger.LogError("找不到活动的QueueWorker，key:{0}", key);
+            }
+            return (IQueueWorker)worker;
+        }
         /// <summary>
         /// 启动Brun
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="stoppingToken"></param>
-        public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public async Task Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             _stoppingToken = stoppingToken;
             taskFactory = new TaskFactory(_stoppingToken);
             ServiceConfigure(serviceProvider);
 
+            foreach (var item in worders.Where(m => m is IQueueWorker))
+            {
+                await item.Run();
+            }
 
             logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());

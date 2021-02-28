@@ -42,8 +42,8 @@ namespace Brun
         private Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("BrunBackgroundService startting...");
-            WorkerServer.Instance.Start(_serviceProvider, stoppingToken);
-            return Task.CompletedTask;
+            return WorkerServer.Instance.Start(_serviceProvider, stoppingToken);
+            //return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

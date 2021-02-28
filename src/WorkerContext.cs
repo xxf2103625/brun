@@ -13,7 +13,7 @@ namespace Brun
         private WorkerOption _option;
         private WorkerConfig _config;
         private IServiceProvider serviceProvider;
-        //元数据
+        //元数据，用于后期持久化
         private IDictionary<string, object> meta;
         //BackRun自定义的数据
         private ConcurrentDictionary<string, string> items;
@@ -25,6 +25,7 @@ namespace Brun
         public long endNb = 0;
         //BackRun运行异常计数
         public int exceptNb = 0;
+
         public WorkerContext(WorkerOption workerOption, WorkerConfig config)
         {
             _option = workerOption;
@@ -67,14 +68,15 @@ namespace Brun
             exceptions.Add(ex);
         }
         /// <summary>
-        /// 当前状态
+        /// TODO 当前状态
         /// </summary>
         public WorkerState State { get; set; }
+        public ConcurrentDictionary<string, string> Items => items;
+        public IServiceProvider ServiceProvider => serviceProvider;
         public void Dispose()
         {
             items?.Clear();
             exceptions?.Clear();
         }
-        public ConcurrentDictionary<string, string> Items => items;
     }
 }

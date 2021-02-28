@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class LogBackRun : IBackRun
+    public class LogBackRun : BackRun
     {
-        public Task Run(CancellationToken stoppingToken)
+        public override Task Run(CancellationToken stoppingToken)
         {
             Console.WriteLine("LogBackRun just console");
             return Task.CompletedTask;

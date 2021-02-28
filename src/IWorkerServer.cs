@@ -7,5 +7,6 @@ namespace Brun
         IWorker GetWorker(string key);
         IEnumerable<IWorker> GetWokerByName(string name);
         IEnumerable<IWorker> GetWokerByTag(string tag);
+        IQueueWorker GetQueueWorker(string key);
     }
 }

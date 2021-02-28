@@ -1,6 +1,10 @@
 ﻿using Brun.Commons;
+using Brun.Enums;
+using Brun.Observers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,14 +18,28 @@ namespace Brun
         public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
         }
-        protected override Task Execute()
+        protected Task Execute(ConcurrentDictionary<string, string> data)
         {
-            IBackRun backRun = (BackRun)BrunTool.CreateInstance(_option.BrunType);
-            if (_context.Items != null && _option.BrunType.IsSubclassOf(typeof(BackRun)))
-            {
-                ((BackRun)backRun).Data = _context.Items;
-            }
+            IBackRun backRun = (IBackRun)BrunTool.CreateInstance(_option.BrunType);
+            backRun.Data = data;
             return backRun.Run(WorkerServer.Instance.StoppingToken);
+        }
+        public override async Task Run()
+        {
+            await Observe(WorkerEvents.StartRun);
+            try
+            {
+                await Execute(_context.Items);
+            }
+            catch (Exception ex)
+            {
+                _context.ExceptFromRun(ex);
+                await Observe(WorkerEvents.Except);
+            }
+            finally
+            {
+                await Observe(WorkerEvents.EndRun);
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Brun.Observers
             {
                 _context.endNb++;
             }
-            logger.LogDebug("backrun:{0} is end,endNb:{1}", _context.Option.BrunType, _context.endNb);
+            logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2}", _context.Option.BrunType,_context.startNb, _context.endNb);
             return Task.CompletedTask;
         }
     }

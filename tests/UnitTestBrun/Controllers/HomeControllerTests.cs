@@ -18,16 +18,16 @@ namespace BrunWebTest.Controllers.Tests
             loggerFactory = LoggerFactory.Create(m => m.AddConsole());
 
         }
-        [TestMethod()]
-        public void IndexTest()
-        {
-            var _logger = GetLogger<HomeController>();
-            var control = new HomeController(_logger);
-            IActionResult result = control.Index();
-            Debug.WriteLine("IndexTest");
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            //Assert.Fail();
-        }
+        //[TestMethod()]
+        //public void IndexTest()
+        //{
+        //    var _logger = GetLogger<HomeController>();
+        //    var control = new HomeController(_logger);
+        //    IActionResult result = control.Index();
+        //    Debug.WriteLine("IndexTest");
+        //    Assert.IsInstanceOfType(result, typeof(ViewResult));
+        //    //Assert.Fail();
+        //}
         private ILogger<T> GetLogger<T>() where T : class
         {
             return loggerFactory.CreateLogger<T>();

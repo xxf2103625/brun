@@ -32,7 +32,15 @@ namespace BrunWebTest.Controllers
             _workerServer.GetWorker(Program.BrunKey).RunDontWait();
             return View();
         }
-
+        public async Task<IActionResult> Queue(string msg)
+        {
+            IQueueWorker worker=_workerServer.GetQueueWorker(Program.QueueKey);
+            for (int i = 0; i < 100; i++)
+            {
+                await worker.Enqueue(msg);
+            }
+            return Content("Queue test");
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
