@@ -27,42 +27,14 @@ namespace Brun
         /// Worker上下文
         /// </summary>
         WorkerContext Context { get; }
-        /// <summary>
-        /// 直接运行不用等待,适合web中使用
-        /// </summary>
-        void RunDontWait();
-        /// <summary>
-        /// 运行，web中不要await
-        /// </summary>
-        /// <returns></returns>
-        Task Run();
-        /// <summary>
-        /// 暂停
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("暂不支持", true)]
-        Task Pause();
-        /// <summary>
-        /// 恢复
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("暂不支持", true)]
-        Task Resume();
+       
+        
         /// <summary>
         /// 销毁
         /// </summary>
         /// <returns></returns>
         [Obsolete("暂不支持", true)]
         Task Destroy();
-        /// <summary>
-        /// 自定义数据
-        /// </summary>
-        /// <returns></returns>
-        ConcurrentDictionary<string, string> GetData();
-
-        string GetData(string key);
-        [Obsolete("暂不支持", true)]
-        T GetData<T>(string key);
 
     }
 }

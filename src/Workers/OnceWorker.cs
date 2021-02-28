@@ -1,4 +1,5 @@
-﻿using Brun.Commons;
+﻿using Brun.BaskRuns;
+using Brun.Commons;
 using Brun.Enums;
 using Brun.Observers;
 using System;
@@ -13,7 +14,7 @@ namespace Brun
     /// <summary>
     /// 基础Worker，每次执行一次
     /// </summary>
-    public class OnceWorker : AbstractWorker
+    public class OnceWorker : AbstractWorker, IOnceWorker
     {
         public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
@@ -24,7 +25,14 @@ namespace Brun
             backRun.Data = data;
             return backRun.Run(WorkerServer.Instance.StoppingToken);
         }
-        public override async Task Run()
+        /// <summary>
+        /// 调用线程不用等待结果
+        /// </summary>
+        public void RunDontWait()
+        {
+            runTask = Run();
+        }
+        public async Task Run()
         {
             await Observe(WorkerEvents.StartRun);
             try

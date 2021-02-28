@@ -27,7 +27,7 @@ namespace BrunWebTest
                 var fr = await fclient.GetAsync("http://127.0.0.1:5000/", stoppingToken);
                 log.LogWarning("fclient发起了请求,state:" + fr.StatusCode);
 
-                using (var scope = CreateScope())
+                using (var scope = NewScope())
                 {
                     HttpClient iocClient = scope.ServiceProvider.GetRequiredService<HttpClient>();
                     var iocR = await iocClient.GetAsync("http://127.0.0.1:5000/", stoppingToken);
@@ -50,7 +50,6 @@ namespace BrunWebTest
             {
                 log.LogInformation("接收到消息:{0}", message);
             }
-            Thread.Sleep(TimeSpan.FromSeconds(1));
             return Task.CompletedTask;
         }
     }

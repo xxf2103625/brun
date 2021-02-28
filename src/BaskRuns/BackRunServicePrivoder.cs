@@ -16,28 +16,28 @@ namespace Brun.BaskRuns
         
 
         /// <summary>
-        /// 获取host注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="CreateScope"/>里获取
+        /// 获取host注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="NewScope"/>里获取
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <returns></returns>
         protected TService GetRequiredService<TService>()
         {
-            return ServiceProvider.GetService<TService>();
+            return ServiceProvider.GetRequiredService<TService>();
         }
         /// <summary>
-        /// 获取host注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="CreateScope"/>里获取
+        /// 获取host注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="NewScope"/>里获取
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <returns></returns>
         protected TService GetService<TService>()
         {
-            return ServiceProvider.GetRequiredService<TService>();
+            return ServiceProvider.GetService<TService>();
         }
         /// <summary>
         /// 创建一个Scope来自己管理Scoped服务的生存周期，单例和瞬时的服务不需要用这个
         /// </summary>
         /// <returns></returns>
-        protected IServiceScope CreateScope()
+        protected IServiceScope NewScope()
         {
             return ServiceProvider.CreateScope();
         }

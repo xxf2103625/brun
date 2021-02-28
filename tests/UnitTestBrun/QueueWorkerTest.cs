@@ -9,22 +9,29 @@ using System.Threading.Tasks;
 
 namespace UnitTestBrun
 {
+    //TODO QueueWorker单元测试
     [TestClass]
-    public class QueueWorkerTest:BaseHostTest
+    public class QueueWorkerTest : BaseHostTest
     {
         [TestMethod]
         public async Task TestExcept()
         {
             string key = nameof(TestExcept);
-            WorkerBuilder.CreateQueue<ErrorQueueBackRun>()
+            WorkerBuilder.CreateQueue<LogQueueBackRun>()
                 .SetKey(key)
                 .Build();
 
-            await InitAsync();
-
-            await WorkerServer.Instance.GetQueueWorker(key).Enqueue("msg");
-
-            await Task.Delay(TimeSpan.FromSeconds(5));
-        } 
+            await InitAsync().ContinueWith(async t =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    await WorkerServer.Instance.GetQueueWorker(key).Enqueue("测试消息");
+                }
+            })
+                .ContinueWith(async t =>
+                {
+                    await CleanupAsync();
+                });
+        }
     }
 }

@@ -17,8 +17,8 @@ namespace UnitTestBrun
         [TestMethod]
         public Task TestSimpleRun()
         {
-            IWorker work = WorkerBuilder.Create<SimpleNumberRun>()
-                .Build();
+            IOnceWorker work = WorkerBuilder.Create<SimpleNumberRun>()
+                .BuildOnceWorker();
             work.Run();
             //不await结果会直接先运行下面代码
             Console.WriteLine($"nb:{SimpleNumberRun.Nb}");
@@ -30,9 +30,9 @@ namespace UnitTestBrun
         {
             ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
             data["nb"] = "0";
-            IWorker work = WorkerBuilder.Create<SimpleNumberRun>()
+            IOnceWorker work = WorkerBuilder.Create<SimpleNumberRun>()
                 .SetData(data)
-                .Build();
+                .BuildOnceWorker();
             await work.Run();
             //await结果会卡主这个线程,下面包装整await后的回调
             Console.WriteLine($"nb:{work.GetData("nb")}");
@@ -41,8 +41,8 @@ namespace UnitTestBrun
         [TestMethod]
         public async Task TaskTestErrorRun()
         {
-            IWorker work = WorkerBuilder.Create<ErrorBackRun>()
-               .Build();
+            IOnceWorker work = WorkerBuilder.Create<ErrorBackRun>()
+               .BuildOnceWorker();
             await work.Run();
             Assert.AreEqual(1, work.Context.exceptNb);
             Assert.AreEqual(typeof(NotImplementedException), work.Context.Exceptions.First().GetType());
@@ -53,8 +53,8 @@ namespace UnitTestBrun
         [TestMethod]
         public async Task SynchroWorkerTest()
         {
-            IWorker worker = WorkerBuilder.Create<SimpleBackRun>().SetWorkerType(typeof(SynchroWorker))
-                .Build();
+            IOnceWorker worker = WorkerBuilder.Create<SimpleBackRun>().SetWorkerType(typeof(SynchroWorker))
+                .BuildOnceWorker();
             for (int i = 0; i < 3; i++)
             {
                 await worker.Run();
@@ -63,8 +63,8 @@ namespace UnitTestBrun
         [TestMethod]
         public async Task SynchroWorkerManyTest()
         {
-            IWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
-                .Build();
+            IOnceWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+                .BuildOnceWorker();
             for (int i = 0; i < 3; i++)
             {
                 await worker.Run();
@@ -73,8 +73,8 @@ namespace UnitTestBrun
         [TestMethod]
         public void SynchroWorkerManyDontWaitTest()
         {
-            IWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
-                .Build();
+            IOnceWorker worker = WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+                .BuildOnceWorker();
             for (int i = 0; i < 3; i++)
             {
                 worker.RunDontWait();
@@ -86,9 +86,9 @@ namespace UnitTestBrun
         {
             var data = new ConcurrentDictionary<string, string>();
             data["nb"] = "0";
-            IWorker worker = WorkerBuilder.Create<CuntomDataBackRun>()
+            IOnceWorker worker = WorkerBuilder.Create<CuntomDataBackRun>()
                 .SetData(data)
-                .Build();
+                .BuildOnceWorker();
             for (int i = 0; i < 10; i++)
             {
                 await worker.Run();

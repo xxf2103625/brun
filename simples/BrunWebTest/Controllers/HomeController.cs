@@ -26,15 +26,15 @@ namespace BrunWebTest.Controllers
             return View();
         }
 
-        public  IActionResult Privacy()
+        public IActionResult Privacy()
         {
             //运行后台任务
-            _workerServer.GetWorker(Program.BrunKey).RunDontWait();
+            _workerServer.GetOnceWorker(Program.BrunKey).RunDontWait();
             return View();
         }
         public async Task<IActionResult> Queue(string msg)
         {
-            IQueueWorker worker=_workerServer.GetQueueWorker(Program.QueueKey);
+            IQueueWorker worker = _workerServer.GetQueueWorker(Program.QueueKey);
             for (int i = 0; i < 100; i++)
             {
                 await worker.Enqueue(msg);

@@ -38,7 +38,7 @@ namespace Brun
             builder.option.BrunType = typeof(TBackRun);
             return builder;
         }
-        public static WorkerBuilder CreateQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun,new()
+        public static WorkerBuilder CreateQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder
             {
@@ -138,6 +138,11 @@ namespace Brun
             //worker.SetTaskFactory(WorkerServer.Instance.TaskFactory);
             WorkerServer.Instance.Worders.Add(worker);
             return worker;
+        }
+        public IOnceWorker BuildOnceWorker()
+        {
+            IWorker woker = Build();
+            return (IOnceWorker)woker;
         }
     }
 }

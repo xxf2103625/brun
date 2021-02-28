@@ -2,7 +2,6 @@
 using Brun.Commons;
 using Brun.Enums;
 using Brun.Observers;
-using Brun.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -77,10 +76,10 @@ namespace Brun
                             await Observe(WorkerEvents.EndRun);
                             return;
                     }
-                    
+
                 }, TaskContinuationOptions.ExecuteSynchronously);
         }
-        public override async Task Run()
+        public async Task Start()
         {
             while (!WorkerServer.Instance.StoppingToken.IsCancellationRequested)
             {
@@ -93,10 +92,10 @@ namespace Brun
         }
         public Task Enqueue(string message)
         {
-            logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
-            if (string.IsNullOrEmpty(message))
+            //logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
+            if (message == null)
             {
-                logger.LogWarning("传入的消息体为null，已忽略");
+                //logger.LogWarning("传入的消息体为null，已忽略");
                 return Task.CompletedTask;
             }
 

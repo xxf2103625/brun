@@ -66,9 +66,18 @@ namespace Brun
         {
             return worders.Where(m => m.Tag == tag);
         }
+        public IOnceWorker GetOnceWorker(string key)
+        {
+            IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);
+            if (worker == null)
+            {
+                logger.LogError("找不到活动的OnceWorker，key:{0}", key);
+            }
+            return (IOnceWorker)worker;
+        }
         public IQueueWorker GetQueueWorker(string key)
         {
-            IWorker worker = worders.Where(m=>m.Context.Option.WorkerType==typeof(QueueWorker)).FirstOrDefault(m => m.Key == key);
+            IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(QueueWorker)).FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
                 logger.LogError("找不到活动的QueueWorker，key:{0}", key);
@@ -88,7 +97,7 @@ namespace Brun
 
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
-                await item.Run();
+                await ((IQueueWorker)item).Start();//.Run();
             }
 
             logger.LogInformation("WorkerServer is Started");
@@ -107,7 +116,7 @@ namespace Brun
         }
         private void WorkerConfigure()
         {
-            
+
         }
 
         public void Stop()

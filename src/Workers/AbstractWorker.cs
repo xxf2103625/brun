@@ -52,15 +52,8 @@ namespace Brun
         {
             throw new NotImplementedException();
         }
-        /// <summary>
-        /// 调用线程不用等待结果
-        /// </summary>
-        public void RunDontWait()
-        {
-            runTask = Run();
-        }
+        
         //protected abstract Task Execute();
-        public abstract Task Run();
 
         protected async Task Observe(WorkerEvents workerEvents)
         {

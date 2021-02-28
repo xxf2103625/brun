@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace UnitTestBrun
 {
-    [TestClass]
     public abstract class BaseHostTest
     {
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
-        //[TestInitialize]
+        TimeSpan waitTime = TimeSpan.FromSeconds(1);
+        [TestInitialize]
         public async Task InitAsync()
         {
             tokenSource = new CancellationTokenSource();
@@ -36,7 +36,8 @@ namespace UnitTestBrun
         [TestCleanup]
         public async Task CleanupAsync()
         {
-            tokenSource.Cancel();
+            //await Task.Delay(waitTime);
+            tokenSource.CancelAfter(waitTime);
 
             while (!cancellationToken.IsCancellationRequested)
             {

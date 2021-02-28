@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Brun
 {
-    public interface IQueueWorker
+    public interface IQueueWorker : IWorker
     {
         Task Enqueue(string message);
+        Task Start();
+
     }
 }

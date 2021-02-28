@@ -12,7 +12,6 @@ namespace Brun
     {
         public Type BrunType { get; set; }
         public Type WorkerType { get; set; }
-        //public string WorkerTypeName { get; set; }
         public string Key { get; set; }
         public string Name { get; internal set; }
         public string Tag { get; internal set; }
