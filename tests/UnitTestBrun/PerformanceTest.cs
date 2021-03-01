@@ -34,7 +34,7 @@ namespace UnitTestBrun
             for (int i = 0; i < times; i++)
             {
                 Type type = typeof(SimpleBackRun);
-                IBackRun backRun = (IBackRun)Activator.CreateInstance(type);
+                BackRun backRun = (BackRun)Activator.CreateInstance(type);
             }
             stopwatch.Stop();
             Console.WriteLine($"Activator.CreateInstance,times:{times},elapsed:{stopwatch.ElapsedMilliseconds}");

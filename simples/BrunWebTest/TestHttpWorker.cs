@@ -14,9 +14,11 @@ namespace BrunWebTest
     {
         public async override Task Run(CancellationToken stoppingToken)
         {
+
             for (int i = 0; i < 1; i++)
             {
                 var log = GetRequiredService<ILogger<TestHttpWorker>>();
+                
                 HttpClient httpClient = new HttpClient();
                 var r = await httpClient.GetAsync("http://127.0.0.1:5000/", stoppingToken);
                 log.LogWarning("httpClient发起了请求,state:" + r.StatusCode);
@@ -29,9 +31,9 @@ namespace BrunWebTest
 
                 using (var scope = NewScope())
                 {
-                    HttpClient iocClient = scope.ServiceProvider.GetRequiredService<HttpClient>();
-                    var iocR = await iocClient.GetAsync("http://127.0.0.1:5000/", stoppingToken);
-                    log.LogWarning("iocClient发起了请求,state:" + iocR.StatusCode);
+                    var testScope = scope.ServiceProvider.GetRequiredService<ITestScopeService>();
+                    string scopeR = testScope.Todo();
+                    log.LogInformation(scopeR);
                 }
             }
         }

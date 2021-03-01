@@ -49,5 +49,17 @@ namespace Brun
                 await Observe(WorkerEvents.EndRun);
             }
         }
+        public ConcurrentDictionary<string, string> GetData()
+        {
+            return _context.Items;
+        }
+        public T GetData<T>(string key)
+        {
+            throw new NotImplementedException();
+            //var r = GetData(key);
+            //if (r == null)
+            //    return default;
+            //return (T)r;
+        }
     }
 }

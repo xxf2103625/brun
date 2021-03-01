@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Brun
 {
     /// <summary>
-    /// 包含容器和自定义数据的后台任务
+    /// 包含容器和自定义数据的单次后台任务
     /// </summary>
     public abstract class BackRun : BackRunServicePrivoder, IBackRun
     {

@@ -30,6 +30,7 @@ namespace BrunWebTest
                 {
                     //其他服务
                     services.AddHttpClient();
+                    services.AddScoped<ITestScopeService, TestScopeService>();
 
                     //配置单次任务
                     WorkerBuilder.Create<TestHttpWorker>()

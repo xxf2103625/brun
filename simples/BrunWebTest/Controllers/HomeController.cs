@@ -26,7 +26,7 @@ namespace BrunWebTest.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Once()
         {
             //运行后台任务
             _workerServer.GetOnceWorker(Program.BrunKey).RunDontWait();
@@ -39,7 +39,7 @@ namespace BrunWebTest.Controllers
             {
                 await worker.Enqueue(msg);
             }
-            return Content("Queue test");
+            return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
