@@ -63,7 +63,7 @@ namespace Brun
         {
             if (exceptions == null)
                 exceptions = new List<Exception>();
-            if (exceptions.Count > _config.WorkerContextMaxExcept)
+            if (exceptions.Count >= _config.WorkerContextMaxExcept)
                 exceptions.RemoveAt(0);
             exceptions.Add(ex);
         }

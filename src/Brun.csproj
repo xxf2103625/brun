@@ -10,8 +10,8 @@
     <PackageTags>netcore 后台任务</PackageTags>
     <RepositoryUrl>https://gitee.com/2103625/brun.git</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageReleaseNotes>netcore background work</PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <PackageReleaseNotes>添加简单的timeSpan周期任务</PackageReleaseNotes>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

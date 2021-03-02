@@ -10,6 +10,13 @@ using System.Threading.Tasks;
 
 namespace BrunWebTest
 {
+    public class ErrorTestRun : BackRun
+    {
+        public override Task Run(CancellationToken stoppingToken)
+        {
+            throw new NotImplementedException("测试异常");
+        }
+    }
     public class TestHttpWorker : BackRun
     {
         public async override Task Run(CancellationToken stoppingToken)

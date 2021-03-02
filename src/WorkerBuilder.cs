@@ -1,5 +1,6 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
+using Brun.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -56,11 +57,38 @@ namespace Brun
             {
                 //创建了新的对象
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
-                option = WorkerServer.Instance.ServerConfig.DefaultOption
+                option = WorkerServer.Instance.ServerConfig.DefaultTimeWorkerOption
             };
             builder.option.WorkerType = typeof(TimeWorker);
             builder.option.BrunType = typeof(TBackRun);
             return builder;
+        }
+        public WorkerBuilder SetCycle(TimeSpan cycle)
+        {
+            if (option is TimeWorkerOption option1)
+                option1.Cycle = cycle;
+            else
+            {
+                throw new Exception("only TimeWorker can SetCycle");
+            }
+            return this;
+        }
+        /// <summary>
+        /// 可以不指定BackRun类型而指定Worker实例Key，内部调用OnceWorker的run
+        /// </summary>
+        /// <returns></returns>
+        public static WorkerBuilder CreateTime()
+        {
+            throw new NotImplementedException();
+            //WorkerBuilder builder = new WorkerBuilder()
+            //{
+            //    //创建了新的对象
+            //    config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+            //    option = WorkerServer.Instance.ServerConfig.DefaultOption
+            //};
+            //builder.option.WorkerType = typeof(TimeWorker);
+            //builder.option.BrunType = typeof(TBackRun);
+            //return builder;
         }
         public WorkerBuilder SetConfig(Action<WorkerConfig> configure)
         {

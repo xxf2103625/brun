@@ -97,12 +97,18 @@ namespace Brun
 
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
-                Thread time = new Thread(new ThreadStart(((IQueueWorker)item).Start().Wait));
+                Thread queue = new Thread(new ThreadStart(((IQueueWorker)item).Start().Wait));
+                //Thread queue = new Thread(new ParameterizedThreadStart(((IQueueWorker)item).Start));
+                //queue.IsBackground = true;
+                //queue.Start(_stoppingToken);
                 //((IQueueWorker)item).Start();//.Run();
             }
             foreach (var item in worders.Where(m => m is ITimeWorker))
             {
                 Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
+                //Thread time = new Thread(new ParameterizedThreadStart(((ITimeWorker)item).Start));
+                //time.IsBackground = true;
+                //time.Start(_stoppingToken);
                 //((ITimeWorker)item).Start();
             }
             logger.LogInformation("WorkerServer is Started");

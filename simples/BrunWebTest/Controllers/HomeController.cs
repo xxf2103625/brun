@@ -18,7 +18,7 @@ namespace BrunWebTest.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _workerServer = WorkerServer.Instance;
+            _workerServer = WorkerServer.Instance;//或者构造函数中用 IWorkerServer 取
         }
 
         public IActionResult Index()
@@ -34,6 +34,7 @@ namespace BrunWebTest.Controllers
         }
         public async Task<IActionResult> Queue(string msg)
         {
+            //运行队列任务
             IQueueWorker worker = _workerServer.GetQueueWorker(Program.QueueKey);
             for (int i = 0; i < 100; i++)
             {

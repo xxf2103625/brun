@@ -89,6 +89,16 @@ namespace Brun
                 await Task.Delay(5);
             }
         }
+        public void Start(object token)
+        {
+            while (!((CancellationToken)token).IsCancellationRequested)
+            {
+                if(queue.TryDequeue(out string msg))
+                {
+                    Execute(msg).Start();
+                }
+            }
+        }
         public Task Enqueue(string message)
         {
             //logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();

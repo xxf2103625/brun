@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Brun.csproj" />
+    <PackageReference Include="Brun" Version="1.0.2" />
   </ItemGroup>
 
 </Project>

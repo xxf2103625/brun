@@ -43,8 +43,10 @@ namespace BrunWebTest
                     .SetKey(QueueKey)
                     .Build();
 
+
                     //配置定时任务
-                    WorkerBuilder.CreateTime<TestHttpWorker>()
+                    WorkerBuilder.CreateTime<ErrorTestRun>()
+                    .SetCycle(TimeSpan.FromSeconds(3))
                     .SetKey(TimeKey)
                     .Build();
 

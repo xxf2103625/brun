@@ -10,6 +10,6 @@ namespace Brun
     {
         Task Enqueue(string message);
         Task Start();
-
+        void Start(object token);
     }
 }
