@@ -50,6 +50,18 @@ namespace Brun
             builder.option.WorkerType = typeof(QueueWorker);
             return builder;
         }
+        public static WorkerBuilder CreateTime<TBackRun>()
+        {
+            WorkerBuilder builder = new WorkerBuilder()
+            {
+                //创建了新的对象
+                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+                option = WorkerServer.Instance.ServerConfig.DefaultOption
+            };
+            builder.option.WorkerType = typeof(TimeWorker);
+            builder.option.BrunType = typeof(TBackRun);
+            return builder;
+        }
         public WorkerBuilder SetConfig(Action<WorkerConfig> configure)
         {
             configure(config);

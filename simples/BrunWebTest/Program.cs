@@ -15,6 +15,7 @@ namespace BrunWebTest
     {
         public static string BrunKey = Guid.NewGuid().ToString();
         public static string QueueKey = Guid.NewGuid().ToString();
+        public static string TimeKey = Guid.NewGuid().ToString();
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -40,6 +41,11 @@ namespace BrunWebTest
                     //配置队列任务
                     WorkerBuilder.CreateQueue<TestQueueWorker>()
                     .SetKey(QueueKey)
+                    .Build();
+
+                    //配置定时任务
+                    WorkerBuilder.CreateTime<TestHttpWorker>()
+                    .SetKey(TimeKey)
                     .Build();
 
                     //启动后台服务

@@ -89,7 +89,7 @@ namespace Brun
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="stoppingToken"></param>
-        public async Task Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             _stoppingToken = stoppingToken;
             taskFactory = new TaskFactory(_stoppingToken);
@@ -97,9 +97,14 @@ namespace Brun
 
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
-                await ((IQueueWorker)item).Start();//.Run();
+                Thread time = new Thread(new ThreadStart(((IQueueWorker)item).Start().Wait));
+                //((IQueueWorker)item).Start();//.Run();
             }
-
+            foreach (var item in worders.Where(m => m is ITimeWorker))
+            {
+                Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
+                //((ITimeWorker)item).Start();
+            }
             logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());
         }

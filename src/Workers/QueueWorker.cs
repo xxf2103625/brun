@@ -33,7 +33,6 @@ namespace Brun
             await WorkerServer.Instance.TaskFactory.StartNew(async () => await backRun.Run(message, WorkerServer.Instance.StoppingToken))
                 .ContinueWith(async task =>
                 {
-
                     switch (task.Status)
                     {
                         case TaskStatus.RanToCompletion:
@@ -77,7 +76,7 @@ namespace Brun
                             return;
                     }
 
-                }, TaskContinuationOptions.ExecuteSynchronously);
+                });//, TaskContinuationOptions.ExecuteSynchronously);
         }
         public async Task Start()
         {
