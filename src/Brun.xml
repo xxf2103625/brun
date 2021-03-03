@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brun</name>
+    </assembly>
+    <members>
+        <member name="T:Brun.BackRun">
+            <summary>
+            包含容器和自定义数据的单次后台任务
+            </summary>
+        </member>
+        <member name="P:Brun.BackRun.Data">
+            <summary>
+            自定义的数据，在Worker的Context中保存，同一个Worker实例的Data共享
+            </summary>
+        </member>
+        <member name="M:Brun.BackRun.Run(System.Threading.CancellationToken)">
+            <summary>
+            定义长时间任务时，自己用stoppingToken控制任务尽快结束
+            </summary>
+            <param name="stoppingToken">进程结束信号</param>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.BaskRuns.BackRunServicePrivoder.ServiceProvider">
+            <summary>
+            Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
+            </summary>
+        </member>
+        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.GetRequiredService``1">
+            <summary>
+            获取host注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope"/>里获取
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.GetService``1">
+            <summary>
+            获取host注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope"/>里获取
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope">
+            <summary>
+            创建一个Scope来自己管理Scoped服务的生存周期，单例和瞬时的服务不需要用这个
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.BaskRuns.IBackRun">
+            <summary>
+            所有后台任务的接口,直接继承这个无法使用自定义Data
+            </summary>
+        </member>
+        <member name="F:Brun.Enums.WorkerState.Default">
+            <summary>
+            默认状态
+            </summary>
+        </member>
+        <member name="F:Brun.Enums.WorkerState.Excuting">
+            <summary>
+            运行中
+            </summary>
+        </member>
+        <member name="F:Brun.Enums.WorkerState.Paused">
+            <summary>
+            已暂停
+            </summary>
+        </member>
+        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            以服务形式启动Brun.在Program  .ConfigureServices 中使用.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
+            <summary>
+            以服务形式启动Brun.在Program  .ConfigureServices 中使用.
+            </summary>
+            <param name="services"></param>
+            <param name="configure">和在host中注入服务没有任何区别，可能你需要在代码位置上明确这些服务只给Brun使用</param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.IWorker">
+            <summary>
+            工作中心，每个实例会常驻进程，除非Destroy
+            </summary>
+        </member>
+        <member name="P:Brun.IWorker.Key">
+            <summary>
+            Worker唯一Id
+            </summary>
+        </member>
+        <member name="P:Brun.IWorker.Name">
+            <summary>
+            Worker名称，配置时指定，不指定为类型名称
+            </summary>
+        </member>
+        <member name="P:Brun.IWorker.Tag">
+            <summary>
+            Worker分组标签
+            </summary>
+        </member>
+        <member name="P:Brun.IWorker.Context">
+            <summary>
+            Worker上下文
+            </summary>
+        </member>
+        <member name="M:Brun.IWorker.Destroy">
+            <summary>
+            销毁
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Observers.WorkerObserver">
+            <summary>
+            backrun运行拦截器
+            </summary>
+        </member>
+        <member name="M:Brun.Observers.WorkerObserver.#ctor(Brun.Enums.WorkerEvents,System.Int32)">
+            <summary>
+            构造函数，指定拦截的位置和顺序
+            </summary>
+            <param name="workerEvent"><see cref="T:Brun.Enums.WorkerEvents"/></param>
+            <param name="order">越小先执行，默认100，100以内为组件内部拦截器</param>
+        </member>
+        <member name="T:Brun.WorkerOption">
+            <summary>
+            用于构造Worker
+            </summary>
+        </member>
+        <member name="T:Brun.WorkerBuilder">
+            <summary>
+            Woker建造器
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerBuilder.SetConfig(Brun.WorkerConfig)">
+            <summary>
+            设置单独的配置
+            </summary>
+            <param name="workerConfig"></param>
+        </member>
+        <member name="M:Brun.WorkerBuilder.CreateTime">
+            <summary>
+            可以不指定BackRun类型而指定Worker实例Key，内部调用OnceWorker的run
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.SetWorkerType(System.Type)">
+            <summary>
+            设置worker类型，默认OnceWorker
+            </summary>
+            <param name="workerType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.SetKey(System.String)">
+            <summary>
+            自己保证唯一，为空时默认newGuid
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.SetName(System.String)">
+            <summary>
+            可以重复，为空默认使用类名
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.WorkerContext.Key">
+            <summary>
+            Worker唯一标识
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Name">
+            <summary>
+            Worker名称，默认类型名称
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Tag">
+            <summary>
+            自定义Tag
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Exceptions">
+            <summary>
+            BackRun运行异常列表，默认最多储存10个
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerContext.ExceptFromRun(System.Exception)">
+            <summary>
+            添加run异常事件
+            </summary>
+            <param name="ex"></param>
+        </member>
+        <member name="P:Brun.WorkerContext.State">
+            <summary>
+            TODO 当前状态
+            </summary>
+        </member>
+        <member name="T:Brun.WorkerServer">
+            <summary>
+            进程单例，暂时只考虑单机运行
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServerConfig">
+            <summary>
+            server配置，用于设置系统默认配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Worders">
+            <summary>
+            所有运行中的worker
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServiceProvider">
+            <summary>
+            服务容器
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.StoppingToken">
+            <summary>
+            服务结束Token
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.TaskFactory">
+            <summary>
+            公共的Task管理
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            启动Brun
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="stoppingToken"></param>
+        </member>
+        <member name="P:Brun.WorkerServer.Instance">
+            <summary>
+            进程单例
+            </summary>
+        </member>
+        <member name="T:Brun.AbstractWorker">
+            <summary>
+            工作中心基类，可以builder多个，不同实例里面的Context不同
+            </summary>
+        </member>
+        <member name="F:Brun.AbstractWorker._option">
+            <summary>
+            选项
+            </summary>
+        </member>
+        <member name="F:Brun.AbstractWorker._config">
+            <summary>
+            配置
+            </summary>
+        </member>
+        <member name="M:Brun.AbstractWorker.Observe(Brun.Enums.WorkerEvents)">
+            <summary>
+            添加拦截器
+            </summary>
+            <param name="workerEvents"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IOnceWorker.GetData">
+            <summary>
+            自定义数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IOnceWorker.Run">
+            <summary>
+            运行，web中不要await
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IOnceWorker.RunDontWait">
+            <summary>
+            直接运行不用等待,适合web中使用
+            </summary>
+        </member>
+        <member name="M:Brun.ITimeWorker.Pause">
+            <summary>
+            暂停
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.ITimeWorker.Resume">
+            <summary>
+            恢复
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.OnceWorker">
+            <summary>
+            基础Worker，每次执行一次
+            </summary>
+        </member>
+        <member name="M:Brun.OnceWorker.RunDontWait">
+            <summary>
+            调用线程不用等待结果
+            </summary>
+        </member>
+        <member name="T:Brun.QueueWorker">
+            <summary>
+            简单的内存Queue 自定义数据类型
+            </summary>
+        </member>
+        <member name="T:Brun.SynchroWorker">
+            <summary>
+            同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
+            </summary>
+        </member>
+        <member name="T:Brun.TimeWorker">
+            <summary>
+            简单的内存定时任务,这种执行周期会偏移
+            </summary>
+        </member>
+        <member name="F:Brun.TimeWorker.beginTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="F:Brun.TimeWorker.cycle">
+            <summary>
+            周期
+            </summary>
+        </member>
+        <member name="F:Brun.TimeWorker.runNb">
+            <summary>
+            执行次数，-1无限 
+            </summary>
+        </member>
+    </members>
+</doc>
