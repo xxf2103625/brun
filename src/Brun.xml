@@ -124,6 +124,21 @@
             <param name="workerEvent"><see cref="T:Brun.Enums.WorkerEvents"/></param>
             <param name="order">越小先执行，默认100，100以内为组件内部拦截器</param>
         </member>
+        <member name="T:Brun.Options.TimeWorkerOption">
+            <summary>
+            TimeWorker选项
+            </summary>
+        </member>
+        <member name="P:Brun.Options.TimeWorkerOption.Cycle">
+            <summary>
+            定时执行周期
+            </summary>
+        </member>
+        <member name="P:Brun.Options.TimeWorkerOption.RunWithStart">
+            <summary>
+            程序启动/重启时执行一次
+            </summary>
+        </member>
         <member name="T:Brun.WorkerOption">
             <summary>
             用于构造Worker
@@ -139,6 +154,14 @@
             设置单独的配置
             </summary>
             <param name="workerConfig"></param>
+        </member>
+        <member name="M:Brun.WorkerBuilder.SetCycle(System.TimeSpan,System.Boolean)">
+            <summary>
+            设置TimeWorker的定时执行周期
+            </summary>
+            <param name="cycle"></param>
+            <param name="runWithStart"></param>
+            <returns></returns>
         </member>
         <member name="M:Brun.WorkerBuilder.CreateTime">
             <summary>
@@ -330,6 +353,19 @@
             <summary>
             执行次数，-1无限 
             </summary>
+        </member>
+        <member name="M:Brun.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)">
+            <summary>
+            
+            </summary>
+            <param name="option"></param>
+            <param name="config"></param>
+        </member>
+        <member name="M:Brun.TimeWorker.Start">
+            <summary>
+            启动Worker
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

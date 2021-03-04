@@ -46,7 +46,7 @@ namespace BrunWebTest
 
                     //配置定时任务
                     WorkerBuilder.CreateTime<ErrorTestRun>()
-                    .SetCycle(TimeSpan.FromSeconds(3))
+                    .SetCycle(TimeSpan.FromSeconds(3),false)
                     .SetKey(TimeKey)
                     .Build();
 

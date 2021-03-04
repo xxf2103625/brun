@@ -32,39 +32,48 @@ namespace Brun
         private int runNb;
         private DateTimeOffset? nextRunTime;
         private static object next_LOCK = new object();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="config"></param>
         public TimeWorker(TimeWorkerOption option, WorkerConfig config) : base(option, config)
         {
             if (option.Cycle == TimeSpan.Zero)
                 throw new Exception("TimeWorker Cycle not set or do not set Zero");
             cycle = option.Cycle;
+            if (option.RunWithStart)
+            {
+                nextRunTime = DateTime.Now;
+            }
         }
-        public void Start(object token)
-        {
-            Start().Wait();
-        }
+        /// <summary>
+        /// 启动Worker
+        /// </summary>
+        /// <returns></returns>
         public async Task Start()
         {
             _context.State = Enums.WorkerState.Excuting;//worker状态
             var log = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
             while (!WorkerServer.Instance.StoppingToken.IsCancellationRequested)
             {
-                if (nextRunTime == null || nextRunTime.Value <= DateTime.UtcNow)
+                if (nextRunTime == null || nextRunTime.Value <= DateTime.Now)
                 {
                     lock (next_LOCK)
                     {
                         if (nextRunTime == null)
                         {
-                            nextRunTime = DateTime.UtcNow + cycle;
+                            nextRunTime = DateTime.Now + cycle;
                             continue;
                         }
                         else
                         {
-                            if (nextRunTime.Value > DateTime.UtcNow)
+                            if (nextRunTime.Value > DateTime.Now)
                                 continue;
                         }
                     }
                 }
-                if (nextRunTime.Value <= DateTime.UtcNow)
+                if (nextRunTime.Value <= DateTime.Now)
                 {
                     await Observe(Enums.WorkerEvents.StartRun);
                     Task task = WorkerServer.Instance.TaskFactory.StartNew(async () =>
@@ -75,7 +84,7 @@ namespace Brun
                     {
                         lock (next_LOCK)
                         {
-                            nextRunTime = DateTime.UtcNow + cycle;
+                            nextRunTime = DateTime.Now + cycle;
                         }
                         switch (t.Status)
                         {

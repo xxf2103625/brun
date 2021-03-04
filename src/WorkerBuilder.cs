@@ -63,14 +63,24 @@ namespace Brun
             builder.option.BrunType = typeof(TBackRun);
             return builder;
         }
-        public WorkerBuilder SetCycle(TimeSpan cycle)
+        /// <summary>
+        /// 设置TimeWorker的定时执行周期
+        /// </summary>
+        /// <param name="cycle"></param>
+        /// <param name="runWithStart"></param>
+        /// <returns></returns>
+        public WorkerBuilder SetCycle(TimeSpan cycle, bool runWithStart = false)
         {
             if (option is TimeWorkerOption option1)
+            {
+                option1.RunWithStart = runWithStart;
                 option1.Cycle = cycle;
+            }
             else
             {
                 throw new Exception("only TimeWorker can SetCycle");
             }
+
             return this;
         }
         /// <summary>
