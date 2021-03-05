@@ -10,7 +10,7 @@
 
 控制台和web项目都可以直接用。
 #### IWorker：我把它定义为工作中心，定义了后台任务以什么样的流程来执行 
-1. OnceWorker：调用第一执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 继承BackRun来写自己的任务逻辑。
+1. OnceWorker：调用一次执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 继承BackRun来写自己的任务逻辑。
 2. QueueWorker: 队列任务，用QueueWorker添加string到队列，后台任务会立即执行。继承QueueBackRun来写自己的任务逻辑，请自己序列化String。
 3. TimeWorker: 简单的定时任务，配置一个TimeSpan，周期循环执行定义的BackRun。继承BackRun/ScopeBackRun来写自己的任务逻辑。
 
