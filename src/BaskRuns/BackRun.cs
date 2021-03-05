@@ -15,7 +15,7 @@ namespace Brun
     public abstract class BackRun : BackRunServicePrivoder, IBackRun
     {
         /// <summary>
-        /// 自定义的数据，在Worker的Context中保存，同一个Worker实例的Data共享
+        /// 每次运行共享的自定义数据
         /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
         /// <summary>

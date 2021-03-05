@@ -11,7 +11,7 @@
         </member>
         <member name="P:Brun.BackRun.Data">
             <summary>
-            自定义的数据，在Worker的Context中保存，同一个Worker实例的Data共享
+            每次运行共享的自定义数据
             </summary>
         </member>
         <member name="M:Brun.BackRun.Run(System.Threading.CancellationToken)">
@@ -50,6 +50,79 @@
             <summary>
             所有后台任务的接口,直接继承这个无法使用自定义Data
             </summary>
+        </member>
+        <member name="T:Brun.BaskRuns.ScopeBackRun">
+            <summary>
+            每次运行在Ioc的Scope中，可以理解成类似mvc每个请求的生命周期
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.ScopeBackRun.BaseServiceProvider">
+            <summary>
+            原始ServiceProvider
+            </summary>
+        </member>
+        <member name="F:Brun.BaskRuns.ScopeBackRun.ServiceProvider">
+            <summary>
+            Scope内的ServiceProvider
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.ScopeBackRun.Data">
+            <summary>
+            每次运行共享的自定义数据
+            </summary>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRun.RunInScope(System.Threading.CancellationToken)">
+            <summary>
+            每次会创建一个Scope，ServiceProvider变为Scope内的ServiceProvider，可以理解成类似mvc每个请求的生命周期
+            </summary>
+            <param name="stoppingToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRun.Run(System.Threading.CancellationToken)">
+            <summary>
+            运行入口
+            </summary>
+            <param name="stoppingToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRun.GetRequiredService``1">
+            <summary>
+            获取Ioc注入的Service,找不到会异常，可以获取所有Ioc的Service
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRun.GetService``1">
+            <summary>
+            获取Ioc注入的Service,可能返回null，可以获取所有Ioc的Service
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.BaskRuns.ScopeBackRunServicePrivoder.ServiceProvider">
+            <summary>
+            Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
+            </summary>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.GetRequiredService``1">
+            <summary>
+            获取Ioc注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope"/>里获取
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.GetService``1">
+            <summary>
+            获取Ioc注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope"/>里获取
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope">
+            <summary>
+            创建一个Scope来自己管理Scoped服务的生存周期，单例和瞬时的服务不需要用这个
+            </summary>
+            <returns></returns>
         </member>
         <member name="F:Brun.Enums.WorkerState.Default">
             <summary>
@@ -155,12 +228,33 @@
             </summary>
             <param name="workerConfig"></param>
         </member>
+        <member name="M:Brun.WorkerBuilder.Create``1">
+            <summary>
+            创建默认的OnceWorker
+            </summary>
+            <typeparam name="TBackRun"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.CreateQueue``1">
+            <summary>
+            创建队列任务
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.CreateTime``1">
+            <summary>
+            创建定时任务
+            </summary>
+            <typeparam name="TBackRun"></typeparam>
+            <returns></returns>
+        </member>
         <member name="M:Brun.WorkerBuilder.SetCycle(System.TimeSpan,System.Boolean)">
             <summary>
             设置TimeWorker的定时执行周期
             </summary>
-            <param name="cycle"></param>
-            <param name="runWithStart"></param>
+            <param name="cycle">运行周期</param>
+            <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
             <returns></returns>
         </member>
         <member name="M:Brun.WorkerBuilder.CreateTime">
@@ -278,12 +372,27 @@
             配置
             </summary>
         </member>
+        <member name="F:Brun.Workers.AbstractWorker._context">
+            <summary>
+            worker上下文
+            </summary>
+        </member>
+        <member name="F:Brun.Workers.AbstractWorker.tokenSource">
+            <summary>
+            管理单个实例的token
+            </summary>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Observe(Brun.Enums.WorkerEvents)">
             <summary>
             添加拦截器
             </summary>
             <param name="workerEvents"></param>
             <returns></returns>
+        </member>
+        <member name="P:Brun.Workers.AbstractWorker.Context">
+            <summary>
+            上下文
+            </summary>
         </member>
         <member name="M:Brun.Workers.AbstractWorker.Dispose">
             <summary>

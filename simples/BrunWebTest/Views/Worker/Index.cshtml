@@ -1,11 +1,8 @@
-﻿@{
-    ViewData["Title"] = "后台任务概况";
+﻿@model IList<Brun.IWorker>
+@{
+    ViewData["Title"] = "Workers";
 }
 
-<div class="text-center">
-    <h3 class="display-4">后台任务实时概况</h3>
-    <p>Learn about <a target="_blank" href="http://www.dotnet6.net">文档地址</a>.</p>
-</div>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -14,7 +11,7 @@
 
             <th>Worker类型</th>
             <th>Brun类型</th>
-            <th>进行中Task数量</th>
+            <th>Task数量</th>
             <th>开始|异常|结束 数量</th>
         </tr>
     </thead>

@@ -9,8 +9,6 @@ namespace Brun
 {
     public interface IOnceWorker : IWorker
     {
-        
-        
         /// <summary>
         /// 自定义数据
         /// </summary>

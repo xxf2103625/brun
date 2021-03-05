@@ -16,6 +16,7 @@ namespace BrunWebTest
         public static string BrunKey = Guid.NewGuid().ToString();
         public static string QueueKey = Guid.NewGuid().ToString();
         public static string TimeKey = Guid.NewGuid().ToString();
+        public static string ScopeKey = Guid.NewGuid().ToString();
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -37,6 +38,16 @@ namespace BrunWebTest
                     WorkerBuilder.Create<TestHttpWorker>()
                     .SetKey(BrunKey)
                     .Build();
+                    
+                    WorkerBuilder.Create<LongTimeBackRun>()
+                    .SetName(nameof(LongTimeBackRun))
+                    .Build();
+
+                    //配置Scope任务
+                    WorkerBuilder.Create<TestScopeBackRun>()
+                    .SetKey(ScopeKey)
+                    .Build();
+
 
                     //配置队列任务
                     WorkerBuilder.CreateQueue<TestQueueWorker>()
@@ -46,7 +57,7 @@ namespace BrunWebTest
 
                     //配置定时任务
                     WorkerBuilder.CreateTime<ErrorTestRun>()
-                    .SetCycle(TimeSpan.FromSeconds(3),false)
+                    .SetCycle(TimeSpan.FromSeconds(10), true)
                     .SetKey(TimeKey)
                     .Build();
 

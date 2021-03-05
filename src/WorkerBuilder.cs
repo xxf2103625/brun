@@ -29,7 +29,12 @@ namespace Brun
         {
             //TODO 覆盖部分默认的Config
         }
-        public static WorkerBuilder Create<TBackRun>() where TBackRun : BackRun, new()
+        /// <summary>
+        /// 创建默认的OnceWorker
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public static WorkerBuilder Create<TBackRun>() where TBackRun : IBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder
             {
@@ -40,6 +45,11 @@ namespace Brun
             builder.option.BrunType = typeof(TBackRun);
             return builder;
         }
+        /// <summary>
+        /// 创建队列任务
+        /// </summary>
+        /// <typeparam name="TQueueBackRun"></typeparam>
+        /// <returns></returns>
         public static WorkerBuilder CreateQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder
@@ -52,7 +62,12 @@ namespace Brun
             builder.option.WorkerType = typeof(QueueWorker);
             return builder;
         }
-        public static WorkerBuilder CreateTime<TBackRun>()
+        /// <summary>
+        /// 创建定时任务
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public static WorkerBuilder CreateTime<TBackRun>() where TBackRun : IBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder()
             {
@@ -67,8 +82,8 @@ namespace Brun
         /// <summary>
         /// 设置TimeWorker的定时执行周期
         /// </summary>
-        /// <param name="cycle"></param>
-        /// <param name="runWithStart"></param>
+        /// <param name="cycle">运行周期</param>
+        /// <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
         /// <returns></returns>
         public WorkerBuilder SetCycle(TimeSpan cycle, bool runWithStart = false)
         {

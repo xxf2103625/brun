@@ -28,7 +28,7 @@ namespace Brun.Workers
         }
         protected async Task Execute(string message)
         {
-            ILogger<QueueWorker> logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
+            logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
             await Observe(WorkerEvents.StartRun);
             IQueueBackRun backRun = (IQueueBackRun)BrunTool.CreateInstance(_option.BrunType);
             await WorkerServer.Instance.TaskFactory.StartNew(async () => await backRun.Run(message, WorkerServer.Instance.StoppingToken))
@@ -90,16 +90,16 @@ namespace Brun.Workers
                 await Task.Delay(5);
             }
         }
-        public void Start(object token)
-        {
-            while (!((CancellationToken)token).IsCancellationRequested)
-            {
-                if(queue.TryDequeue(out string msg))
-                {
-                    Execute(msg).Start();
-                }
-            }
-        }
+        //public void Start(object token)
+        //{
+        //    while (!((CancellationToken)token).IsCancellationRequested)
+        //    {
+        //        if(queue.TryDequeue(out string msg))
+        //        {
+        //            Execute(msg).Start();
+        //        }
+        //    }
+        //}
         public Task Enqueue(string message)
         {
             //logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();

@@ -25,8 +25,13 @@ namespace Brun.Workers
         /// 配置
         /// </summary>
         protected WorkerConfig _config;
+        /// <summary>
+        /// worker上下文
+        /// </summary>
         protected WorkerContext _context;
-        protected Task runTask;
+        /// <summary>
+        /// 管理单个实例的token
+        /// </summary>
         protected CancellationTokenSource tokenSource;
         //TODO 管理Task
         protected TaskFactory taskFactory;
@@ -57,7 +62,9 @@ namespace Brun.Workers
                 await observer.Todo(_context);
             }
         }
-
+        /// <summary>
+        /// 上下文
+        /// </summary>
         public WorkerContext Context => _context;
         public string Key => _option.Key;
 
@@ -109,7 +116,7 @@ namespace Brun.Workers
         }
 
 
-        public IList<Task> Tasks { get;private set; }
-        public TaskFactory TaskFactory=> taskFactory;
+        public IList<Task> Tasks { get; private set; }
+        public TaskFactory TaskFactory => taskFactory;
     }
 }

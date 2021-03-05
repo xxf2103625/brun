@@ -23,7 +23,8 @@ namespace BrunWebTest.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            IList<IWorker> workers = WorkerServer.Instance.GetAllWorker();
+            return View(workers);
         }
 
         public IActionResult Once()
@@ -32,14 +33,27 @@ namespace BrunWebTest.Controllers
             _workerServer.GetOnceWorker(Program.BrunKey).RunDontWait();
             return View();
         }
+        public IActionResult LongOnce()
+        {
+            //运行后台任务
+            (_workerServer.GetWokerByName(nameof(LongTimeBackRun)).First() as IOnceWorker).RunDontWait();
+            return View();
+        }
         public async Task<IActionResult> Queue(string msg)
         {
             //运行队列任务
             IQueueWorker worker = _workerServer.GetQueueWorker(Program.QueueKey);
             for (int i = 0; i < 100; i++)
             {
+                //这里的await只是等待队列添加动作完成
                 await worker.Enqueue(msg);
             }
+            return View();
+        }
+        public IActionResult Scope()
+        {
+            //运行Scoped后台任务
+            _workerServer.GetOnceWorker(Program.ScopeKey).RunDontWait();
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

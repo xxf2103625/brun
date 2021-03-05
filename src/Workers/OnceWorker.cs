@@ -57,12 +57,16 @@ namespace Brun.Workers
             //_ = Run();
             Task t= Run();
             Tasks.Add(t);
+            t.ContinueWith(t =>
+            {
+                Tasks.Remove(t);
+            });
         }
         /// <summary>
         /// OnceWorker执行入口
         /// </summary>
         /// <returns></returns>
-        public virtual async Task Run()
+        public async Task Run()
         {
             await Observe(WorkerEvents.StartRun);
             try

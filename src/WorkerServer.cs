@@ -59,6 +59,10 @@ namespace Brun
             }
             return worker;
         }
+        public IList<IWorker> GetAllWorker()
+        {
+            return worders;
+        }
         public IEnumerable<IWorker> GetWokerByName(string name)
         {
             return worders.Where(m => m.Name == name);
