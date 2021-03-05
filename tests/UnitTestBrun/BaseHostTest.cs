@@ -17,7 +17,7 @@ namespace UnitTestBrun
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
-        TimeSpan waitTime = TimeSpan.FromSeconds(1);
+        TimeSpan waitTime = TimeSpan.FromSeconds(3);
         [TestInitialize]
         public async Task InitAsync()
         {

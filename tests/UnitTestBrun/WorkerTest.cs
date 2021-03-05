@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Workers;
 using BrunTestHelper.BackRuns;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -19,10 +20,11 @@ namespace UnitTestBrun
         {
             IOnceWorker work = WorkerBuilder.Create<SimpleNumberRun>()
                 .BuildOnceWorker();
-            work.Run();
+
+            work.RunDontWait();
             //不await结果会直接先运行下面代码
             Console.WriteLine($"nb:{SimpleNumberRun.Nb}");
-            Assert.AreNotEqual(100, SimpleNumberRun.Nb);
+            Assert.AreEqual(100, SimpleNumberRun.Nb);
             return Task.CompletedTask;
         }
         [TestMethod]
@@ -39,16 +41,27 @@ namespace UnitTestBrun
             Assert.AreEqual("100", work.GetData("nb"));
         }
         [TestMethod]
-        public async Task TaskTestErrorRun()
+        public void TaskTestErrorRunNotAwait()
+        {
+            IOnceWorker work = WorkerBuilder.Create<ErrorBackRun>()
+               .BuildOnceWorker();
+            for (int i = 0; i < 10; i++)
+            {
+                work.RunDontWait();
+            }
+            //任务不等待主线程
+            Assert.AreEqual(0, work.Context.exceptNb);
+        }
+        [TestMethod]
+        public async Task TaskTestErrorRunAwaitAsync()
         {
             IOnceWorker work = WorkerBuilder.Create<ErrorBackRun>()
                .BuildOnceWorker();
             await work.Run();
+            //任务等待主线程
             Assert.AreEqual(1, work.Context.exceptNb);
             Assert.AreEqual(typeof(NotImplementedException), work.Context.Exceptions.First().GetType());
             Assert.AreEqual("测试异常", work.Context.Exceptions.First().Message);
-            //Assert.ThrowsException<NotImplementedException>(async () =>await work.Run(), "测试异常");
-            //return Task.CompletedTask;
         }
         [TestMethod]
         public async Task SynchroWorkerTest()

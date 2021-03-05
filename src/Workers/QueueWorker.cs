@@ -2,6 +2,7 @@
 using Brun.Commons;
 using Brun.Enums;
 using Brun.Observers;
+using Brun.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,7 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Brun
+namespace Brun.Workers
 {
     /// <summary>
     /// 简单的内存Queue 自定义数据类型

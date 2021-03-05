@@ -139,7 +139,7 @@
             程序启动/重启时执行一次
             </summary>
         </member>
-        <member name="T:Brun.WorkerOption">
+        <member name="T:Brun.Options.WorkerOption">
             <summary>
             用于构造Worker
             </summary>
@@ -263,26 +263,102 @@
             进程单例
             </summary>
         </member>
-        <member name="T:Brun.AbstractWorker">
+        <member name="T:Brun.Workers.AbstractWorker">
             <summary>
             工作中心基类，可以builder多个，不同实例里面的Context不同
             </summary>
         </member>
-        <member name="F:Brun.AbstractWorker._option">
+        <member name="F:Brun.Workers.AbstractWorker._option">
             <summary>
             选项
             </summary>
         </member>
-        <member name="F:Brun.AbstractWorker._config">
+        <member name="F:Brun.Workers.AbstractWorker._config">
             <summary>
             配置
             </summary>
         </member>
-        <member name="M:Brun.AbstractWorker.Observe(Brun.Enums.WorkerEvents)">
+        <member name="M:Brun.Workers.AbstractWorker.Observe(Brun.Enums.WorkerEvents)">
             <summary>
             添加拦截器
             </summary>
             <param name="workerEvents"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.Dispose">
+            <summary>
+            回收单个Worker
+            </summary>
+        </member>
+        <member name="T:Brun.Workers.OnceWorker">
+            <summary>
+            基础Worker，每次执行一次
+            </summary>
+        </member>
+        <member name="F:Brun.Workers.OnceWorker.backRun">
+            <summary>
+            backRun实例
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
+            <summary>
+            BackRun最终执行
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.RunDontWait">
+            <summary>
+            调用线程不用等待结果
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.Run">
+            <summary>
+            OnceWorker执行入口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Workers.QueueWorker">
+            <summary>
+            简单的内存Queue 自定义数据类型
+            </summary>
+        </member>
+        <member name="T:Brun.Workers.SynchroWorker">
+            <summary>
+            同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
+            </summary>
+        </member>
+        <member name="T:Brun.Workers.TimeWorker">
+            <summary>
+            简单的内存定时任务,这种执行周期会偏移
+            </summary>
+        </member>
+        <member name="F:Brun.Workers.TimeWorker.beginTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="F:Brun.Workers.TimeWorker.cycle">
+            <summary>
+            周期
+            </summary>
+        </member>
+        <member name="F:Brun.Workers.TimeWorker.runNb">
+            <summary>
+            执行次数，-1无限 
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)">
+            <summary>
+            
+            </summary>
+            <param name="option"></param>
+            <param name="config"></param>
+        </member>
+        <member name="M:Brun.Workers.TimeWorker.Start">
+            <summary>
+            启动Worker
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Brun.IOnceWorker.GetData">
@@ -311,59 +387,6 @@
         <member name="M:Brun.ITimeWorker.Resume">
             <summary>
             恢复
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Brun.OnceWorker">
-            <summary>
-            基础Worker，每次执行一次
-            </summary>
-        </member>
-        <member name="M:Brun.OnceWorker.RunDontWait">
-            <summary>
-            调用线程不用等待结果
-            </summary>
-        </member>
-        <member name="T:Brun.QueueWorker">
-            <summary>
-            简单的内存Queue 自定义数据类型
-            </summary>
-        </member>
-        <member name="T:Brun.SynchroWorker">
-            <summary>
-            同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
-            </summary>
-        </member>
-        <member name="T:Brun.TimeWorker">
-            <summary>
-            简单的内存定时任务,这种执行周期会偏移
-            </summary>
-        </member>
-        <member name="F:Brun.TimeWorker.beginTime">
-            <summary>
-            开始时间
-            </summary>
-        </member>
-        <member name="F:Brun.TimeWorker.cycle">
-            <summary>
-            周期
-            </summary>
-        </member>
-        <member name="F:Brun.TimeWorker.runNb">
-            <summary>
-            执行次数，-1无限 
-            </summary>
-        </member>
-        <member name="M:Brun.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)">
-            <summary>
-            
-            </summary>
-            <param name="option"></param>
-            <param name="config"></param>
-        </member>
-        <member name="M:Brun.TimeWorker.Start">
-            <summary>
-            启动Worker
             </summary>
             <returns></returns>
         </member>

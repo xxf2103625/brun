@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Brun
+namespace Brun.Workers
 {
     /// <summary>
     /// 简单的内存定时任务,这种执行周期会偏移

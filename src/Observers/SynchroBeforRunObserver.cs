@@ -9,24 +9,18 @@ namespace Brun.Observers
 {
     public class SynchroBeforRunObserver : WorkerObserver
     {
-        private static object SynchroRun_LOCK = new object();
+        private object SynchroRun_LOCK = new object();
         public SynchroBeforRunObserver() : base(Enums.WorkerEvents.StartRun, 5)
         {
 
         }
-        public override Task Todo(WorkerContext _context)
+        public override async Task Todo(WorkerContext _context)
         {
-            if (_context.endNb < _context.startNb)
+            //TODO 优化同步逻辑
+            while (_context.Tasks.Any(m => m.Status == TaskStatus.WaitingForActivation))
             {
-                lock (SynchroRun_LOCK)
-                {
-                    while (_context.endNb < _context.startNb && !WorkerServer.Instance.StoppingToken.IsCancellationRequested)
-                    {
-                        Thread.Sleep(5);
-                    }
-                }
+                await Task.Delay(5);
             }
-            return Task.CompletedTask;
         }
     }
 }

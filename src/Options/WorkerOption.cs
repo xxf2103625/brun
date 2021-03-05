@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Brun
+namespace Brun.Options
 {
     /// <summary>
     /// 用于构造Worker

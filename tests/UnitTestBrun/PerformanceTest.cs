@@ -1,5 +1,7 @@
 ﻿using Brun;
 using Brun.Commons;
+using Brun.Options;
+using Brun.Workers;
 using BrunTestHelper.BackRuns;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

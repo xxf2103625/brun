@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Brun.Enums;
+using Brun.Options;
 using Microsoft.Extensions.Logging;
 
 namespace Brun
@@ -25,17 +27,25 @@ namespace Brun
         public long endNb = 0;
         //BackRun运行异常计数
         public int exceptNb = 0;
+        private IList<Task> tasks;
 
         public WorkerContext(WorkerOption workerOption, WorkerConfig config)
         {
             _option = workerOption;
             _config = config;
-            items = _option.Data;
             Init();
         }
         private void Init()
         {
             serviceProvider = WorkerServer.Instance.ServiceProvider;
+            if (_option.Data == null)
+            {
+                items = new ConcurrentDictionary<string, string>();
+            }
+            else
+            {
+                items = _option.Data;
+            }
         }
         /// <summary>
         /// Worker唯一标识
@@ -73,6 +83,7 @@ namespace Brun
         public WorkerState State { get; set; }
         public ConcurrentDictionary<string, string> Items => items;
         public IServiceProvider ServiceProvider => serviceProvider;
+        public IList<Task> Tasks { get; set; }
         public void Dispose()
         {
             items?.Clear();

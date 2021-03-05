@@ -27,14 +27,15 @@ namespace Brun
         /// Worker上下文
         /// </summary>
         WorkerContext Context { get; }
-       
-        
+
+
         /// <summary>
         /// 销毁
         /// </summary>
         /// <returns></returns>
         [Obsolete("暂不支持", true)]
         Task Destroy();
-
+        TaskFactory TaskFactory { get; }
+        IList<Task> Tasks { get; }
     }
 }

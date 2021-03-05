@@ -17,7 +17,15 @@ namespace BrunTestHelper.BackRuns
             {
                 Nb++;
                 Console.WriteLine($"SimpleNumberRun.Nb:{Nb}");
-                Data["nb"] = (int.Parse(Data["nb"]) + 1).ToString();
+                if (Data.ContainsKey("nb"))
+                {
+                    Data["nb"] = (int.Parse(Data["nb"]) + 1).ToString();
+                }
+                else
+                {
+                    Data["nb"] = "0";
+                }
+
                 //Thread.Sleep(TimeSpan.FromSeconds(0.1));
                 //await Task.Delay(TimeSpan.FromSeconds(0.1));
             }

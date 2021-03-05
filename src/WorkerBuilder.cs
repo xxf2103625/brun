@@ -1,6 +1,7 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
 using Brun.Options;
+using Brun.Workers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
