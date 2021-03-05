@@ -47,7 +47,7 @@ namespace BrunWebTest
     }
     public class TestQueueWorker : QueueBackRun
     {
-        public override  Task Run(string message, CancellationToken stoppingToken)
+        public override Task Run(string message, CancellationToken stoppingToken)
         {
            
             var log = GetRequiredService<ILogger<TestQueueWorker>>();
@@ -59,6 +59,7 @@ namespace BrunWebTest
             {
                 log.LogInformation("接收到消息:{0}", message);
             }
+            //await Task.Delay(TimeSpan.FromSeconds(2));
             return Task.CompletedTask;
         }
     }

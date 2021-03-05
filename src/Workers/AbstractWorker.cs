@@ -42,10 +42,11 @@ namespace Brun.Workers
             _context = new WorkerContext(option, config);
             tokenSource = new CancellationTokenSource();
             taskFactory = new TaskFactory(tokenSource.Token);
-            Tasks = new List<Task>();
-            _context.Tasks = Tasks;
+            //TODO 控制同时运行并发量
+            RunningTasks = new BlockingCollection<Task>();
+            _context.Tasks = RunningTasks;
         }
-
+        //TODO 运行中销毁整个实例
         public virtual Task Destroy()
         {
             throw new NotImplementedException();
@@ -85,11 +86,24 @@ namespace Brun.Workers
         /// </summary>
         public void Dispose()
         {
-            tokenSource.CancelAfter(TimeSpan.FromSeconds(2));
-            tokenSource.Token.Register(() =>
+            //TODO 控制进程等待时间，加入可配置
+            if (RunningTasks.Any(m => m.Status == TaskStatus.WaitingForActivation || m.Status == TaskStatus.Running))
+            {
+                tokenSource.CancelAfter(TimeSpan.FromSeconds(2));
+                tokenSource.Token.Register(() =>
+                {
+                    Context.Dispose();
+                });
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    Thread.Sleep(50);
+                }
+            }
+            else
             {
                 this.Context.Dispose();
-            });
+            }
+
             //DateTime time = DateTime.Now;
             //if (runTask == null)
             //    return;
@@ -115,8 +129,10 @@ namespace Brun.Workers
             //this.Context.Dispose();
         }
 
-
-        public IList<Task> Tasks { get; private set; }
+        /// <summary>
+        /// 正在运行的任务
+        /// </summary>
+        public BlockingCollection<Task> RunningTasks { get; private set; }
         public TaskFactory TaskFactory => taskFactory;
     }
 }

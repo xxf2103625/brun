@@ -8,7 +8,7 @@ namespace Brun
 {
     public interface IQueueWorker : IWorker
     {
-        Task Enqueue(string message);
+        void Enqueue(string message);
         Task Start();
         
     }

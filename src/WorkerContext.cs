@@ -83,7 +83,7 @@ namespace Brun
         public WorkerState State { get; set; }
         public ConcurrentDictionary<string, string> Items => items;
         public IServiceProvider ServiceProvider => serviceProvider;
-        public IList<Task> Tasks { get; set; }
+        public BlockingCollection<Task> Tasks { get; set; }
         public void Dispose()
         {
             items?.Clear();

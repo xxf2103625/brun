@@ -22,98 +22,85 @@ namespace Brun.Workers
     {
         private ConcurrentQueue<string> queue;
         ILogger<QueueWorker> logger;
+        private IQueueBackRun _queueBackRun;
+        //只需要限制实例并发
+        private readonly object backRun_LOCK = new object();
         public QueueWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
             queue = new ConcurrentQueue<string>();
         }
+        /// <summary>
+        /// 实例内保持唯一
+        /// </summary>
+        protected IQueueBackRun QueueBackRun
+        {
+            get
+            {
+                if (_queueBackRun == null)
+                {
+                    lock (backRun_LOCK)
+                    {
+                        if (_queueBackRun == null)
+                            _queueBackRun = (IQueueBackRun)BrunTool.CreateInstance(_option.BrunType);
+                    }
+                }
+                return _queueBackRun;
+            }
+        }
         protected async Task Execute(string message)
         {
+            //TODO 优化测试代码保证WorkerServer.Instance.ServiceProvider不为null
             logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
-            await Observe(WorkerEvents.StartRun);
-            IQueueBackRun backRun = (IQueueBackRun)BrunTool.CreateInstance(_option.BrunType);
-            await WorkerServer.Instance.TaskFactory.StartNew(async () => await backRun.Run(message, WorkerServer.Instance.StoppingToken))
-                .ContinueWith(async task =>
-                {
-                    switch (task.Status)
-                    {
-                        case TaskStatus.RanToCompletion:
-                            //任务完成，任务可能内部异常
-                            logger.LogDebug("TaskStatus.RanToCompletion");
-                            logger.LogDebug("this task.Result.Status:{0}", task.Result.Status);
-                            switch (task.Result.Status)
-                            {
-                                case TaskStatus.RanToCompletion:
-                                    //任务结果正常完成
-                                    logger.LogInformation("task.Result  TaskStatus.RanToCompletion");
-                                    break;
-                                case TaskStatus.Faulted:
-                                    //任务内部异常
-                                    logger.LogInformation("task.Result TaskStatus.Faulted");
-                                    _context.ExceptFromRun(task.Result.Exception.InnerException);
-                                    await Observe(WorkerEvents.Except);
-                                    break;
-                                case TaskStatus.Canceled:
-                                    //任务内部取消
-                                    logger.LogInformation("task.Result TaskStatus.Canceled");
-                                    _context.ExceptFromRun(new TaskCanceledException("the backrun.Result Task is Canceled"));
-                                    await Observe(WorkerEvents.Except);
-                                    break;
-                            }
-                            await Observe(WorkerEvents.EndRun);
-                            break;
-                        case TaskStatus.Canceled:
-                            //任务取消
-                            logger.LogDebug("TaskStatus.Canceled");
-                            _context.ExceptFromRun(new TaskCanceledException("the backrun Task is Canceled"));
-                            await Observe(WorkerEvents.Except);
-                            await Observe(WorkerEvents.EndRun);
-                            return;
-                        case TaskStatus.Faulted:
-                            //其它错误
-                            logger.LogDebug("TaskStatus.Faulted");
-                            _context.ExceptFromRun(new Exception("the backrun Task.TaskStatus is Faulted"));
-                            await Observe(WorkerEvents.Except);
-                            await Observe(WorkerEvents.EndRun);
-                            return;
-                    }
 
-                });//, TaskContinuationOptions.ExecuteSynchronously);
+            await Observe(WorkerEvents.StartRun);
+            try
+            {
+                await QueueBackRun.Run(message, tokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _context.ExceptFromRun(ex);
+                await Observe(WorkerEvents.Except);
+            }
+            finally
+            {
+                await Observe(WorkerEvents.EndRun);
+            }
         }
+        /// <summary>
+        /// 启动QueueWorker
+        /// </summary>
+        /// <returns></returns>
         public async Task Start()
         {
-            while (!WorkerServer.Instance.StoppingToken.IsCancellationRequested)
+            while (!this.tokenSource.Token.IsCancellationRequested)
             {
-                if (queue.TryDequeue(out string msg))
+                if (!queue.IsEmpty)
                 {
-                    Execute(msg);
+                    if (queue.TryDequeue(out string msg))
+                    {
+                        Task task = Execute(msg);
+                        RunningTasks.Add(task);
+                        _ = task.ContinueWith(t =>
+                          {
+                              RunningTasks.TryTake(out t);
+                          });
+                    }
                 }
                 await Task.Delay(5);
             }
         }
-        //public void Start(object token)
-        //{
-        //    while (!((CancellationToken)token).IsCancellationRequested)
-        //    {
-        //        if(queue.TryDequeue(out string msg))
-        //        {
-        //            Execute(msg).Start();
-        //        }
-        //    }
-        //}
-        public Task Enqueue(string message)
+        /// <summary>
+        /// 添加消息到后台任务
+        /// </summary>
+        /// <param name="message"></param>
+        public void Enqueue(string message)
         {
-            //logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<QueueWorker>>();
             if (message == null)
             {
-                //logger.LogWarning("传入的消息体为null，已忽略");
-                return Task.CompletedTask;
+                logger?.LogWarning("传入的消息体为null，已忽略");
             }
-
-            //var queueService = _context.ServiceProvider.GetRequiredService<IBrunQueueService<TMessage>>();
             queue.Enqueue(message);
-
-
-            return Task.CompletedTask;
         }
     }
 }

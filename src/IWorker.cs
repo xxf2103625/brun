@@ -36,6 +36,6 @@ namespace Brun
         [Obsolete("暂不支持", true)]
         Task Destroy();
         TaskFactory TaskFactory { get; }
-        IList<Task> Tasks { get; }
+        BlockingCollection<Task> RunningTasks { get; }
     }
 }

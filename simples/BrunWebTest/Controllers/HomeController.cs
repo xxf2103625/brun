@@ -39,14 +39,13 @@ namespace BrunWebTest.Controllers
             (_workerServer.GetWokerByName(nameof(LongTimeBackRun)).First() as IOnceWorker).RunDontWait();
             return View();
         }
-        public async Task<IActionResult> Queue(string msg)
+        public IActionResult Queue(string msg)
         {
             //运行队列任务
             IQueueWorker worker = _workerServer.GetQueueWorker(Program.QueueKey);
             for (int i = 0; i < 100; i++)
             {
-                //这里的await只是等待队列添加动作完成
-                await worker.Enqueue(msg);
+                worker.Enqueue(msg);
             }
             return View();
         }

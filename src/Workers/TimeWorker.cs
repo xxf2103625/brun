@@ -31,7 +31,10 @@ namespace Brun.Workers
         /// </summary>
         private int runNb;
         private DateTimeOffset? nextRunTime;
-        private static object next_LOCK = new object();
+        //只需要实例内的锁
+        private object next_LOCK = new object();
+        private object backRun_LOCK = new object();
+        private IBackRun _backRun;
         /// <summary>
         /// 
         /// </summary>
@@ -40,11 +43,33 @@ namespace Brun.Workers
         public TimeWorker(TimeWorkerOption option, WorkerConfig config) : base(option, config)
         {
             if (option.Cycle == TimeSpan.Zero)
-                throw new Exception("TimeWorker Cycle not set or do not set Zero");
+                throw new Exception("TimeWorker Cycle not set or can't be Zero");
             cycle = option.Cycle;
             if (option.RunWithStart)
             {
                 nextRunTime = DateTime.Now;
+            }
+        }
+        /// <summary>
+        /// 实例内保持唯一
+        /// </summary>
+        protected IBackRun BackRun
+        {
+            get
+            {
+                if (_backRun == null)
+                {
+                    lock (backRun_LOCK)
+                    {
+                        if (_backRun == null)
+                        {
+                            _backRun = (IBackRun)BrunTool.CreateInstance(_option.BrunType);
+                            _backRun.Data = _context.Items;
+                        }
+
+                    }
+                }
+                return _backRun;
             }
         }
         /// <summary>
@@ -55,7 +80,8 @@ namespace Brun.Workers
         {
             _context.State = Enums.WorkerState.Excuting;//worker状态
             var log = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
-            while (!WorkerServer.Instance.StoppingToken.IsCancellationRequested)
+            //TODO 优化定时流程
+            while (!tokenSource.Token.IsCancellationRequested)
             {
                 if (nextRunTime == null || nextRunTime.Value <= DateTime.Now)
                 {
@@ -75,70 +101,50 @@ namespace Brun.Workers
                 }
                 if (nextRunTime.Value <= DateTime.Now)
                 {
-                    await Observe(Enums.WorkerEvents.StartRun);
-                    Task task = WorkerServer.Instance.TaskFactory.StartNew(async () =>
+
+                    Task task = Execute();
+                    _ = RunningTasks.TryAdd(task);
+                    _ = task.ContinueWith(t =>
+                      {
+                          _ = RunningTasks.TryTake(out t);
+
+                      });
+                    lock (next_LOCK)
                     {
-                        //只等待Task创建结果
-                        await Execute(_context.Items);
-                    }).ContinueWith(async t =>
-                    {
-                        lock (next_LOCK)
-                        {
-                            nextRunTime = DateTime.Now + cycle;
-                        }
-                        switch (t.Status)
-                        {
-                            case TaskStatus.RanToCompletion:
-                                //await Observe(Enums.WorkerEvents.EndRun);
-                                switch (t.Result.Status)
-                                {
-                                    case TaskStatus.RanToCompletion:
-                                        //正常结束
-                                        break;
-                                    case TaskStatus.Faulted:
-                                        //task内部异常
-                                        Type t1 = t.Result.Exception.GetType();
-                                        Type t2 = t.Result.Exception.InnerException.GetType();
-                                        _context.ExceptFromRun(t.Result.Exception?.InnerException);
-                                        await Observe(Enums.WorkerEvents.Except);
-                                        break;
-                                    case TaskStatus.Canceled:
-                                        //token取消
-                                        break;
-                                }
-                                break;
-                            case TaskStatus.Faulted:
-                                _context.ExceptFromRun(new Exception("TimeWorker run TaskStatus.Faulted", t.Exception));
-                                await Observe(Enums.WorkerEvents.Except);
-                                break;
-                            case TaskStatus.Canceled:
-                                _context.ExceptFromRun(new Exception("TimeWorker run TaskStatus.Canceled", t.Exception));
-                                await Observe(Enums.WorkerEvents.Except);
-                                break;
-                        }
-                        await Observe(Enums.WorkerEvents.EndRun);
-                    }, WorkerServer.Instance.StoppingToken);
+                        nextRunTime = DateTime.Now + cycle;
+                    }
                 }
                 await Task.Delay(5);
             }
             _context.State = Enums.WorkerState.Paused;//worker状态
         }
-        public void Run()
+        /// <summary>
+        /// 执行一次队列任务
+        /// </summary>
+        /// <returns></returns>
+        protected async Task Execute()
         {
-            var log = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
-            log.LogInformation($"{DateTime.Now} - timeWorker is Run");
+            await Observe(Enums.WorkerEvents.StartRun);
+            try
+            {
+                await BackRun.Run(tokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _context.ExceptFromRun(ex);
+                await Observe(Enums.WorkerEvents.Except);
+            }
+            finally
+            {
+                await Observe(Enums.WorkerEvents.EndRun);
+            }
         }
-        protected Task Execute(ConcurrentDictionary<string, string> data)
-        {
-            IBackRun backRun = (IBackRun)BrunTool.CreateInstance(_option.BrunType);
-            backRun.Data = data;
-            return backRun.Run(WorkerServer.Instance.StoppingToken);
-        }
+        //TODO TimeWorker暂停
         public Task Pause()
         {
             throw new NotImplementedException();
         }
-
+        //TODO TimeWorker恢复
         public Task Resume()
         {
             throw new NotImplementedException();

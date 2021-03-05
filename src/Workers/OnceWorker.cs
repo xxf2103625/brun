@@ -55,11 +55,11 @@ namespace Brun.Workers
         public void RunDontWait()
         {
             //_ = Run();
-            Task t= Run();
-            Tasks.Add(t);
+            Task t = Run();
+            RunningTasks.TryAdd(t);
             t.ContinueWith(t =>
             {
-                Tasks.Remove(t);
+                RunningTasks.TryTake(out t);
             });
         }
         /// <summary>
@@ -72,7 +72,8 @@ namespace Brun.Workers
             try
             {
                 await Execute(_context.Items);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _context.ExceptFromRun(ex);
                 await Observe(WorkerEvents.Except);

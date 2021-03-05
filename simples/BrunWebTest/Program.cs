@@ -56,10 +56,12 @@ namespace BrunWebTest
 
 
                     //配置定时任务
-                    WorkerBuilder.CreateTime<ErrorTestRun>()
-                    .SetCycle(TimeSpan.FromSeconds(10), true)
+                    //WorkerBuilder.CreateTime<ErrorTestRun>()
+                    WorkerBuilder.CreateTime<LongTimeBackRun>()
+                    .SetCycle(TimeSpan.FromSeconds(5), true)
                     .SetKey(TimeKey)
-                    .Build();
+                    .Build()
+                    ;
 
                     //启动后台服务
                     services.AddBrunService();

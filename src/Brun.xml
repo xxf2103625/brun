@@ -399,6 +399,11 @@
             回收单个Worker
             </summary>
         </member>
+        <member name="P:Brun.Workers.AbstractWorker.RunningTasks">
+            <summary>
+            正在运行的任务
+            </summary>
+        </member>
         <member name="T:Brun.Workers.OnceWorker">
             <summary>
             基础Worker，每次执行一次
@@ -432,6 +437,23 @@
             简单的内存Queue 自定义数据类型
             </summary>
         </member>
+        <member name="P:Brun.Workers.QueueWorker.QueueBackRun">
+            <summary>
+            实例内保持唯一
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Start">
+            <summary>
+            启动QueueWorker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Enqueue(System.String)">
+            <summary>
+            添加消息到后台任务
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="T:Brun.Workers.SynchroWorker">
             <summary>
             同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
@@ -464,9 +486,20 @@
             <param name="option"></param>
             <param name="config"></param>
         </member>
+        <member name="P:Brun.Workers.TimeWorker.BackRun">
+            <summary>
+            实例内保持唯一
+            </summary>
+        </member>
         <member name="M:Brun.Workers.TimeWorker.Start">
             <summary>
             启动Worker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.TimeWorker.Execute">
+            <summary>
+            执行一次队列任务
             </summary>
             <returns></returns>
         </member>

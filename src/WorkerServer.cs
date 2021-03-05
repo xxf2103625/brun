@@ -97,24 +97,20 @@ namespace Brun
         public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             _stoppingToken = stoppingToken;
-            taskFactory = new TaskFactory(_stoppingToken);
+            //taskFactory = new TaskFactory(_stoppingToken);
             ServiceConfigure(serviceProvider);
 
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
+                //开辟独立线程，不适用线程池
+                //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
                 Thread queue = new Thread(new ThreadStart(((IQueueWorker)item).Start().Wait));
-                //Thread queue = new Thread(new ParameterizedThreadStart(((IQueueWorker)item).Start));
-                //queue.IsBackground = true;
-                //queue.Start(_stoppingToken);
-                //((IQueueWorker)item).Start();//.Run();
             }
             foreach (var item in worders.Where(m => m is ITimeWorker))
             {
+                //开辟独立线程，不适用线程池
+                //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
                 Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
-                //Thread time = new Thread(new ParameterizedThreadStart(((ITimeWorker)item).Start));
-                //time.IsBackground = true;
-                //time.Start(_stoppingToken);
-                //((ITimeWorker)item).Start();
             }
             logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());

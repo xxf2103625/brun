@@ -21,11 +21,11 @@ namespace UnitTestBrun
                 .SetKey(key)
                 .Build();
 
-            await InitAsync().ContinueWith(async t =>
+            await InitAsync().ContinueWith(t =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    await WorkerServer.Instance.GetQueueWorker(key).Enqueue("测试消息");
+                    WorkerServer.Instance.GetQueueWorker(key).Enqueue("测试消息");
                 }
             })
                 .ContinueWith(async t =>
