@@ -14,16 +14,17 @@ namespace Brun.Observers
         private ILogger<WorkerEndRunObserver> logger;
         public WorkerEndRunObserver() : base(Enums.WorkerEvents.EndRun, 10)
         {
-            
+
         }
-        public override Task Todo(WorkerContext _context)
+
+        public override Task Todo(WorkerContext _context, Type brunType)
         {
-            logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<WorkerEndRunObserver>>();
+            logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerEndRunObserver>>();
             lock (nb_LOCK)
             {
                 _context.endNb++;
             }
-            logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2}", _context.Option.BrunType,_context.startNb, _context.endNb);
+            logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2}", brunType, _context.startNb, _context.endNb);
             return Task.CompletedTask;
         }
     }

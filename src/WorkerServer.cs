@@ -102,13 +102,13 @@ namespace Brun
 
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
-                //开辟独立线程，不适用线程池
+                //开辟独立线程，不使用线程池
                 //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
-                Thread queue = new Thread(new ThreadStart(((IQueueWorker)item).Start().Wait));
+                Thread queue = new Thread(new ThreadStart(((QueueWorker)item).Start().Wait));
             }
             foreach (var item in worders.Where(m => m is ITimeWorker))
             {
-                //开辟独立线程，不适用线程池
+                //开辟独立线程，不使用线程池
                 //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
                 Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
             }

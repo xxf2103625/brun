@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Brun.Options
@@ -10,11 +11,15 @@ namespace Brun.Options
     /// </summary>
     public class WorkerOption
     {
-        public Type BrunType { get; set; }
+        /// <summary>
+        /// 默认的BrunType
+        /// </summary>
+        public Type DefaultBrunType => BrunTypes.First();
+        public IList<Type> BrunTypes { get; set; }
         public Type WorkerType { get; set; }
         public string Key { get; set; }
         public string Name { get; internal set; }
         public string Tag { get; internal set; }
-        public ConcurrentDictionary<string,string> Data { get; set; }
+        public ConcurrentDictionary<string, string> Data { get; set; }
     }
 }

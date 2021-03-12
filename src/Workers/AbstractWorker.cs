@@ -54,13 +54,14 @@ namespace Brun.Workers
         /// <summary>
         /// 添加拦截器
         /// </summary>
+        /// <param name="brunType"></param>
         /// <param name="workerEvents"></param>
         /// <returns></returns>
-        protected async Task Observe(WorkerEvents workerEvents)
+        protected async Task Observe(Type brunType, WorkerEvents workerEvents)
         {
             foreach (var observer in _config.GetObservers(workerEvents).OrderBy(m => m.Order))
             {
-                await observer.Todo(_context);
+                await observer.Todo(_context, brunType);
             }
         }
         /// <summary>
@@ -72,7 +73,7 @@ namespace Brun.Workers
         public string Name => _option.Name;
 
         public string Tag => _option.Tag;
-        public Type WorkerType => _option.BrunType;
+        public Type WorkerType => _option.DefaultBrunType;
 
         public string GetData(string key)
         {
@@ -103,36 +104,23 @@ namespace Brun.Workers
             {
                 this.Context.Dispose();
             }
-
-            //DateTime time = DateTime.Now;
-            //if (runTask == null)
-            //    return;
-            ////TODO runTask可能会资源竞争
-            //while (!runTask.IsCompleted)
-            //{
-            //    //等待BackRun任务结束
-            //    Thread.Sleep(5);
-            //    if ((DateTime.Now - time) > WorkerServer.Instance.ServerConfig.WaitDisposeOutTime)
-            //    {
-            //        _context.ExceptFromRun(new TimeoutException($"进程结束，BackRun超时{WorkerServer.Instance.ServerConfig.WaitDisposeOutTime.TotalSeconds}秒，已强制取消"));
-            //        //TODO 优化Worker资源回收
-            //        IEnumerable<WorkerObserver> exceptRunObservers = _config.GetObservers(WorkerEvents.Except);
-            //        foreach (var item in exceptRunObservers.OrderBy(m => m.Order))
-            //        {
-            //            //默认每个Observer最多等待3秒
-            //            item.Todo(_context).Wait(TimeSpan.FromSeconds(3));
-            //        }
-            //        //TODO 没有执行 WorkerEvents.EndRun
-            //        break;
-            //    }
-            //}
-            //this.Context.Dispose();
         }
 
         /// <summary>
         /// 正在运行的任务
         /// </summary>
         public BlockingCollection<Task> RunningTasks { get; private set; }
+
+        public IOnceWorker AsOnceWorker()
+        {
+            return (IOnceWorker)this;
+        }
+        public ITimeWorker AsTimeWOrker()
+        {
+            return (ITimeWorker)this;
+        }
+
+        //TODO task管理
         public TaskFactory TaskFactory => taskFactory;
     }
 }

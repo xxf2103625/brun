@@ -15,9 +15,9 @@ namespace Brun.Observers
 
         }
 
-        public override  Task Todo(WorkerContext _context)
+        public override Task Todo(WorkerContext _context, Type brunType)
         {
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
     }
 }

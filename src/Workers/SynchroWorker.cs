@@ -14,6 +14,7 @@ namespace Brun.Workers
 {
     /// <summary>
     /// 同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
+    /// //TODO 优化同步Worker
     /// </summary>
     public class SynchroWorker : OnceWorker
     {

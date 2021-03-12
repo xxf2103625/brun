@@ -15,72 +15,102 @@ namespace Brun.Workers
 {
     /// <summary>
     /// 基础Worker，每次执行一次
+    /// TODO 让一个OnceWorker可以配置多个不同类型的Backrun
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
         /// <summary>
         /// backRun实例
         /// </summary>
-        protected IBackRun backRun;
+        private ConcurrentDictionary<Type, IBackRun> backRuns;
 
         //单个实例锁，只需要管自己实例
-        private readonly object backRun_LOCK = new object();
+        //private readonly object backRun_LOCK = new object();
         public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
+            backRuns = new ConcurrentDictionary<Type, IBackRun>();
         }
         /// <summary>
         /// BackRun最终执行
         /// </summary>
+        /// <param name="brunType"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected Task Execute(ConcurrentDictionary<string, string> data)
+        protected async Task Execute(Type brunType, ConcurrentDictionary<string, string> data)
         {
-            if (backRun == null)
+            //TODO 测试多线程安全
+            if (backRuns.TryGetValue(brunType, out IBackRun backRun))
             {
-                lock (backRun_LOCK)
-                {
-                    if (backRun == null)
-                    {
-                        backRun = (IBackRun)BrunTool.CreateInstance(_option.BrunType);
-                        backRun.Data = data;
-
-                    }
-                }
+                await backRun.Run(tokenSource.Token);
             }
-            return backRun.Run(tokenSource.Token);
+            else
+            {
+                backRuns[brunType] = (IBackRun)BrunTool.CreateInstance(brunType);
+                backRuns[brunType].Data = data;
+                await backRuns[brunType].Run(tokenSource.Token);
+            }
         }
         /// <summary>
-        /// 调用线程不用等待结果
+        /// 直接运行不等待
         /// </summary>
         public void RunDontWait()
         {
             //_ = Run();
-            Task t = Run();
+            TaskFactory.StartNew(() =>
+            {
+                Run().Start();
+            });
+        }
+        /// <summary>
+        /// 返回一个空的Task，因为任何时候都不需要等待
+        /// </summary>
+        /// <returns></returns>
+        public Task Run()
+        {
+            return Run(_option.DefaultBrunType);
+        }
+        /// <summary>
+        /// 运行指定类型的BanRun
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public Task Run<TBackRun>()
+        {
+            return Run(typeof(TBackRun));
+        }
+        /// <summary>
+        /// 运行指定类型的BanRun
+        /// </summary>
+        /// <returns></returns>
+        public Task Run(Type backRunType)
+        {
+            
+            Task t = RealRun(backRunType);
             RunningTasks.TryAdd(t);
-            t.ContinueWith(t =>
+            return t.ContinueWith(t =>
             {
                 RunningTasks.TryTake(out t);
             });
         }
         /// <summary>
-        /// OnceWorker执行入口
+        /// 异步执行
         /// </summary>
         /// <returns></returns>
-        public async Task Run()
+        private async Task RealRun(Type brunType)
         {
-            await Observe(WorkerEvents.StartRun);
+            await Observe(brunType, WorkerEvents.StartRun);
             try
             {
-                await Execute(_context.Items);
+                await Execute(brunType, _context.Items);
             }
             catch (Exception ex)
             {
                 _context.ExceptFromRun(ex);
-                await Observe(WorkerEvents.Except);
+                await Observe(brunType, WorkerEvents.Except);
             }
             finally
             {
-                await Observe(WorkerEvents.EndRun);
+                await Observe(brunType, WorkerEvents.EndRun);
             }
         }
         public ConcurrentDictionary<string, string> GetData()
@@ -89,6 +119,7 @@ namespace Brun.Workers
         }
         public T GetData<T>(string key)
         {
+            //TODO 需要配置传入默认序列化器
             throw new NotImplementedException();
             //var r = GetData(key);
             //if (r == null)

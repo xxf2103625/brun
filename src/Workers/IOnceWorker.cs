@@ -17,12 +17,25 @@ namespace Brun
 
         string GetData(string key);
         /// <summary>
-        /// 运行，web中不要await
+        /// 运行默认的BackRun
         /// </summary>
         /// <returns></returns>
+        
         Task Run();
         /// <summary>
-        /// 直接运行不用等待,适合web中使用
+        /// 运行指定类型的BackRun
+        /// </summary>
+        /// <returns></returns>
+        Task Run<TBackRun>();
+        /// <summary>
+        /// 运行指定类型的BackRun
+        /// </summary>
+        /// <param name="backRunType">backRun类型</param>
+        /// <returns></returns>
+        Task Run(Type backRunType);
+
+        /// <summary>
+        /// 直接运行不等待
         /// </summary>
         void RunDontWait();
     }

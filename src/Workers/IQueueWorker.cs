@@ -9,7 +9,9 @@ namespace Brun
     public interface IQueueWorker : IWorker
     {
         void Enqueue(string message);
-        Task Start();
-        
+        //Task Start();
+        void Enqueue<TQueueBackRun>(string message);
+        void Enqueue(Type queueBackRunType, string message);
+        void Enqueue(string queueBackRunTypeFullName, string message);
     }
 }

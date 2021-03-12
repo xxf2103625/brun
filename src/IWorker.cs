@@ -37,5 +37,7 @@ namespace Brun
         Task Destroy();
         TaskFactory TaskFactory { get; }
         BlockingCollection<Task> RunningTasks { get; }
+        IOnceWorker AsOnceWorker();
+        ITimeWorker AsTimeWOrker();
     }
 }

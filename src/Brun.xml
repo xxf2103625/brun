@@ -124,6 +124,19 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Brun.QueueBackRun">
+            <summary>
+            队列任务基类
+            </summary>
+        </member>
+        <member name="M:Brun.QueueBackRun.Run(System.String,System.Threading.CancellationToken)">
+            <summary>
+            业务逻辑
+            </summary>
+            <param name="message"></param>
+            <param name="stoppingToken"></param>
+            <returns></returns>
+        </member>
         <member name="F:Brun.Enums.WorkerState.Default">
             <summary>
             默认状态
@@ -217,6 +230,11 @@
             用于构造Worker
             </summary>
         </member>
+        <member name="P:Brun.Options.WorkerOption.DefaultBrunType">
+            <summary>
+            默认的BrunType
+            </summary>
+        </member>
         <member name="T:Brun.WorkerBuilder">
             <summary>
             Woker建造器
@@ -235,9 +253,23 @@
             <typeparam name="TBackRun"></typeparam>
             <returns></returns>
         </member>
+        <member name="M:Brun.WorkerBuilder.Add``1">
+            <summary>
+            配置其他的BackRun在同一个Worker中运行，自定义数据会共享
+            </summary>
+            <typeparam name="TBackRun"></typeparam>
+            <returns></returns>
+        </member>
         <member name="M:Brun.WorkerBuilder.CreateQueue``1">
             <summary>
             创建队列任务
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.AddQueue``1">
+            <summary>
+            配置其他的QueueBackRun在同一个QueueBackRun中运行，
             </summary>
             <typeparam name="TQueueBackRun"></typeparam>
             <returns></returns>
@@ -382,10 +414,11 @@
             管理单个实例的token
             </summary>
         </member>
-        <member name="M:Brun.Workers.AbstractWorker.Observe(Brun.Enums.WorkerEvents)">
+        <member name="M:Brun.Workers.AbstractWorker.Observe(System.Type,Brun.Enums.WorkerEvents)">
             <summary>
             添加拦截器
             </summary>
+            <param name="brunType"></param>
             <param name="workerEvents"></param>
             <returns></returns>
         </member>
@@ -407,40 +440,72 @@
         <member name="T:Brun.Workers.OnceWorker">
             <summary>
             基础Worker，每次执行一次
+            TODO 让一个OnceWorker可以配置多个不同类型的Backrun
             </summary>
         </member>
-        <member name="F:Brun.Workers.OnceWorker.backRun">
+        <member name="F:Brun.Workers.OnceWorker.backRuns">
             <summary>
             backRun实例
             </summary>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
+        <member name="M:Brun.Workers.OnceWorker.Execute(System.Type,System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
             <summary>
             BackRun最终执行
             </summary>
+            <param name="brunType"></param>
             <param name="data"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.Workers.OnceWorker.RunDontWait">
             <summary>
-            调用线程不用等待结果
+            直接运行不等待
             </summary>
         </member>
         <member name="M:Brun.Workers.OnceWorker.Run">
             <summary>
-            OnceWorker执行入口
+            返回一个空的Task，因为任何时候都不需要等待
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.Run``1">
+            <summary>
+            运行指定类型的BanRun
+            </summary>
+            <typeparam name="TBackRun"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.Run(System.Type)">
+            <summary>
+            运行指定类型的BanRun
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.RealRun(System.Type)">
+            <summary>
+            异步执行
             </summary>
             <returns></returns>
         </member>
         <member name="T:Brun.Workers.QueueWorker">
             <summary>
             简单的内存Queue 自定义数据类型
+             TODO 让一个QueueWorker可以配置多个不同类型的QueueBackrun
             </summary>
         </member>
-        <member name="P:Brun.Workers.QueueWorker.QueueBackRun">
+        <member name="M:Brun.Workers.QueueWorker.GetQueueBackRun(System.Type)">
             <summary>
-            实例内保持唯一
+            获取BackRun //TODO 测试多线程安全
             </summary>
+            <param name="brunType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Execute(System.Type,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="burnType"></param>
+            <param name="message"></param>
+            <returns></returns>
         </member>
         <member name="M:Brun.Workers.QueueWorker.Start">
             <summary>
@@ -450,18 +515,42 @@
         </member>
         <member name="M:Brun.Workers.QueueWorker.Enqueue(System.String)">
             <summary>
-            添加消息到后台任务
+            默认的QueueBackRun,添加消息到后台任务
             </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Enqueue``1(System.String)">
+            <summary>
+            指定QueueBackRun类型的消息后台任务
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Enqueue(System.Type,System.String)">
+            <summary>
+            指定QueueBackRun类型的消息后台任务
+            </summary>
+            <param name="queueBackRunType"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Enqueue(System.String,System.String)">
+            <summary>
+            指定QueueBackRun类型的消息后台任务
+            </summary>
+            <param name="queueBackRunTypeFullName"></param>
             <param name="message"></param>
         </member>
         <member name="T:Brun.Workers.SynchroWorker">
             <summary>
             同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
+            //TODO 优化同步Worker
             </summary>
         </member>
         <member name="T:Brun.Workers.TimeWorker">
             <summary>
-            简单的内存定时任务,这种执行周期会偏移
+            简单的内存定时任务,执行周期会微小偏移
+            //TODO 定义为最简易定时任务，继续简化使用
+            //TODO 创建新的TriggerWorker 只负责管理触发条件 支持复杂的定时，支持Cron
             </summary>
         </member>
         <member name="F:Brun.Workers.TimeWorker.beginTime">
@@ -511,13 +600,19 @@
         </member>
         <member name="M:Brun.IOnceWorker.Run">
             <summary>
-            运行，web中不要await
+            运行默认的BackRun
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IOnceWorker.Run``1">
+            <summary>
+            运行指定类型的TBackRun
             </summary>
             <returns></returns>
         </member>
         <member name="M:Brun.IOnceWorker.RunDontWait">
             <summary>
-            直接运行不用等待,适合web中使用
+            直接运行不等待
             </summary>
         </member>
         <member name="M:Brun.ITimeWorker.Pause">

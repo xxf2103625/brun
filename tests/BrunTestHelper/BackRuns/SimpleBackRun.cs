@@ -11,10 +11,11 @@ namespace BrunTestHelper.BackRuns
 {
     public class SimpleBackRun : BackRun
     {
+        public static int SimNb = 0;
         public override async Task Run(CancellationToken stoppingToken)
         {
-
-            await Task.Delay(TimeSpan.FromSeconds(0.1), stoppingToken);
+            SimNb++;
+            //await Task.Delay(TimeSpan.FromSeconds(0.1), stoppingToken);
 
         }
     }

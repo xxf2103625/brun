@@ -29,6 +29,7 @@ namespace Brun
         {
             //TODO 覆盖部分默认的Config
         }
+        public ILogger<WorkerBuilder> log => WorkerServer.Instance?.ServiceProvider?.GetService<ILogger<WorkerBuilder>>();
         /// <summary>
         /// 创建默认的OnceWorker
         /// </summary>
@@ -42,8 +43,24 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultOption
             };
-            builder.option.BrunType = typeof(TBackRun);
+            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
             return builder;
+        }
+        /// <summary>
+        /// 配置其他的BackRun在同一个Worker中运行，自定义数据会共享
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public WorkerBuilder Add<TBackRun>() where TBackRun : IBackRun, new()
+        {
+            Type bType = typeof(TBackRun);
+            if (option.BrunTypes.Any(m => m == bType))
+            {
+                log?.LogWarning("同一个Worker中不能配置2个相同类型的BackRun,type:{0}", typeof(TBackRun).FullName);
+                return this;
+            }
+            option.BrunTypes.Add(bType);
+            return this;
         }
         /// <summary>
         /// 创建队列任务
@@ -58,9 +75,19 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultOption
             };
-            builder.option.BrunType = typeof(TQueueBackRun);
+            builder.option.BrunTypes = new List<Type>() { typeof(TQueueBackRun) };
             builder.option.WorkerType = typeof(QueueWorker);
             return builder;
+        }
+        /// <summary>
+        /// 配置其他的QueueBackRun在同一个QueueBackRun中运行，
+        /// </summary>
+        /// <typeparam name="TQueueBackRun"></typeparam>
+        /// <returns></returns>
+        public WorkerBuilder AddQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun, new()
+        {
+            this.option.BrunTypes.Add(typeof(TQueueBackRun));
+            return this;
         }
         /// <summary>
         /// 创建定时任务
@@ -75,8 +102,8 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultTimeWorkerOption
             };
+            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
             builder.option.WorkerType = typeof(TimeWorker);
-            builder.option.BrunType = typeof(TBackRun);
             return builder;
         }
         /// <summary>
@@ -185,7 +212,7 @@ namespace Brun
             if (string.IsNullOrEmpty(option.Key))
                 option.Key = Guid.NewGuid().ToString();
             if (string.IsNullOrEmpty(option.Name))
-                option.Name = option.BrunType.Name;
+                option.Name = option.DefaultBrunType.Name;
             if (string.IsNullOrEmpty(option.Tag))
                 option.Tag = defaultTag;
 

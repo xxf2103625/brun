@@ -16,14 +16,15 @@ namespace Brun.Observers
         {
             
         }
-        public override Task Todo(WorkerContext _context)
+
+        public override Task Todo(WorkerContext _context, Type brunType)
         {
-            logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<WorkerStartRunObserver>>();
+            logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerStartRunObserver>>();
             lock (nb_LOCK)
             {
                 _context.startNb++;
             }
-            logger.LogDebug("backrun:{0} is start,startNb:{1}", _context.Option.BrunType, _context.startNb);
+            logger.LogDebug("backrun:{0} is start,startNb:{1}", brunType, _context.startNb);
             return Task.CompletedTask;
         }
     }

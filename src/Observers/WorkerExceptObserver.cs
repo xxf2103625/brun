@@ -17,11 +17,12 @@ namespace Brun.Observers
         {
 
         }
-        public override Task Todo(WorkerContext _context)
+
+        public override Task Todo(WorkerContext _context, Type brunType)
         {
-            logger = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<WorkerExceptObserver>>();
+            logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerExceptObserver>>();
             _context.exceptNb++;
-            logger.LogError("backRun:{0} is except! error count:{1},msg:{2}", _context.Option.BrunType, _context.Exceptions?.Count, _context.Exceptions.LastOrDefault()?.Message);
+            logger.LogError("backRun:{0} is except! error count:{1},msg:{2},StackTrace:{3}", brunType, _context.Exceptions?.Count, _context.Exceptions.LastOrDefault()?.Message, _context.Exceptions.LastOrDefault()?.StackTrace);
             return Task.CompletedTask;
         }
     }

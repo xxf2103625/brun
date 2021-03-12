@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 namespace Brun.Workers
 {
     /// <summary>
-    /// 简单的内存定时任务,这种执行周期会偏移
+    /// 简单的内存定时任务,执行周期会微小偏移
+    /// //TODO 定义为最简易定时任务，继续简化使用
+    /// //TODO 创建新的TriggerWorker 只负责管理触发条件 支持复杂的定时，支持Cron
     /// </summary>
     public class TimeWorker : AbstractWorker, ITimeWorker
     {
@@ -63,7 +65,7 @@ namespace Brun.Workers
                     {
                         if (_backRun == null)
                         {
-                            _backRun = (IBackRun)BrunTool.CreateInstance(_option.BrunType);
+                            _backRun = (IBackRun)BrunTool.CreateInstance(_option.DefaultBrunType);
                             _backRun.Data = _context.Items;
                         }
 
@@ -79,7 +81,7 @@ namespace Brun.Workers
         public async Task Start()
         {
             _context.State = Enums.WorkerState.Excuting;//worker状态
-            var log = WorkerServer.Instance.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
+            var log = _context.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
             //TODO 优化定时流程
             while (!tokenSource.Token.IsCancellationRequested)
             {
@@ -124,7 +126,8 @@ namespace Brun.Workers
         /// <returns></returns>
         protected async Task Execute()
         {
-            await Observe(Enums.WorkerEvents.StartRun);
+            Type brunType = _option.DefaultBrunType;
+            await Observe(brunType, Enums.WorkerEvents.StartRun);
             try
             {
                 await BackRun.Run(tokenSource.Token);
@@ -132,11 +135,11 @@ namespace Brun.Workers
             catch (Exception ex)
             {
                 _context.ExceptFromRun(ex);
-                await Observe(Enums.WorkerEvents.Except);
+                await Observe(brunType, Enums.WorkerEvents.Except);
             }
             finally
             {
-                await Observe(Enums.WorkerEvents.EndRun);
+                await Observe(brunType, Enums.WorkerEvents.EndRun);
             }
         }
         //TODO TimeWorker暂停

@@ -14,7 +14,6 @@ namespace Brun
         //private ILogger<WorkerContext> _logger;
         private WorkerOption _option;
         private WorkerConfig _config;
-        private IServiceProvider serviceProvider;
         //元数据，用于后期持久化
         private IDictionary<string, object> meta;
         //BackRun自定义的数据
@@ -37,7 +36,6 @@ namespace Brun
         }
         private void Init()
         {
-            serviceProvider = WorkerServer.Instance.ServiceProvider;
             if (_option.Data == null)
             {
                 items = new ConcurrentDictionary<string, string>();
@@ -82,7 +80,7 @@ namespace Brun
         /// </summary>
         public WorkerState State { get; set; }
         public ConcurrentDictionary<string, string> Items => items;
-        public IServiceProvider ServiceProvider => serviceProvider;
+        public IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
         public BlockingCollection<Task> Tasks { get; set; }
         public void Dispose()
         {
