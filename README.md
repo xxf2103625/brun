@@ -10,16 +10,16 @@
 
 控制台和web项目都可以直接用。
 #### IWorker：我把它定义为工作中心，定义了后台任务以什么样的流程来执行 
-1. OnceWorker：调用一次执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 继承BackRun来写自己的任务逻辑。
-2. QueueWorker: 队列任务，用QueueWorker添加string到队列，后台任务会立即执行。继承QueueBackRun来写自己的任务逻辑，请自己序列化String。
+1. OnceWorker：调用一次执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 配置BackRun来执行自己的业务逻辑，一个Worker可以配置多个BackRun。
+2. QueueWorker: 队列任务，用QueueWorker添加string到队列，后台任务会立即执行。配置QueueBackRun来写自己的任务逻辑，请自己序列化String，一个Worker可以配置多个QueueBackRun。。
 3. TimeWorker: 简单的定时任务，配置一个TimeSpan，周期循环执行定义的BackRun。继承BackRun/ScopeBackRun来写自己的任务逻辑。
 
-#### IBackRun：执行器，写业务逻辑的地方，需要自己继承，不同的Worker可能会有不同的上下文/参数
-1. BackRun：最基础的执行逻辑，公开一个字典属性，在同一个Worker实例中每次执行时共享数据，OnceWorker和TimeWorker都使用这个。
-2. QueueBackRun：QueueWorker独有的执行器，接受一个string类型的参数，为每次添加到队列的String数据，目前需要自己序列化。
+#### IBackRun：写业务逻辑的地方，需要自己继承实现抽象方法，不同的Worker可能会有不同的上下文/参数
+1. BackRun：最基础的执行逻辑，公开一个字典属性，在同一个Worker实例中每次执行时共享数据，OnceWorker和TimeWorker都使用这个。不同的BackRun可以配置给同一个OnceWorker。
+2. QueueBackRun：QueueWorker独有的执行器，接受一个string类型的参数，为每次添加到队列的String数据，目前需要自己序列化。不同的QueueBackRun可以配置给同一个QueueWorke。
 3. ScopeBackRun：和BackRun类似，不过每次调用会创建属于自己的Ioc生命周期，从ServiceProvider取服务时可以直接取services.AddScoped的服务(BackRun中需要自己NewScope)。
-#### WorkerObserver：Worker的观察者（拦截器），目前只是简单的计数、Log，用户也能方便的添加自定义拦截器（以后版本可能会换成Listener），后期会用他们实现持久化。
-#### WorkerContext：Worker的上下文，储存每个Worker实例运行时的数据。
+#### WorkerObserver：Worker的观察者（拦截器），目前只是简单的计数、Log，用户也能方便的添加自定义拦截器，后期会用他们实现持久化。
+#### WorkerContext：Worker的上下文，储存每个Worker实例运行时的数据，实时监控就是取它的数据。
 
 #### 安装教程
 
@@ -93,6 +93,7 @@ public class Program
                     .Build();
                     
                     WorkerBuilder.Create<LongTimeBackRun>()
+                    .Add<LongTimeBackRun>()//同一个OnceWorker中配置多个BackRun，使用：worker.RunDontWait<TBackRun>()
                     .SetName(nameof(LongTimeBackRun))
                     .Build();
 
@@ -104,6 +105,7 @@ public class Program
 
                     //配置队列任务
                     WorkerBuilder.CreateQueue<TestQueueWorker>()
+                    .AddQueue<TestQueueErrorWorker>()//配置多个QueueBackRrun，使用:worker.Enqueue<TQueueBackRun>(msg)
                     .SetKey(QueueKey)
                     .Build();
 
