@@ -14,7 +14,7 @@ namespace Brun.Options
         /// <summary>
         /// 默认的BrunType
         /// </summary>
-        public Type DefaultBrunType => BrunTypes.First();
+        public Type DefaultBrunType => BrunTypes[0];
         public IList<Type> BrunTypes { get; set; }
         public Type WorkerType { get; set; }
         public string Key { get; set; }

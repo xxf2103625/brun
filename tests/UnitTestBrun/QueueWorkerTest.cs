@@ -38,7 +38,7 @@ namespace UnitTestBrun
             await host.StartAsync(cancellationToken);
 
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1; i++)
             {
                 worker.Enqueue($"测试消息:{i}");
                 worker.Enqueue<ErrorQueueBackRun>($"内部异常{i}");
