@@ -22,18 +22,26 @@ namespace Brun.Workers
     public class QueueWorker : AbstractWorker, IQueueWorker
     {
         ILogger<QueueWorker> logger;
-        private ConcurrentQueue<string> queue => queues.First().Value;
+        private ConcurrentQueue<string> queue => queues[_option.DefaultBrunType];
         private ConcurrentDictionary<Type, ConcurrentQueue<string>> queues;
         private IQueueBackRun _queueBackRun;
         private ConcurrentDictionary<Type, IQueueBackRun> _queueBackRuns;
         //只需要限制实例并发
-        private readonly object backRun_LOCK = new object();
+        //private readonly object backRun_LOCK = new object();
         public QueueWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
             //queue = new ConcurrentQueue<string>();
             queues = new ConcurrentDictionary<Type, ConcurrentQueue<string>>();
             _queueBackRuns = new ConcurrentDictionary<Type, IQueueBackRun>();
-            
+            Init();
+        }
+        private void Init()
+        {
+            for (int i = 0; i < _option.BrunTypes.Count; i++)
+            {
+                queues.TryAdd(_option.BrunTypes[i], new ConcurrentQueue<string>());
+                _queueBackRuns.TryAdd(_option.BrunTypes[i], (IQueueBackRun)BrunTool.CreateInstance(_option.BrunTypes[i]));
+            }
         }
         /// <summary>
         /// 获取BackRun //TODO 测试多线程安全
@@ -50,33 +58,34 @@ namespace Brun.Workers
             else
             {
                 logger.LogDebug("创建新的IQueueBackRun，type:{0}", brunType.Name);
-                IQueueBackRun bRun = (IQueueBackRun)BrunTool.CreateInstance(_option.DefaultBrunType);
+                IQueueBackRun bRun = (IQueueBackRun)BrunTool.CreateInstance(brunType);
                 _queueBackRuns.TryAdd(brunType, bRun);
                 return bRun;
             }
         }
+      
         /// <summary>
         /// 
         /// </summary>
         /// <param name="burnType"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected async Task Execute(Type burnType, string message)
+        protected async Task Execute(Type brunType, string message)
         {
 
-            await Observe(burnType, WorkerEvents.StartRun);
+            await Observe(brunType, WorkerEvents.StartRun);
             try
             {
-                await GetQueueBackRun(burnType).Run(message, tokenSource.Token);
+                await GetQueueBackRun(brunType).Run(message, tokenSource.Token);
             }
             catch (Exception ex)
             {
                 _context.ExceptFromRun(ex);
-                await Observe(burnType, WorkerEvents.Except);
+                await Observe(brunType, WorkerEvents.Except);
             }
             finally
             {
-                await Observe(burnType, WorkerEvents.EndRun);
+                await Observe(brunType, WorkerEvents.EndRun);
             }
         }
         /// <summary>
@@ -91,12 +100,12 @@ namespace Brun.Workers
                 {
                     if (item.Value.TryDequeue(out string msg))
                     {
-                        Task task = Execute(item.Key, msg);
-                        RunningTasks.Add(task);
-                        _ = task.ContinueWith(t =>
+                        RunningTasks.Add(TaskFactory.StartNew(() =>
                         {
-                            RunningTasks.TryTake(out t);
-                        });
+                            Task task = Execute(item.Key, msg);
+                            task.ContinueWith(t => RunningTasks.TryTake(out t));
+
+                        }));
                     }
                 }
                 //if (!queue.IsEmpty)

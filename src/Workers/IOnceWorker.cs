@@ -38,5 +38,10 @@ namespace Brun
         /// 直接运行不等待
         /// </summary>
         void RunDontWait();
+        /// <summary>
+        /// 直接运行不等待
+        /// </summary>
+        /// <typeparam name="TBackRun">其它的Brun</typeparam>
+        void RunDontWait<TBackRun>();
     }
 }

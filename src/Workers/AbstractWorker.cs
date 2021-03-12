@@ -115,6 +115,10 @@ namespace Brun.Workers
         {
             return (IOnceWorker)this;
         }
+        public IQueueWorker AsQueueWorker()
+        {
+            return (IQueueWorker)this;
+        }
         public ITimeWorker AsTimeWOrker()
         {
             return (ITimeWorker)this;

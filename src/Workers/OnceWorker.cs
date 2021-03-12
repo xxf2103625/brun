@@ -62,6 +62,17 @@ namespace Brun.Workers
             });
         }
         /// <summary>
+        /// 直接运行不等待
+        /// </summary>
+        /// <typeparam name="TBackRun">其它的BackRun</typeparam>
+        public void RunDontWait<TBackRun>()
+        {
+            TaskFactory.StartNew(() =>
+            {
+                Run<TBackRun>().Start();
+            });
+        }
+        /// <summary>
         /// 返回一个空的Task，因为任何时候都不需要等待
         /// </summary>
         /// <returns></returns>

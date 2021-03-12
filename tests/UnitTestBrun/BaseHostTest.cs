@@ -37,9 +37,14 @@ namespace UnitTestBrun
             await host.StartAsync(cancellationToken);
             //WorkerServer.Instance.Start(host.Services, cancellationToken);
         }
+        /// <summary>
+        /// 等待所有任务完成
+        /// </summary>
+        /// <returns></returns>
         protected async Task WaitForBackRun()
         {
             WorkerServer server = (WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
+            await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
             while (server.GetAllWorker().Any(m => m.RunningTasks.Count > 0))
             {
                 await Task.Delay(5);

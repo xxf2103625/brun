@@ -461,6 +461,12 @@
             直接运行不等待
             </summary>
         </member>
+        <member name="M:Brun.Workers.OnceWorker.RunDontWait``1">
+            <summary>
+            直接运行不等待
+            </summary>
+            <typeparam name="TBackRun">其它的BackRun</typeparam>
+        </member>
         <member name="M:Brun.Workers.OnceWorker.Run">
             <summary>
             返回一个空的Task，因为任何时候都不需要等待
@@ -606,14 +612,27 @@
         </member>
         <member name="M:Brun.IOnceWorker.Run``1">
             <summary>
-            运行指定类型的TBackRun
+            运行指定类型的BackRun
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IOnceWorker.Run(System.Type)">
+            <summary>
+            运行指定类型的BackRun
+            </summary>
+            <param name="backRunType">backRun类型</param>
             <returns></returns>
         </member>
         <member name="M:Brun.IOnceWorker.RunDontWait">
             <summary>
             直接运行不等待
             </summary>
+        </member>
+        <member name="M:Brun.IOnceWorker.RunDontWait``1">
+            <summary>
+            直接运行不等待
+            </summary>
+            <typeparam name="TBackRun">其它的Brun</typeparam>
         </member>
         <member name="M:Brun.ITimeWorker.Pause">
             <summary>

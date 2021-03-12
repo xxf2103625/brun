@@ -1,37 +1,59 @@
 ﻿using Brun;
 using BrunTestHelper.QueueBackRuns;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace UnitTestBrun
 {
     //TODO QueueWorker单元测试
     [TestClass]
-    public class QueueWorkerTest : BaseHostTest
+    public class QueueWorkerTest : BaseQueueHostTest
     {
         [TestMethod]
         public async Task TestExcept()
         {
             string key = nameof(TestExcept);
-            WorkerBuilder.CreateQueue<LogQueueBackRun>()
-                .SetKey(key)
+            tokenSource = new CancellationTokenSource();
+            cancellationToken = tokenSource.Token;
+            host = Host.CreateDefaultBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    
+                    IQueueWorker worker = WorkerBuilder
+                        .CreateQueue<LogQueueBackRun>()
+                        .AddQueue<ErrorQueueBackRun>()
+                        .SetKey(key)
+                        .Build()
+                        .AsQueueWorker()
+                        ;
+                    services.AddBrunService();
+                })
                 .Build();
+            await host.StartAsync(cancellationToken);
 
-            await InitAsync().ContinueWith(t =>
+            IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
+            for (int i = 0; i < 100; i++)
             {
-                for (int i = 0; i < 100; i++)
-                {
-                    WorkerServer.Instance.GetQueueWorker(key).Enqueue("测试消息");
-                }
-            })
-                .ContinueWith(async t =>
-                {
-                    await CleanupAsync();
-                });
+                worker.Enqueue($"测试消息:{i}");
+                worker.Enqueue<ErrorQueueBackRun>($"内部异常{i}");
+            }
+            await WaitForBackRun();
+
+            tokenSource.Cancel();
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(5);
+            }
+            if (host != null)
+            {
+                await host.StopAsync();
+            }
         }
     }
 }

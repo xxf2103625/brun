@@ -11,12 +11,13 @@ namespace BrunTestHelper.QueueBackRuns
 {
     public class LogQueueBackRun : QueueBackRun
     {
-        public override Task Run(string message, CancellationToken stoppingToken)
+        public override async Task Run(string message, CancellationToken stoppingToken)
         {
             var log= GetService<ILogger<LogQueueBackRun>>();
-            Console.WriteLine("接收到消息：{0}",message);
+            //Console.WriteLine("接收到消息：{0}",message);
             log.LogInformation("接收到消息:{0}", message);
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
+            //await Task.Delay(TimeSpan.FromSeconds(0.1));
         }
     }
     public class ErrorQueueBackRun : QueueBackRun

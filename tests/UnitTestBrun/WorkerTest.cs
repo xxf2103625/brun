@@ -284,5 +284,45 @@ namespace UnitTestBrun
             string nb = worker.GetData("nb");
             Assert.AreEqual("10", nb);
         }
+
+
+        //多个Backrun
+        [TestMethod]
+        public async Task TestSimpleMultAsync()
+        {
+            IOnceWorker work = WorkerBuilder
+                .Create<SimpleNumberRun>()//内部没有await
+                .Add<SimpNbDelayBefore>()
+                .Add<SimpNbDelayAfter>()
+                .BuildOnceWorker();
+            work.RunDontWait();
+            work.RunDontWait<SimpNbDelayBefore>();
+            work.RunDontWait<SimpNbDelayAfter>();
+            Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
+            //都不等待
+            Assert.AreEqual(null, work.GetData("nb"));
+            await WaitForBackRun();
+            //完成之后
+            Assert.AreEqual("300", work.GetData("nb"));
+        }
+        [TestMethod]
+        public async Task TestSimpleRunDontWaitMultAsync()
+        {
+            IOnceWorker work = WorkerBuilder
+                .Create<SimpleNumberRun>()//内部没有await
+                .Add<SimpNbDelayBefore>()
+                .Add<SimpNbDelayAfter>()
+                .BuildOnceWorker();
+            work.RunDontWait();
+            work.Run<SimpNbDelayBefore>();
+            work.Run<SimpNbDelayAfter>();
+            Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
+            //不会等待第一个
+            Assert.AreEqual("200", work.GetData("nb"));
+            //第一个会在这个后面继续运行
+            await WaitForBackRun();
+            Assert.AreEqual("300", work.GetData("nb"));
+        }
+
     }
 }

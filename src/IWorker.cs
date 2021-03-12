@@ -38,6 +38,7 @@ namespace Brun
         TaskFactory TaskFactory { get; }
         BlockingCollection<Task> RunningTasks { get; }
         IOnceWorker AsOnceWorker();
+        IQueueWorker AsQueueWorker();
         ITimeWorker AsTimeWOrker();
     }
 }
