@@ -63,4 +63,11 @@ namespace BrunWebTest
             return Task.CompletedTask;
         }
     }
+    public class TestQueueErrorWorker : QueueBackRun
+    {
+        public override Task Run(string message, CancellationToken stoppingToken)
+        {
+            throw new NotImplementedException("请自己实现");
+        }
+    }
 }

@@ -38,8 +38,10 @@ namespace BrunWebTest
                     WorkerBuilder.Create<TestHttpWorker>()
                     .SetKey(BrunKey)
                     .Build();
-                    
-                    WorkerBuilder.Create<LongTimeBackRun>()
+
+                    WorkerBuilder
+                    .Create<LongTimeBackRun>()
+                    .Add<LongTimeBackRun>()//同一个OnceWorker中配置多个BackRun，使用：worker.RunDontWait<TBackRun>()
                     .SetName(nameof(LongTimeBackRun))
                     .Build();
 
@@ -51,6 +53,7 @@ namespace BrunWebTest
 
                     //配置队列任务
                     WorkerBuilder.CreateQueue<TestQueueWorker>()
+                    .AddQueue<TestQueueErrorWorker>()//配置多个QueueBackRrun，使用:worker.Enqueue<TQueueBackRun>(msg)
                     .SetKey(QueueKey)
                     .Build();
 
