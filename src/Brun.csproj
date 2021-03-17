@@ -4,14 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>2103625@qq.com</Authors>
-    <Description>netcore 后台任务</Description>
+    <Description>优化worker执行流程，OnceWorker和QueueWorker支持配置多个BackRun</Description>
     <Copyright>2103625@qq.com</Copyright>
     <PackageProjectUrl>http://www.dotnet6.net</PackageProjectUrl>
     <PackageTags>netcore 后台任务</PackageTags>
     <RepositoryUrl>https://gitee.com/2103625/brun.git</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageReleaseNotes>添加简单的timeSpan周期任务</PackageReleaseNotes>
-    <Version>1.0.3</Version>
+    <PackageReleaseNotes>优化worker执行流程，OnceWorker和QueueWorker支持配置多个BackRun</PackageReleaseNotes>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

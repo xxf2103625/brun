@@ -235,6 +235,412 @@
             默认的BrunType
             </summary>
         </member>
+        <member name="T:Brun.Plan.CronParser">
+            <summary>
+                1      2     3       4     5      6         7
+             {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.CroParser">
+            <summary>
+                1      2     3          4          5        6
+             {秒数} {分钟} {小时} {日期}/{星期} {月份} {年份(可为空)}
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.CroParser.Parse(System.String)">
+            <summary>
+            解析Cro表达式
+            </summary>
+            <param name="croExpression"></param>
+        </member>
+        <member name="M:Brun.Plan.CroParser.CoumnParse(Brun.Plan.TimeCloumnType,System.String)">
+            <summary>
+            解析单个域
+            </summary>
+            <param name="cloumnType"></param>
+            <param name="plan"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.CroParser.ParseAnd(Brun.Plan.TimeCloumn)">
+            <summary>
+            解析, TimeStrategy.And
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.CroParser.ParseTo(Brun.Plan.TimeCloumn)">
+            <summary>
+            解析-  TimeStrategy.To  特殊： /步进第一个参数可以包含-
+            </summary>
+            <param name="cloumn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.CroParser.ParseStep(Brun.Plan.TimeCloumn)">
+            <summary>
+            解析/ TimeStrategy.Step 特殊： /步进第一个参数可以包含-，*
+            </summary>
+            <param name="cloumn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.CroParser.ParseNb(Brun.Plan.TimeCloumn)">
+            <summary>
+            解析纯数字
+            </summary>
+            <param name="cloumn"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.IPlanTimeParser">
+            <summary>
+            时间计划解析器
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.IPlanTimeParser.Parse(System.String)">
+            <summary>
+            解析计划表达式
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.ParseResult">
+            <summary>
+            解析结果
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.ParseResult.Errors">
+            <summary>
+            错误
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.ParseResult.AddError(System.Int32,System.String)">
+            <summary>
+            添加异常信息
+            </summary>
+            <param name="n">第n个域的参数</param>
+            <param name="msg">错误消息</param>
+        </member>
+        <member name="M:Brun.Plan.ParseResult.AddTimeCloumn(Brun.Plan.TimeCloumn)">
+            <summary>
+            添加TimeCloumn
+            </summary>
+            <param name="timeCloumn"></param>
+        </member>
+        <member name="P:Brun.Plan.ParseResult.IsError">
+            <summary>
+            解析是否异常
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.ParseResult.TimeCloumns">
+            <summary>
+            结果
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.PlanTime">
+            <summary>
+            时间计划
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.PlanTime.#ctor(Brun.Plan.IPlanTimeParser)">
+            <summary>
+            需要自己调用Parse方法
+            </summary>
+            <param name="planTimeParser"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTime.#ctor(System.String,Brun.Plan.IPlanTimeParser)">
+            <summary>
+            内部已经调用Parse方法
+            </summary>
+            <param name="strExpression"></param>
+            <param name="planTimeParser"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTime.Parse(System.String)">
+            <summary>
+            解析时间计划表达式
+            </summary>
+            <param name="strExpression"></param>
+            <returns>true：success，false：error</returns>
+        </member>
+        <member name="M:Brun.Plan.PlanTime.GetNextTime">
+            <summary>
+            以当前时间计算下次触发时间,精确到秒
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.PlanTime.GetNextTime(System.DateTimeOffset)">
+            <summary>
+            以startTime开始计算下次触发时间，精确到秒
+            </summary>
+            <param name="startTime"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.Plan.PlanTime.Expression">
+            <summary>
+            表达式字符串
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.PlanTime.IsParsed">
+            <summary>
+            是否已解析
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.PlanTime.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.PlanTime.Errors">
+            <summary>
+            解析失败的异常信息
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.PlanTime.Times">
+            <summary>
+            解析后的结果，仅储存原始字符串和计划策略
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.PlanTimeComputer">
+            <summary>
+            计算PlanTime下次执行时间
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(System.DateTimeOffset)">
+            <summary>
+            获取下一次计划时间
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.TimeCloumn">
+            <summary>
+            时间列/表达式的域 6列 yyyy-MM-dd HH:mm:ss 
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeCloumn.#ctor(Brun.Plan.TimeCloumnType)">
+            <summary>
+            时间列
+            </summary>
+            <param name="cloumnType"></param>
+        </member>
+        <member name="M:Brun.Plan.TimeCloumn.#ctor(Brun.Plan.TimeCloumnType,System.String)">
+            <summary>
+            时间列 6列 yyyy-MM-dd HH:mm:ss 
+            </summary>
+            <param name="timeCloumnType"></param>
+            <param name="planStr"></param>
+        </member>
+        <member name="M:Brun.Plan.TimeCloumn.SetStrategy(Brun.Plan.TimeStrategy)">
+            <summary>
+            设置策略类型
+            </summary>
+            <param name="timeStrategy"></param>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.Plan">
+            <summary>
+            原始字符串
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.CloumnType">
+            <summary>
+            Cloumn类型，分/秒/天...
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.TimeStrategy">
+            <summary>
+            策略类型
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.IsFinish">
+            <summary>
+            是否已解析完成
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.Min">
+            <summary>
+            允许的最小值
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeCloumn.Max">
+            <summary>
+            允许的最大值
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.TimeCloumnType">
+            <summary>
+            时间列/表达式域类型 yyyy-MM-dd HH:mm:ss 
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.None">
+            <summary>
+            默认值，没有分配到任何列
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Second">
+            <summary>
+            秒
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Minute">
+            <summary>
+            分钟
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Hour">
+            <summary>
+            小时
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Day">
+            <summary>
+            天
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Week">
+            <summary>
+            星期
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeCloumnType.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.BasePlanTimeComputer">
+            <summary>
+            计算PlanTime下次执行时间
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},System.Collections.Generic.List{Brun.Plan.TimeCloumn})">
+            <summary>
+            计算下次执行时间
+            </summary>
+            <param name="startTime"></param>
+            <param name="timeCloumns"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Brun.Plan.TimeComputers.BasePlanTimeComputer.nextComputer">
+            <summary>
+            下一个域的计算器
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.SetNext(Brun.Plan.TimeComputers.BasePlanTimeComputer)">
+            <summary>
+            设置下一个域
+            </summary>
+            <param name="computer"></param>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.MinuteComputer">
+            <summary>
+            计算分
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.MinuteComputer.Any(System.DateTimeOffset)">
+            <summary>
+            *
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.MinuteComputer.And(System.DateTimeOffset)">
+            <summary>
+            ,
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.MinuteComputer.To(System.DateTimeOffset)">
+            <summary>
+            -
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.MinuteComputer.Step(System.DateTimeOffset)">
+            <summary>
+            / 步进 第一个参数可能是数字或*或1-10
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.SecondComputer">
+            <summary>
+            计算秒
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.SecondComputer.Compute(System.Nullable{System.DateTimeOffset},System.Collections.Generic.List{Brun.Plan.TimeCloumn})">
+            <summary>
+            计算下一次
+            </summary>
+            <param name="startTime"></param>
+            <param name="timeCloumns"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.SecondComputer.Any(System.DateTimeOffset)">
+            <summary>
+            * 任意秒
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.SecondComputer.And(System.DateTimeOffset)">
+            <summary>
+            , 和 1,5,10
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.SecondComputer.To(System.DateTimeOffset)">
+            <summary>
+            - 范围 10-50
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.SecondComputer.Step(System.DateTimeOffset)">
+            <summary>
+            / 步进 第一个参数可能是数字或*或1-10
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.TimeStrategy">
+            <summary>
+            时间列/表达式域解析策略
+            , - * / ...的各种策略
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.None">
+            <summary>
+            默认值，没有任何策略
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.Number">
+            <summary>
+            纯数字/星期英文 0
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.And">
+            <summary>
+            , 数组 0,15,45
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.To">
+            <summary>
+            - 范围 25-45
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.Any">
+            <summary>
+            * 任何 每(秒/天)
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.Step">
+            <summary>
+            / 步进 number或*(等同0)或范围/步进值
+            </summary>
+        </member>
         <member name="T:Brun.WorkerBuilder">
             <summary>
             Woker建造器
