@@ -11,42 +11,12 @@ namespace Brun.Plan.TimeComputers
     /// </summary>
     public class MinuteComputer : BasePlanTimeComputer
     {
-        private TimeCloumn cloumn;
-        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        public MinuteComputer() : base(TimeCloumnType.Minute)
         {
-            if (startTime == null)
-                return null;
-            cloumn = timeCloumns.First(m => m.CloumnType == TimeCloumnType.Minute);
 
-            switch (cloumn.TimeStrategy)
-            {
-                case TimeStrategy.Number:
-                    startTime = Number(startTime.Value);
-                    break;
-                case TimeStrategy.Any:
-                    startTime = Any(startTime.Value);
-                    break;
-                case TimeStrategy.And:
-                    startTime = And(startTime.Value);
-                    break;
-                case TimeStrategy.To:
-                    startTime = To(startTime.Value);
-                    break;
-                case TimeStrategy.Step:
-                    startTime = Step(startTime.Value);
-                    break;
-                default:
-                    throw new NotSupportedException($"the {cloumn.CloumnType} TimeStrategy is not supported {cloumn.TimeStrategy}");
-                    //break;
-
-            }
-            if (nextComputer != null)
-                return nextComputer.Compute(startTime, timeCloumns);
-            else
-                return startTime;
         }
         //纯数字
-        private DateTimeOffset Number(DateTimeOffset start)
+        protected override DateTimeOffset? Number(DateTimeOffset start)
         {
             int begin = int.Parse(cloumn.Plan);
             if (start.Minute <= begin)
@@ -64,7 +34,7 @@ namespace Brun.Plan.TimeComputers
         /// </summary>
         /// <param name="start"></param>
         /// <returns></returns>
-        private DateTimeOffset Any(DateTimeOffset start)
+        protected override DateTimeOffset? Any(DateTimeOffset start)
         {
             return start;
         }
@@ -73,7 +43,7 @@ namespace Brun.Plan.TimeComputers
         /// </summary>
         /// <param name="start"></param>
         /// <returns></returns>
-        private DateTimeOffset And(DateTimeOffset start)
+        protected override DateTimeOffset? And(DateTimeOffset start)
         {
             string[] nbs = cloumn.Plan.Split(",");
             for (int i = 0; i < nbs.Length; i++)
@@ -93,7 +63,7 @@ namespace Brun.Plan.TimeComputers
         /// </summary>
         /// <param name="start"></param>
         /// <returns></returns>
-        private DateTimeOffset To(DateTimeOffset start)
+        protected override DateTimeOffset? To(DateTimeOffset start)
         {
             string[] nbs = cloumn.Plan.Split("-");
             int begin = int.Parse(nbs[0]);
@@ -117,7 +87,7 @@ namespace Brun.Plan.TimeComputers
         /// </summary>
         /// <param name="start"></param>
         /// <returns></returns>
-        private DateTimeOffset Step(DateTimeOffset start)
+        protected override DateTimeOffset? Step(DateTimeOffset start)
         {
             string[] nbs = cloumn.Plan.Split("/");
             int step = int.Parse(nbs[1]);

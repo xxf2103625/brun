@@ -243,6 +243,7 @@
         </member>
         <member name="T:Brun.Plan.CroParser">
             <summary>
+            Cron的简化版，合并可能冲突的日期和星期域
                 1      2     3          4          5        6
              {秒数} {分钟} {小时} {日期}/{星期} {月份} {年份(可为空)}
             </summary>
@@ -401,12 +402,35 @@
             计算PlanTime下次执行时间
             </summary>
         </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.#ctor">
+            <summary>
+            需要自己SetPlanTime
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.#ctor(Brun.Plan.PlanTime)">
+            <summary>
+            构造函数传入解析好的PlanTime
+            </summary>
+            <param name="planTime"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.SetPlanTime(Brun.Plan.PlanTime)">
+            <summary>
+            传入解析好的PlanTime
+            </summary>
+            <param name="planTime"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime">
+            <summary>
+            以当前时间准基础，计算下一次执行时间
+            </summary>
+            <returns>找不到或超出范围返回null</returns>
+        </member>
         <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(System.DateTimeOffset)">
             <summary>
             获取下一次计划时间
             </summary>
-            <param name="start"></param>
-            <returns></returns>
+            <param name="start">开始时间</param>
+            <returns>找不到或超出范围返回null</returns>
         </member>
         <member name="T:Brun.Plan.TimeCloumn">
             <summary>
@@ -464,7 +488,7 @@
         </member>
         <member name="T:Brun.Plan.TimeCloumnType">
             <summary>
-            时间列/表达式域类型 yyyy-MM-dd HH:mm:ss 
+            表达式域的类型 yyyy-MM-dd HH:mm:ss 
             </summary>
         </member>
         <member name="F:Brun.Plan.TimeCloumnType.None">
@@ -520,6 +544,41 @@
             <param name="timeCloumns"></param>
             <returns></returns>
         </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Step(System.DateTimeOffset)">
+            <summary>
+            / 步进 10/5  */5  10-50/5
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.To(System.DateTimeOffset)">
+            <summary>
+            - 范围 10-30
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.And(System.DateTimeOffset)">
+            <summary>
+            , 数组 2,5,8
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Any(System.DateTimeOffset)">
+            <summary>
+            * 任意
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Number(System.DateTimeOffset)">
+            <summary>
+            纯数字
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
         <member name="F:Brun.Plan.TimeComputers.BasePlanTimeComputer.nextComputer">
             <summary>
             下一个域的计算器
@@ -530,6 +589,36 @@
             设置下一个域
             </summary>
             <param name="computer"></param>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.DayComputer">
+            <summary>
+            计算天
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.DayComputer.Number(System.DateTimeOffset)">
+            <summary>
+            范围1-31，有些月只有28，30，29，没有就快进到下个月
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.DayComputer.AddDaysFix(System.DateTimeOffset,System.Int32)">
+            <summary>
+            本月Fix
+            </summary>
+            <param name="start"></param>
+            <param name="planDay"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.HourComputer">
+            <summary>
+            小时
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.HourComputer.#ctor">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:Brun.Plan.TimeComputers.MinuteComputer">
             <summary>
@@ -564,18 +653,15 @@
             <param name="start"></param>
             <returns></returns>
         </member>
+        <member name="T:Brun.Plan.TimeComputers.MonthComputer">
+            <summary>
+            计算月
+            </summary>
+        </member>
         <member name="T:Brun.Plan.TimeComputers.SecondComputer">
             <summary>
             计算秒
             </summary>
-        </member>
-        <member name="M:Brun.Plan.TimeComputers.SecondComputer.Compute(System.Nullable{System.DateTimeOffset},System.Collections.Generic.List{Brun.Plan.TimeCloumn})">
-            <summary>
-            计算下一次
-            </summary>
-            <param name="startTime"></param>
-            <param name="timeCloumns"></param>
-            <returns></returns>
         </member>
         <member name="M:Brun.Plan.TimeComputers.SecondComputer.Any(System.DateTimeOffset)">
             <summary>
@@ -604,6 +690,11 @@
             </summary>
             <param name="start"></param>
             <returns></returns>
+        </member>
+        <member name="T:Brun.Plan.TimeComputers.YearComputer">
+            <summary>
+            计算年
+            </summary>
         </member>
         <member name="T:Brun.Plan.TimeStrategy">
             <summary>

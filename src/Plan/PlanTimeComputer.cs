@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Brun.Plan.TimeComputers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,67 +12,75 @@ namespace Brun.Plan
     /// </summary>
     public class PlanTimeComputer
     {
-        //private List<TimeCloumn> times;
-        public PlanTime planTime;
+        private BasePlanTimeComputer timeComputer;
+        private PlanTime planTime;
+        /// <summary>
+        /// 需要自己SetPlanTime
+        /// </summary>
+        public PlanTimeComputer()
+        {
+        }
+        /// <summary>
+        /// 构造函数传入解析好的PlanTime
+        /// </summary>
+        /// <param name="planTime"></param>
         public PlanTimeComputer(PlanTime planTime)
         {
             this.planTime = planTime;
         }
         /// <summary>
-        /// 计算PlanTime下次执行时间
+        /// 传入解析好的PlanTime
         /// </summary>
-        /// <param name="timeCloumns"></param>
-        //public PlanTimeComputer(List<TimeCloumn> timeCloumns)
-        //{
-        //    times = timeCloumns;
-        //}
+        /// <param name="planTime"></param>
+        public void SetPlanTime(PlanTime planTime)
+        {
+            this.planTime = planTime;
+        }
+        /// <summary>
+        /// 以当前时间准基础，计算下一次执行时间
+        /// </summary>
+        /// <returns>找不到或超出范围返回null</returns>
+        public DateTimeOffset? GetNextTime()
+        {
+            return GetNextTime(DateTime.Now);
+        }
         /// <summary>
         /// 获取下一次计划时间
         /// </summary>
-        /// <param name="start"></param>
-        /// <returns></returns>
+        /// <param name="start">开始时间</param>
+        /// <returns>找不到或超出范围返回null</returns>
         public DateTimeOffset? GetNextTime(DateTimeOffset start)
         {
-            if (planTime.Times == null || planTime.Times.Count == 0)
+            if (planTime == null | !planTime.IsSuccess || planTime.Times == null || planTime.Times.Count == 0)
             {
-                throw new Exception("times is empty");
+                throw new Exception("planTime is not ready or is error,please parse first or check errors.");
             }
-            DateTimeOffset next = new DateTimeOffset(start.Year, start.Month, start.Day, start.Hour, start.Minute, start.Second + 1, start.Offset);
-            //start.Second
-            TimeCloumn cloumn = planTime.Times.First(m => m.CloumnType == TimeCloumnType.Second);
+            //开始前就加1秒
+            start = start.AddSeconds(1);
+            DateTimeOffset? next = TimeComputer.Compute(start, planTime.Times);
             return next;
         }
-        private DateTimeOffset NextSecond(DateTimeOffset next, TimeCloumn cloumn)
+        private BasePlanTimeComputer TimeComputer
         {
-            switch (cloumn.TimeStrategy)
+            get
             {
-                case TimeStrategy.Number:
-                    break;
+                if (timeComputer == null)
+                {
+                    SecondComputer secondComputer = new SecondComputer();
+                    MinuteComputer minuteComputer = new MinuteComputer();
+                    HourComputer hourComputer = new HourComputer();
+                    DayComputer dayComputer = new DayComputer();
+                    MonthComputer monthComputer = new MonthComputer();
+                    YearComputer yearComputer = new YearComputer();
+                    secondComputer.SetNext(minuteComputer);
+                    minuteComputer.SetNext(hourComputer);
+                    hourComputer.SetNext(dayComputer);
+                    dayComputer.SetNext(monthComputer);
+                    monthComputer.SetNext(yearComputer);
 
-            }
-            throw new NotImplementedException();
-        }
-        private DateTimeOffset GetNextNumber(DateTimeOffset next, TimeCloumn cloumn)
-        {
-            throw new NotImplementedException();
-            if (int.TryParse(cloumn.Plan, out int nb))
-            {
-                if (next.Second == nb)
-                {
-                    return next;
+                    timeComputer = secondComputer;
                 }
-                if (next.Second < nb)
-                {
-                    return next.AddSeconds(nb - next.Second);
-                }
-                if (next.Second > nb)
-                {
-                    return next.AddSeconds(next.Second - nb);
-                }
-            }
-            else
-            {
-                throw new Exception($"can not parse {cloumn.Plan}");
+                return timeComputer;
             }
         }
     }

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTestBrun
+namespace UnitTestBrun.Plan
 {
     [TestClass]
-    public class PlanTimeTest
+    public class PlanTimeParseTest
     {
         [TestMethod]
         public void TestParse()
@@ -28,11 +28,11 @@ namespace UnitTestBrun
             DateTimeOffset date = new DateTimeOffset(DateTime.Now);
             Console.WriteLine(date);
             Console.WriteLine(date.LocalDateTime);
-            var date2= date.AddTicks(TimeSpan.FromSeconds(80).Ticks);
+            var date2 = date.AddTicks(TimeSpan.FromSeconds(80).Ticks);
             Console.WriteLine(date);
             Console.WriteLine(date2);
-            Console.WriteLine(date2-date);
-            Console.WriteLine((date2-date).Ticks);
+            Console.WriteLine(date2 - date);
+            Console.WriteLine((date2 - date).Ticks);
             Assert.AreEqual(TimeSpan.FromSeconds(80), (date2 - date));
         }
     }

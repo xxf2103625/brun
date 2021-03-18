@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Brun.Plan
 {
     /// <summary>
+    /// Cron的简化版，合并可能冲突的日期和星期域
     ///     1      2     3          4          5        6
     ///  {秒数} {分钟} {小时} {日期}/{星期} {月份} {年份(可为空)}
     /// </summary>
@@ -30,7 +31,15 @@ namespace Brun.Plan
             }
             for (int i = 1; i <= _cros.Length; i++)
             {
-                TimeCloumn r = CoumnParse((TimeCloumnType)i, _cros[i - 1]);
+                TimeCloumn r;
+                if (i == 6)//兼容Cron cron这里是week域
+                {
+                    r = CoumnParse(TimeCloumnType.Year, _cros[i - 1]);
+                }
+                else
+                {
+                    r = CoumnParse((TimeCloumnType)i, _cros[i - 1]);
+                }
                 if (result.IsError)
                 {
                     break;
@@ -84,6 +93,7 @@ namespace Brun.Plan
         {
             if (cloumn.Plan.IndexOf(",") > -1)
             {
+                //TODO 可能需要先按大小排序
                 string[] nbs = cloumn.Plan.Split(",");
                 for (int i = 0; i < nbs.Length; i++)
                 {
@@ -93,10 +103,6 @@ namespace Brun.Plan
                         {
                             AddError(cloumn.CloumnType, $"the number {nb} is out of range");
                         }
-                        //else
-                        //{
-                        //    //success
-                        //}
                     }
                     else
                     {
@@ -105,6 +111,7 @@ namespace Brun.Plan
                 }
                 if (!this.IsError)
                 {
+
                     cloumn.SetStrategy(TimeStrategy.And);
                 }
             }
@@ -126,7 +133,7 @@ namespace Brun.Plan
                 }
                 else
                 {
-                    //TODO 比大小，可能出现 20-10/5
+                    //TODO 比大小，可能出现 20-10
                     for (int i = 0; i < nbs.Length; i++)
                     {
                         if (int.TryParse(nbs[i], out int nb))

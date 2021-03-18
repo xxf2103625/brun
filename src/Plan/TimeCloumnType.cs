@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Brun.Plan
 {
     /// <summary>
-    /// 时间列/表达式域类型 yyyy-MM-dd HH:mm:ss 
+    /// 表达式域的类型 yyyy-MM-dd HH:mm:ss 
     /// </summary>
     public enum TimeCloumnType
     {

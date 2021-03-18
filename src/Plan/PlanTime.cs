@@ -35,7 +35,7 @@ namespace Brun.Plan
         /// <param name="planTimeParser"></param>
         public PlanTime(string strExpression, IPlanTimeParser planTimeParser = null) : this(planTimeParser)
         {
-            expression = strExpression;
+            this.expression = strExpression;
             Parse(strExpression);
         }
         /// <summary>
@@ -45,8 +45,8 @@ namespace Brun.Plan
         /// <returns>true：success，false：error</returns>
         public bool Parse(string strExpression)
         {
-            strExpression = strExpression.Trim();
-            result = parser.Parse(strExpression);
+            this.expression = strExpression.Trim();
+            this.result = parser.Parse(expression);
             if (result.IsError)
             {
                 return false;
@@ -91,7 +91,7 @@ namespace Brun.Plan
         /// <summary>
         /// 是否成功
         /// </summary>
-        public bool IsSuccess => result != null || !result.IsError;
+        public bool IsSuccess => result != null && !result.IsError;
         /// <summary>
         /// 解析失败的异常信息
         /// </summary>

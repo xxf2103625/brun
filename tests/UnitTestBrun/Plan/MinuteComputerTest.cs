@@ -58,5 +58,34 @@ namespace UnitTestBrun.Plan
             Console.WriteLine(next2);
             Assert.AreEqual(DateTime.Parse("2021-3-18 1:10:5"), next2);
         }
+        [TestMethod]
+        public void TestAnd()
+        {
+            SecondComputer secondComputer = new SecondComputer();
+            MinuteComputer minuteComputer = new MinuteComputer();
+            secondComputer.SetNext(minuteComputer);
+            DateTimeOffset start = DateTime.Parse("2021-3-18 0:0:59");
+            TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
+            TimeCloumn minuteCloumn = new TimeCloumn(TimeCloumnType.Minute, "10,12,15");
+            secondCloumn.SetStrategy(TimeStrategy.Number);
+            minuteCloumn.SetStrategy(TimeStrategy.And);
+            var tcs = new List<TimeCloumn>()
+            {
+                secondCloumn,
+                minuteCloumn
+            };
+            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            Console.WriteLine(next);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:5"), next);
+            DateTimeOffset? next2 = secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            Console.WriteLine(next2);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:12:5"), next2);
+            DateTimeOffset? next3 = secondComputer.Compute(next2.Value.AddSeconds(1), tcs);
+            Console.WriteLine(next3);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:15:5"), next3);
+            DateTimeOffset? next4 = secondComputer.Compute(next3.Value.AddSeconds(1), tcs);
+            Console.WriteLine(next4);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 1:10:5"), next4);
+        }
     }
 }
