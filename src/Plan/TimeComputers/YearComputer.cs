@@ -45,8 +45,7 @@ namespace Brun.Plan.TimeComputers
                     return start.AddYears(year - start.Year);
                 }
             }
-            int nextYear = cloumn.Max - start.Year + int.Parse(nbs[0]);
-            return start.AddYears(nextYear);
+            return null;
         }
 
         protected override DateTimeOffset? Any(DateTimeOffset start)
@@ -137,12 +136,7 @@ namespace Brun.Plan.TimeComputers
             }
             else if (start.Year > end)
             {
-                int nextYear = cloumn.Max - start.Year + begin;
-                if (nextYear > cloumn.Max)
-                {
-                    return null;
-                }
-                return start.AddYears(nextYear);
+                return null;
             }
             else //start.Year<begin
             {

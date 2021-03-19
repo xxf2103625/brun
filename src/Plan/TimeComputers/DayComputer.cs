@@ -150,20 +150,26 @@ namespace Brun.Plan.TimeComputers
                 int lastDay = DateTime.DaysInMonth(start.Year, start.Month);
                 return new DateTimeOffset(start.Year, start.Month, lastDay, start.Hour, start.Minute, start.Second, start.Offset);
             }
-            else //5L 极端情况2月 30L 2月会无法触发 跳到3月
+            else //5L  极端情况 30L 只有31天的月才触发
             {
                 string nbStr = cloumn.Plan.Substring(0, cloumn.Plan.Length - 1);
                 int nb = int.Parse(nbStr);
                 int planDay = DateTime.DaysInMonth(start.Year, start.Month) - nb;
                 if (planDay >= 1)
                 {
+                    if (planDay < start.Day)
+                    {
+                        start = start.AddMonths(1);
+                        returnToDay = true;
+                        return new DateTimeOffset(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second, start.Offset);
+                    }
                     return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
                 }
                 else
                 {
                     start = start.AddMonths(1);
-                    planDay = DateTime.DaysInMonth(start.Year, start.Month) - nb;
-                    return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
+                    returnToDay = true;
+                    return new DateTimeOffset(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second, start.Offset);
                 }
             }
         }
