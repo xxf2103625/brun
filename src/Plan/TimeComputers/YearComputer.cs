@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brun.Plan.TimeComputers
@@ -11,8 +12,26 @@ namespace Brun.Plan.TimeComputers
     /// </summary>
     public class YearComputer : BasePlanTimeComputer
     {
+        /// <summary>
+        /// 特殊的日期，28,29，年变动的时候可能需要回到dayComputer重新计算
+        /// </summary>
+        private bool isSpecialDay = false;
+        private int initYear;
+        private DateTimeOffset? _next;
         public YearComputer() : base(TimeCloumnType.Year)
         {
+        }
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        {
+            if (startTime == null)
+                return null;
+            if (!timeCloumns.Any(m => m.CloumnType == TimeCloumnType.Year))
+                return startTime;
+            if ((startTime.Value.Day == 29 || startTime.Value.Day == 28) && startTime.Value.Month == 2)
+                this.isSpecialDay = true;
+            initYear = startTime.Value.Year;
+            this._next = base.Compute(startTime, timeCloumns);
+            return _next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
@@ -97,18 +116,14 @@ namespace Brun.Plan.TimeComputers
                         return start.AddYears(nextYear - start.Year);
                     }
                     nextYear += step;
+                    if (nextYear > cloumn.Max)
+                    {
+                        return null;
+                    }
+                    Thread.Sleep(5);
                 }
-                //下一年
-                if (nextYear > cloumn.Max)
-                {
-                    return null;
-                }
-                nextYear = cloumn.Max - start.Year + begin;
-                if (nextYear > cloumn.Max)
-                {
-                    return null;
-                }
-                return start.AddYears(nextYear);
+                //超出范围
+                return null;
             }
         }
         protected override DateTimeOffset? To(DateTimeOffset start)
@@ -137,6 +152,14 @@ namespace Brun.Plan.TimeComputers
                 }
                 return start.AddYears(begin - start.Year);
             }
+        }
+        /// <summary>
+        /// 是否回到Day重新计算
+        /// </summary>
+        public bool ReturnToDay => isSpecialDay && (_next != null && initYear != _next.Value.Year);
+        protected override DateTimeOffset? Last(DateTimeOffset start)
+        {
+            throw new NotImplementedException("just day can use L");
         }
     }
 }

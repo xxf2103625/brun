@@ -12,6 +12,7 @@ namespace Brun.Plan
     /// </summary>
     public class CronParser
     {
+        //TODO 支持Corn
         public void Parse(string cronExpress)
         {
 

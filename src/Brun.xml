@@ -397,41 +397,6 @@
             解析后的结果，仅储存原始字符串和计划策略
             </summary>
         </member>
-        <member name="T:Brun.Plan.PlanTimeComputer">
-            <summary>
-            计算PlanTime下次执行时间
-            </summary>
-        </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.#ctor">
-            <summary>
-            需要自己SetPlanTime
-            </summary>
-        </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.#ctor(Brun.Plan.PlanTime)">
-            <summary>
-            构造函数传入解析好的PlanTime
-            </summary>
-            <param name="planTime"></param>
-        </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.SetPlanTime(Brun.Plan.PlanTime)">
-            <summary>
-            传入解析好的PlanTime
-            </summary>
-            <param name="planTime"></param>
-        </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime">
-            <summary>
-            以当前时间准基础，计算下一次执行时间
-            </summary>
-            <returns>找不到或超出范围返回null</returns>
-        </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(System.DateTimeOffset)">
-            <summary>
-            获取下一次计划时间
-            </summary>
-            <param name="start">开始时间</param>
-            <returns>找不到或超出范围返回null</returns>
-        </member>
         <member name="T:Brun.Plan.TimeCloumn">
             <summary>
             时间列/表达式的域 6列 yyyy-MM-dd HH:mm:ss 
@@ -533,7 +498,7 @@
         </member>
         <member name="T:Brun.Plan.TimeComputers.BasePlanTimeComputer">
             <summary>
-            计算PlanTime下次执行时间
+            计算PlanTime下次执行时间，计算流程需要单独控制，特殊情况会递归
             </summary>
         </member>
         <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},System.Collections.Generic.List{Brun.Plan.TimeCloumn})">
@@ -542,6 +507,13 @@
             </summary>
             <param name="startTime"></param>
             <param name="timeCloumns"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Last(System.DateTimeOffset)">
+            <summary>
+            L 仅TimeCloumnType.Day中可用
+            </summary>
+            <param name="start"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Step(System.DateTimeOffset)">
@@ -579,17 +551,6 @@
             <param name="start"></param>
             <returns></returns>
         </member>
-        <member name="F:Brun.Plan.TimeComputers.BasePlanTimeComputer.nextComputer">
-            <summary>
-            下一个域的计算器
-            </summary>
-        </member>
-        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.SetNext(Brun.Plan.TimeComputers.BasePlanTimeComputer)">
-            <summary>
-            设置下一个域
-            </summary>
-            <param name="computer"></param>
-        </member>
         <member name="T:Brun.Plan.TimeComputers.DayComputer">
             <summary>
             计算天
@@ -598,6 +559,13 @@
         <member name="M:Brun.Plan.TimeComputers.DayComputer.Number(System.DateTimeOffset)">
             <summary>
             范围1-31，有些月只有28，30，29，没有就快进到下个月
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Plan.TimeComputers.DayComputer.Last(System.DateTimeOffset)">
+            <summary>
+            最后N天，L=最后一天 5L=最后一天再往前5天
             </summary>
             <param name="start"></param>
             <returns></returns>
@@ -658,6 +626,26 @@
             计算月
             </summary>
         </member>
+        <member name="F:Brun.Plan.TimeComputers.MonthComputer.isSpecialDay">
+            <summary>
+            特殊的日期，29，30，31，月和年变动的时候可能需要回到dayComputer重新计算
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeComputers.MonthComputer.initMonth">
+            <summary>
+            初始月，在这里变化后可能需要重新计算天
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeComputers.MonthComputer.initYear">
+            <summary>
+            初始年，这里可能跨年，也可能需要重新计算天
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeComputers.MonthComputer.ReturnToDay">
+            <summary>
+            是否回到Day重新计算
+            </summary>
+        </member>
         <member name="T:Brun.Plan.TimeComputers.SecondComputer">
             <summary>
             计算秒
@@ -696,9 +684,54 @@
             计算年
             </summary>
         </member>
+        <member name="F:Brun.Plan.TimeComputers.YearComputer.isSpecialDay">
+            <summary>
+            特殊的日期，28,29，年变动的时候可能需要回到dayComputer重新计算
+            </summary>
+        </member>
+        <member name="P:Brun.Plan.TimeComputers.YearComputer.ReturnToDay">
+            <summary>
+            是否回到Day重新计算
+            </summary>
+        </member>
+        <member name="T:Brun.Plan.PlanTimeComputer">
+            <summary>
+            计算PlanTime下次执行时间
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.#ctor">
+            <summary>
+            需要自己SetPlanTime
+            </summary>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.#ctor(Brun.Plan.PlanTime)">
+            <summary>
+            构造函数传入解析好的PlanTime
+            </summary>
+            <param name="planTime"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.SetPlanTime(Brun.Plan.PlanTime)">
+            <summary>
+            传入解析好的PlanTime
+            </summary>
+            <param name="planTime"></param>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime">
+            <summary>
+            以当前时间准基础，计算下一次执行时间
+            </summary>
+            <returns>找不到或超出范围返回null</returns>
+        </member>
+        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(System.DateTimeOffset)">
+            <summary>
+            获取下一次计划时间
+            </summary>
+            <param name="start">开始时间</param>
+            <returns>找不到或超出范围返回null</returns>
+        </member>
         <member name="T:Brun.Plan.TimeStrategy">
             <summary>
-            时间列/表达式域解析策略
+            表达式域解析策略
             , - * / ...的各种策略
             </summary>
         </member>
@@ -709,7 +742,7 @@
         </member>
         <member name="F:Brun.Plan.TimeStrategy.Number">
             <summary>
-            纯数字/星期英文 0
+            纯数字
             </summary>
         </member>
         <member name="F:Brun.Plan.TimeStrategy.And">
@@ -730,6 +763,11 @@
         <member name="F:Brun.Plan.TimeStrategy.Step">
             <summary>
             / 步进 number或*(等同0)或范围/步进值
+            </summary>
+        </member>
+        <member name="F:Brun.Plan.TimeStrategy.Last">
+            <summary>
+            L 只能在日期域中出现，最后一天，5L：当月最后一天再倒数5天
             </summary>
         </member>
         <member name="T:Brun.WorkerBuilder">

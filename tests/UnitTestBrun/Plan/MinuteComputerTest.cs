@@ -15,75 +15,75 @@ namespace UnitTestBrun.Plan
         [TestMethod]
         public void TestAny()
         {
-            SecondComputer secondComputer = new SecondComputer();
+            //SecondComputer secondComputer = new SecondComputer();
             MinuteComputer minuteComputer = new MinuteComputer();
-            secondComputer.SetNext(minuteComputer);
+            //secondComputer.SetNext(minuteComputer);
             DateTimeOffset start = DateTime.Parse("2021-3-18 0:0:59");
-            TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
+            //TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
             TimeCloumn minuteCloumn = new TimeCloumn(TimeCloumnType.Minute, "*");
-            secondCloumn.SetStrategy(TimeStrategy.Number);
+            //secondCloumn.SetStrategy(TimeStrategy.Number);
             minuteCloumn.SetStrategy(TimeStrategy.Any);
             var tcs = new List<TimeCloumn>()
             {
-                secondCloumn,
+                //secondCloumn,
                 minuteCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = minuteComputer.Compute(start.AddSeconds(1), tcs);
             Console.WriteLine(next);
-            Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:5"), next);
-            DateTimeOffset? next2 = secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:0"), next);
+            DateTimeOffset? next2 = minuteComputer.Compute(next.Value.AddSeconds(1), tcs);
             Console.WriteLine(next2);
-            Assert.AreEqual(DateTime.Parse("2021-3-18 0:2:5"), next2);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:1"), next2);
         }
         [TestMethod]
         public void TestNumber()
         {
-            SecondComputer secondComputer = new SecondComputer();
+            //SecondComputer secondComputer = new SecondComputer();
             MinuteComputer minuteComputer = new MinuteComputer();
-            secondComputer.SetNext(minuteComputer);
+            //secondComputer.SetNext(minuteComputer);
             DateTimeOffset start = DateTime.Parse("2021-3-18 0:0:59");
-            TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
+            //TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
             TimeCloumn minuteCloumn = new TimeCloumn(TimeCloumnType.Minute, "10");
-            secondCloumn.SetStrategy(TimeStrategy.Number);
+            //secondCloumn.SetStrategy(TimeStrategy.Number);
             minuteCloumn.SetStrategy(TimeStrategy.Number);
             var tcs = new List<TimeCloumn>()
             {
-                secondCloumn,
+                //secondCloumn,
                 minuteCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = minuteComputer.Compute(start.AddSeconds(1), tcs);
             Console.WriteLine(next);
-            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:5"), next);
-            DateTimeOffset? next2 = secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:0"), next);
+            DateTimeOffset? next2 = minuteComputer.Compute(next.Value.AddSeconds(1), tcs);
             Console.WriteLine(next2);
-            Assert.AreEqual(DateTime.Parse("2021-3-18 1:10:5"), next2);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:1"), next2);
         }
         [TestMethod]
         public void TestAnd()
         {
-            SecondComputer secondComputer = new SecondComputer();
+            //SecondComputer secondComputer = new SecondComputer();
             MinuteComputer minuteComputer = new MinuteComputer();
-            secondComputer.SetNext(minuteComputer);
+            //secondComputer.SetNext(minuteComputer);
             DateTimeOffset start = DateTime.Parse("2021-3-18 0:0:59");
-            TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
+            //TimeCloumn secondCloumn = new TimeCloumn(TimeCloumnType.Second, "5");
             TimeCloumn minuteCloumn = new TimeCloumn(TimeCloumnType.Minute, "10,12,15");
-            secondCloumn.SetStrategy(TimeStrategy.Number);
+            //secondCloumn.SetStrategy(TimeStrategy.Number);
             minuteCloumn.SetStrategy(TimeStrategy.And);
             var tcs = new List<TimeCloumn>()
             {
-                secondCloumn,
+                //secondCloumn,
                 minuteCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = minuteComputer.Compute(start.AddSeconds(1), tcs);
             Console.WriteLine(next);
-            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:5"), next);
-            DateTimeOffset? next2 = secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            Assert.AreEqual(DateTime.Parse("2021-3-18 0:10:0"), next);
+            DateTimeOffset? next2 = minuteComputer.Compute(DateTime.Parse("2021-3-18 0:11:5"), tcs);
             Console.WriteLine(next2);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:12:5"), next2);
-            DateTimeOffset? next3 = secondComputer.Compute(next2.Value.AddSeconds(1), tcs);
+            DateTimeOffset? next3 = minuteComputer.Compute(DateTime.Parse("2021-3-18 0:13:5"), tcs);
             Console.WriteLine(next3);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:15:5"), next3);
-            DateTimeOffset? next4 = secondComputer.Compute(next3.Value.AddSeconds(1), tcs);
+            DateTimeOffset? next4 = minuteComputer.Compute(DateTime.Parse("2021-3-18 0:18:5"), tcs);
             Console.WriteLine(next4);
             Assert.AreEqual(DateTime.Parse("2021-3-18 1:10:5"), next4);
         }

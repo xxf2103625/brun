@@ -12,7 +12,14 @@ namespace Brun.Plan
     /// </summary>
     public class PlanTimeComputer
     {
-        private BasePlanTimeComputer timeComputer;
+        private SecondComputer secondComputer = new SecondComputer();
+        private MinuteComputer minuteComputer = new MinuteComputer();
+        private HourComputer hourComputer = new HourComputer();
+        private DayComputer dayComputer = new DayComputer();
+        private MonthComputer monthComputer = new MonthComputer();
+        private YearComputer yearComputer = new YearComputer();
+
+        //private BasePlanTimeComputer timeComputer;
         private PlanTime planTime;
         /// <summary>
         /// 需要自己SetPlanTime
@@ -57,31 +64,29 @@ namespace Brun.Plan
             }
             //开始前就加1秒
             start = start.AddSeconds(1);
-            DateTimeOffset? next = TimeComputer.Compute(start, planTime.Times);
-            return next;
-        }
-        private BasePlanTimeComputer TimeComputer
-        {
-            get
-            {
-                if (timeComputer == null)
-                {
-                    SecondComputer secondComputer = new SecondComputer();
-                    MinuteComputer minuteComputer = new MinuteComputer();
-                    HourComputer hourComputer = new HourComputer();
-                    DayComputer dayComputer = new DayComputer();
-                    MonthComputer monthComputer = new MonthComputer();
-                    YearComputer yearComputer = new YearComputer();
-                    secondComputer.SetNext(minuteComputer);
-                    minuteComputer.SetNext(hourComputer);
-                    hourComputer.SetNext(dayComputer);
-                    dayComputer.SetNext(monthComputer);
-                    monthComputer.SetNext(yearComputer);
+            //需要手动控制计算流程
+            DateTimeOffset? next = secondComputer.Compute(start, planTime.Times);
+            next = minuteComputer.Compute(next, planTime.Times);
+            next = hourComputer.Compute(next, planTime.Times);
 
-                    timeComputer = secondComputer;
-                }
-                return timeComputer;
+        returnToDay://重新确认
+
+            next = dayComputer.Compute(next, planTime.Times);
+            if (dayComputer.ReturnToDay)
+            {
+                goto returnToDay;
             }
+            next = monthComputer.Compute(next, planTime.Times);
+            if (monthComputer.ReturnToDay)
+            {
+                goto returnToDay;
+            }
+            next = yearComputer.Compute(next, planTime.Times);
+            if (yearComputer.ReturnToDay)
+            {
+                goto returnToDay;
+            }
+            return next;
         }
     }
 }

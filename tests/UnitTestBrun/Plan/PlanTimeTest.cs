@@ -69,5 +69,68 @@ namespace UnitTestBrun.Plan
                 Assert.AreEqual(null, n1);
             }
         }
+        [TestMethod]
+        public void TestComputeMouth()
+        {
+            List<DateTime> rs = new List<DateTime>()
+            {
+                DateTime.Parse("02/29/2024 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2028 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2032 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2036 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2040 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2044 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2048 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2052 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2056 00:00:00 +08:00"),
+                DateTime.Parse("02/29/2060 00:00:00 +08:00"),
+            };
+            PlanTimeComputer computer = new PlanTimeComputer();
+            PlanTime planTime = new PlanTime();
+            planTime.Parse("0 0 0 29 2");
+            computer.SetPlanTime(planTime);
+            DateTimeOffset? next = DateTime.Now;// = computer.GetNextTime();
+            for (int i = 0; i < 10; i++)
+            {
+                if (next != null)
+                {
+                    next = computer.GetNextTime(next.Value);
+                    Console.WriteLine(next);
+                    Assert.AreEqual(rs[i], next);
+                }
+            }
+        }
+        [TestMethod]
+        public void TestComputeMouth_31()
+        {
+            List<DateTime> rs = new List<DateTime>()
+            {
+                DateTime.Parse("03/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("05/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("07/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("08/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("10/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("12/31/2021 00:00:00 +08:00"),
+                DateTime.Parse("01/31/2022 00:00:00 +08:00"),
+                DateTime.Parse("03/31/2022 00:00:00 +08:00"),
+                DateTime.Parse("05/31/2022 00:00:00 +08:00"),
+                DateTime.Parse("07/31/2022 00:00:00 +08:00"),
+            };
+            PlanTimeComputer computer = new PlanTimeComputer();
+            PlanTime planTime = new PlanTime();
+            planTime.Parse("0 0 0 31 *");
+            computer.SetPlanTime(planTime);
+            DateTimeOffset? next = DateTime.Now;
+            for (int i = 0; i < 10; i++)
+            {
+
+                if (next != null)
+                {
+                    next = computer.GetNextTime(next.Value);
+                    Console.WriteLine(next);
+                    Assert.AreEqual(rs[i], next);
+                }
+            }
+        }
     }
 }

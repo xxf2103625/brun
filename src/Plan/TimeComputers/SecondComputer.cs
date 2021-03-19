@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brun.Plan.TimeComputers
@@ -171,11 +172,16 @@ namespace Brun.Plan.TimeComputers
                         return start.AddSeconds(nextSec - start.Second);
                     }
                     nextSec += step;
+                    Thread.Sleep(5);
                 }
                 //下一分钟
                 nextSec = cloumn.Max + 1 - start.Second + begin;
                 return start.AddSeconds(nextSec);
             }
+        }
+        protected override DateTimeOffset? Last(DateTimeOffset start)
+        {
+            throw new NotImplementedException("just day can use L");
         }
     }
 }

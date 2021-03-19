@@ -32,13 +32,23 @@ namespace Brun.Plan
             for (int i = 1; i <= _cros.Length; i++)
             {
                 TimeCloumn r;
-                if (i == 6)//兼容Cron cron这里是week域
+                if (i == 6)//为了后期兼容Cron cron这里是week域
                 {
                     r = CoumnParse(TimeCloumnType.Year, _cros[i - 1]);
                 }
                 else
                 {
-                    r = CoumnParse((TimeCloumnType)i, _cros[i - 1]);
+                    if (i == 4 && _cros[i - 1].StartsWith("X"))
+                    {
+                        //day切换到week 移除X
+                        _cros[3] = _cros[3].Substring(1);
+                        r = CoumnParse(TimeCloumnType.Week, _cros[3]);
+                    }
+                    else
+                    {
+                        r = CoumnParse((TimeCloumnType)i, _cros[i - 1]);
+                    }
+
                 }
                 if (result.IsError)
                 {
@@ -61,18 +71,20 @@ namespace Brun.Plan
                 AddError(cloumnType, "the string is empty");
             }
             TimeCloumn cloumn = new TimeCloumn(cloumnType, plan);
-            List<Func<TimeCloumn, TimeCloumn>> funcs = new List<Func<TimeCloumn, TimeCloumn>>()
+            List<Action<TimeCloumn>> funcs = new List<Action<TimeCloumn>>()
             {
-                //解析,
-                new Func<TimeCloumn, TimeCloumn>(ParseAnd),
-                //解析-
-                new Func<TimeCloumn, TimeCloumn>(ParseTo),
-                //解析/
-                new Func<TimeCloumn, TimeCloumn>(ParseStep),
                 //解析*
-                new Func<TimeCloumn, TimeCloumn>(ParseAny),
+                new Action<TimeCloumn>(ParseAny),
+                //解析,
+                new Action<TimeCloumn>(ParseAnd),
+                //解析-
+                new Action<TimeCloumn>(ParseTo),
+                //解析/
+                new Action<TimeCloumn>(ParseStep),
                 //解析纯数字
-                new Func<TimeCloumn, TimeCloumn>(ParseNb),
+                new Action<TimeCloumn>(ParseNb),
+                //解析L 
+                new Action<TimeCloumn>(ParseLast),
             };
             for (int i = 0; i < funcs.Count; i++)
             {
@@ -89,7 +101,7 @@ namespace Brun.Plan
         /// 解析, TimeStrategy.And
         /// </summary>
         /// <returns></returns>
-        private TimeCloumn ParseAnd(TimeCloumn cloumn)
+        private void ParseAnd(TimeCloumn cloumn)
         {
             if (cloumn.Plan.IndexOf(",") > -1)
             {
@@ -115,14 +127,13 @@ namespace Brun.Plan
                     cloumn.SetStrategy(TimeStrategy.And);
                 }
             }
-            return cloumn;
         }
         /// <summary>
         /// 解析-  TimeStrategy.To  特殊： /步进第一个参数可以包含-
         /// </summary>
         /// <param name="cloumn"></param>
         /// <returns></returns>
-        private TimeCloumn ParseTo(TimeCloumn cloumn)
+        private void ParseTo(TimeCloumn cloumn)
         {
             if (cloumn.Plan.IndexOf("-") > -1 && cloumn.Plan.IndexOf("/") == -1)
             {
@@ -154,14 +165,13 @@ namespace Brun.Plan
                     cloumn.SetStrategy(TimeStrategy.To);
                 }
             }
-            return cloumn;
         }
         /// <summary>
         /// 解析/ TimeStrategy.Step 特殊： /步进第一个参数可以包含-，*
         /// </summary>
         /// <param name="cloumn"></param>
         /// <returns></returns>
-        private TimeCloumn ParseStep(TimeCloumn cloumn)
+        private void ParseStep(TimeCloumn cloumn)
         {
             if (cloumn.Plan.IndexOf("/") > -1)
             {
@@ -234,22 +244,20 @@ namespace Brun.Plan
                     cloumn.SetStrategy(TimeStrategy.Step);
                 }
             }
-            return cloumn;
         }
-        private TimeCloumn ParseAny(TimeCloumn cloumn)
+        private void ParseAny(TimeCloumn cloumn)
         {
             if (cloumn.Plan == "*")
             {
                 cloumn.SetStrategy(TimeStrategy.Any);
             }
-            return cloumn;
         }
         /// <summary>
         /// 解析纯数字
         /// </summary>
         /// <param name="cloumn"></param>
         /// <returns></returns>
-        private TimeCloumn ParseNb(TimeCloumn cloumn)
+        private void ParseNb(TimeCloumn cloumn)
         {
             if (int.TryParse(cloumn.Plan, out int nb))
             {
@@ -260,7 +268,31 @@ namespace Brun.Plan
                 if (!IsError)
                     cloumn.SetStrategy(TimeStrategy.Number);
             }
-            return cloumn;
+        }
+        private void ParseLast(TimeCloumn cloumn)
+        {
+            if (cloumn.Plan.IndexOf("L") > -1)
+            {
+                if (cloumn.Plan != "L")//5L
+                {
+                    string nbStr = cloumn.Plan.Substring(0, cloumn.Plan.Length - 1);
+                    if (int.TryParse(nbStr, out int nb))
+                    {
+                        if (nb < 0 || nb > cloumn.Max - 1)
+                        {
+                            AddError(cloumn.CloumnType, $"the number {nb} is out of range");
+                        }
+                    }
+                    else
+                    {
+                        AddError(cloumn.CloumnType, $"can not parse {nbStr} to int");
+                    }
+                }
+                if (!IsError)
+                {
+                    cloumn.SetStrategy(TimeStrategy.Last);
+                }
+            }
         }
         private void AddError(int n, string error)
         {

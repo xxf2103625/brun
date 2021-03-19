@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brun.Plan.TimeComputers
@@ -11,9 +12,19 @@ namespace Brun.Plan.TimeComputers
     /// </summary>
     public class DayComputer : BasePlanTimeComputer
     {
+        private DateTimeOffset? _next;
+        private bool returnToDay = false;
         public DayComputer() : base(TimeCloumnType.Day)
         {
 
+        }
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        {
+            if (startTime == null)
+                return null;
+            returnToDay = false;
+            this._next = base.Compute(startTime, timeCloumns);
+            return _next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
@@ -50,6 +61,7 @@ namespace Brun.Plan.TimeComputers
             }
             else//下月
             {
+                //纯数字可以直接加月
                 start = start.AddMonths(1);//可能跨年
                 return AddDaysFix(start, day);
             }
@@ -78,7 +90,7 @@ namespace Brun.Plan.TimeComputers
                 }
             }
         }
-        private DateTimeOffset StepNb(DateTimeOffset start, int step, int begin, int end)
+        private DateTimeOffset? StepNb(DateTimeOffset start, int step, int begin, int end)
         {
             if (start.Day <= begin)
             {
@@ -98,6 +110,7 @@ namespace Brun.Plan.TimeComputers
                         return AddDaysFix(start, nextDay);
                     }
                     nextDay += step;
+                    Thread.Sleep(5);
                 }
                 //下一月
                 start = start.AddMonths(1);
@@ -126,23 +139,67 @@ namespace Brun.Plan.TimeComputers
             }
         }
         /// <summary>
+        /// 最后N天，L=最后一天 5L=最后一天再往前5天
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        protected override DateTimeOffset? Last(DateTimeOffset start)
+        {
+            if (cloumn.Plan == "L")
+            {
+                int lastDay = DateTime.DaysInMonth(start.Year, start.Month);
+                return new DateTimeOffset(start.Year, start.Month, lastDay, start.Hour, start.Minute, start.Second, start.Offset);
+            }
+            else //5L 极端情况2月 30L 2月会无法触发 跳到3月
+            {
+                string nbStr = cloumn.Plan.Substring(0, cloumn.Plan.Length - 1);
+                int nb = int.Parse(nbStr);
+                int planDay = DateTime.DaysInMonth(start.Year, start.Month) - nb;
+                if (planDay >= 1)
+                {
+                    return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
+                }
+                else
+                {
+                    start = start.AddMonths(1);
+                    planDay = DateTime.DaysInMonth(start.Year, start.Month) - nb;
+                    return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
+                }
+            }
+        }
+        /// <summary>
         /// 本月Fix
         /// </summary>
         /// <param name="start"></param>
         /// <param name="planDay"></param>
         /// <returns></returns>
-        private DateTimeOffset AddDaysFix(DateTimeOffset start, int planDay)
+        private DateTimeOffset? AddDaysFix(DateTimeOffset start, int planDay)
         {
+            //单独处理2月 29号
+            if (start.Month == 2 && planDay == 29)
+            {
+                if (!DateTime.IsLeapYear(start.Year))
+                {
+                    //goto day
+                    returnToDay = true;
+                    return new DateTimeOffset(start.Year, 3, 1, start.Hour, start.Minute, start.Second, start.Offset);
+                }
+            }
             int maxDay = DateTime.DaysInMonth(start.Year, start.Month);
             if (planDay <= maxDay)
             {
                 return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
             }
-            else // 如果这个月没有31号,1 3 5 7 8 10 12必定31天，下个月一定满足
+            else
             {
-                start = start.AddMonths(1);
-                return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
+                //不能直接加月
+                start = start.AddDays(maxDay - start.Day + 1);//到下月1号
+                //goto day
+                returnToDay = true;
+                return start;
             }
         }
+
+        public bool ReturnToDay => returnToDay;
     }
 }

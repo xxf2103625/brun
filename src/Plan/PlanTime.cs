@@ -45,7 +45,7 @@ namespace Brun.Plan
         /// <returns>true：success，false：error</returns>
         public bool Parse(string strExpression)
         {
-            this.expression = strExpression.Trim();
+            this.expression = strExpression.Trim().ToUpper();
             this.result = parser.Parse(expression);
             if (result.IsError)
             {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Brun.Plan
 {
     /// <summary>
-    /// 时间列/表达式域解析策略
+    /// 表达式域解析策略
     /// , - * / ...的各种策略
     /// </summary>
     public enum TimeStrategy
@@ -17,7 +17,7 @@ namespace Brun.Plan
         /// </summary>
         None,
         /// <summary>
-        /// 纯数字/星期英文 0
+        /// 纯数字
         /// </summary>
         Number,
         /// <summary>
@@ -36,5 +36,9 @@ namespace Brun.Plan
         /// / 步进 number或*(等同0)或范围/步进值
         /// </summary>
         Step,
+        /// <summary>
+        /// L 只能在日期域中出现，最后一天，5L：当月最后一天再倒数5天
+        /// </summary>
+        Last,
     }
 }

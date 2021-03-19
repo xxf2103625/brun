@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 namespace Brun.Plan.TimeComputers
 {
     /// <summary>
-    /// 计算PlanTime下次执行时间
+    /// 计算PlanTime下次执行时间，计算流程需要单独控制，特殊情况会递归
     /// </summary>
     public abstract class BasePlanTimeComputer
     {
         protected TimeCloumn cloumn;
-        TimeCloumnType timeCloumnType;
+        protected TimeCloumnType timeCloumnType;
+
         public BasePlanTimeComputer(TimeCloumnType timeCloumnType)
         {
             this.timeCloumnType = timeCloumnType;
@@ -27,12 +28,7 @@ namespace Brun.Plan.TimeComputers
         {
             if (startTime == null)
                 return null;
-            //可能没有年
-            if (timeCloumnType == TimeCloumnType.Year)
-            {
-                if (!timeCloumns.Any(m => m.CloumnType == timeCloumnType))
-                    return startTime;
-            }
+
             cloumn = timeCloumns.First(m => m.CloumnType == timeCloumnType);
             switch (cloumn.TimeStrategy)
             {
@@ -53,16 +49,22 @@ namespace Brun.Plan.TimeComputers
                 case TimeStrategy.Step:
                     startTime = Step(startTime.Value);
                     break;
+                case TimeStrategy.Last:
+                    startTime = Last(startTime.Value);
+                    break;
                 default:
                     throw new NotSupportedException($"the {cloumn.CloumnType} TimeStrategy is not supported {cloumn.TimeStrategy}");
                     //break;
-
             }
-            if (nextComputer != null)
-                return nextComputer.Compute(startTime, timeCloumns);
-            else
-                return startTime;
+            return startTime;
         }
+        /// <summary>
+        /// L 仅TimeCloumnType.Day中可用
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        protected abstract DateTimeOffset? Last(DateTimeOffset start);
+
         /// <summary>
         /// / 步进 10/5  */5  10-50/5
         /// </summary>
@@ -93,17 +95,5 @@ namespace Brun.Plan.TimeComputers
         /// <param name="start"></param>
         /// <returns></returns>
         protected abstract DateTimeOffset? Number(DateTimeOffset start);
-        /// <summary>
-        /// 下一个域的计算器
-        /// </summary>
-        protected BasePlanTimeComputer nextComputer;
-        /// <summary>
-        /// 设置下一个域
-        /// </summary>
-        /// <param name="computer"></param>
-        public void SetNext(BasePlanTimeComputer computer)
-        {
-            nextComputer = computer;
-        }
     }
 }

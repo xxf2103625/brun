@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brun.Plan.TimeComputers
@@ -11,9 +12,35 @@ namespace Brun.Plan.TimeComputers
     /// </summary>
     public class MonthComputer : BasePlanTimeComputer
     {
+        /// <summary>
+        /// 特殊的日期，29，30，31，月和年变动的时候可能需要回到dayComputer重新计算
+        /// </summary>
+        private bool isSpecialDay = false;
+        /// <summary>
+        /// 初始月，在这里变化后可能需要重新计算天
+        /// </summary>
+        private int initMonth;
+        /// <summary>
+        /// 初始年，这里可能跨年，也可能需要重新计算天
+        /// </summary>
+        private int initYear;
+        private DateTimeOffset? _next;
         public MonthComputer() : base(TimeCloumnType.Month)
         {
 
+        }
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        {
+            if (startTime != null)
+            {
+                initMonth = startTime.Value.Month;
+                initYear = startTime.Value.Year;
+                int day = startTime.Value.Day;
+                if (day == 29 || day == 30 || day == 31)
+                    isSpecialDay = true;
+            }
+            this._next = base.Compute(startTime, timeCloumns);
+            return this._next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
@@ -93,9 +120,10 @@ namespace Brun.Plan.TimeComputers
                         return start.AddMonths(nextMonth - start.Month);
                     }
                     nextMonth += step;
+                    Thread.Sleep(5);
                 }
                 //下一年
-                nextMonth = cloumn.Max  - start.Month + begin;
+                nextMonth = cloumn.Max - start.Month + begin;
                 return start.AddMonths(nextMonth);
             }
         }
@@ -110,13 +138,21 @@ namespace Brun.Plan.TimeComputers
             }
             else if (start.Month > end)
             {
-                int nextMonth = cloumn.Max  - start.Month + begin;
+                int nextMonth = cloumn.Max - start.Month + begin;
                 return start.AddMonths(nextMonth);
             }
             else //start.Month<begin
             {
                 return start.AddMonths(begin - start.Month);
             }
+        }
+        /// <summary>
+        /// 是否回到Day重新计算
+        /// </summary>
+        public bool ReturnToDay => isSpecialDay && (_next != null && _next.Value.Year != initYear && _next.Value.Month != initMonth);
+        protected override DateTimeOffset? Last(DateTimeOffset start)
+        {
+            throw new NotImplementedException("just day can use L");
         }
     }
 }

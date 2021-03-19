@@ -55,11 +55,13 @@ namespace UnitTestBrun.Plan
 
                 DateTimeOffset? next3 = dayComputer.Compute(DateTime.Parse("2021-2-1 0:1:1"), tcs);
                 Console.WriteLine(next3);
-                Assert.AreEqual(DateTime.Parse("2021-3-31 0:1:1"), next3);
+                //2月没有31号，快进到3月1号，再重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:1:1"), next3);
 
                 DateTimeOffset? next4 = dayComputer.Compute(DateTime.Parse("2021-2-28 0:1:1"), tcs);
                 Console.WriteLine(next4);
-                Assert.AreEqual(DateTime.Parse("2021-3-31 0:1:1"), next4);
+                //2月没有31号，快进到3月1号，再重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:1:1"), next4);
             }
 
             {
@@ -72,7 +74,8 @@ namespace UnitTestBrun.Plan
                 };
                 DateTimeOffset? next5 = dayComputer.Compute(DateTime.Parse("2021-1-31 0:1:1"), tcs);
                 Console.WriteLine(next5);
-                Assert.AreEqual(DateTime.Parse("2021-3-30 0:1:1"), next5);
+                //2月没有31号，快进到3月1号，再重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:1:1"), next5);
             }
         }
         [TestMethod]
@@ -108,7 +111,8 @@ namespace UnitTestBrun.Plan
                 };
                 DateTimeOffset? next = dayComputer.Compute(DateTime.Parse("2021-2-18 0:0:0"), tcs);
                 Console.WriteLine(next);
-                Assert.AreEqual(DateTime.Parse("2021-3-30 0:0:0"), next);
+                //2月没有31号，快进到3月1号，再重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:0:0"), next);
 
                 DateTimeOffset? next2 = dayComputer.Compute(DateTime.Parse("2021-3-30 0:0:0"), tcs);
                 Console.WriteLine(next2);
@@ -156,7 +160,8 @@ namespace UnitTestBrun.Plan
 
                 DateTimeOffset? next2 = dayComputer.Compute(DateTime.Parse("2021-2-22 0:0:0"), tcs);
                 Console.WriteLine(next2);
-                Assert.AreEqual(DateTime.Parse("2021-3-29 0:0:0"), next2);
+                //到了2月29 修正成3月1号，等待重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:0:0"), next2);
 
 
                 DateTimeOffset? next3 = dayComputer.Compute(DateTime.Parse("2021-4-6 0:0:0"), tcs);
