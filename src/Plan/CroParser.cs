@@ -38,6 +38,7 @@ namespace Brun.Plan
                 }
                 else
                 {
+                    //TODO week 以X开头
                     if (i == 4 && _cros[i - 1].StartsWith("X"))
                     {
                         //day切换到week 移除X
