@@ -140,7 +140,8 @@ namespace UnitTestBrun.Plan
 
                 DateTimeOffset? next2 = dayComputer.Compute(DateTime.Parse("2021-2-28 0:0:0"),new PlanTime(tcs));
                 Console.WriteLine(next2);
-                Assert.AreEqual(DateTime.Parse("2021-3-5 0:0:0"), next2);
+                //快进到3/1 需要重新计算
+                Assert.AreEqual(DateTime.Parse("2021-3-1 0:0:0"), next2);
 
                 DateTimeOffset? next3 = dayComputer.Compute(DateTime.Parse("2021-3-6 0:0:0"),new PlanTime(tcs));
                 Console.WriteLine(next3);
@@ -170,7 +171,8 @@ namespace UnitTestBrun.Plan
 
                 DateTimeOffset? next4 = dayComputer.Compute(DateTime.Parse("2021-3-30 0:0:0"),new PlanTime(tcs));
                 Console.WriteLine(next4);
-                Assert.AreEqual(DateTime.Parse("2021-4-5 0:0:0"), next4);
+                // 修正成4-1号，等待重新计算
+                Assert.AreEqual(DateTime.Parse("2021-4-1 0:0:0"), next4);
             }
         }
 

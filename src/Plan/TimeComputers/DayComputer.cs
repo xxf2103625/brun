@@ -103,6 +103,7 @@ namespace Brun.Plan.TimeComputers
                 {
                     throw new NotSupportedException("步进值不能为0,会死循环");
                 }
+                //TODO 5/30、20/15会死循环
                 while (nextDay <= end)
                 {
                     if (nextDay >= start.Day)
@@ -112,9 +113,9 @@ namespace Brun.Plan.TimeComputers
                     nextDay += step;
                     Thread.Sleep(5);
                 }
-                //下一月
-                start = start.AddMonths(1);
-                return AddDaysFix(start, begin);
+                //下一月 日归零再算一次
+                returnToDay = true;
+                return start.AddDays(DateTime.DaysInMonth(start.Year,start.Month) - start.Day + 1);
             }
         }
         protected override DateTimeOffset? To(DateTimeOffset start)
@@ -130,8 +131,8 @@ namespace Brun.Plan.TimeComputers
             else if (start.Day > end)
             {
                 //极端 1月31号 30-31 next：3月30
-                start = start.AddMonths(1);
-                return AddDaysFix(start, begin);
+                returnToDay = true;
+                return start.AddDays(DateTime.DaysInMonth(start.Year, start.Month) - start.Day + 1);
             }
             else //start.Day<begin
             {

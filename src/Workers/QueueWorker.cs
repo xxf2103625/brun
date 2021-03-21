@@ -26,7 +26,7 @@ namespace Brun.Workers
         private ConcurrentDictionary<Type, ConcurrentQueue<string>> queues;
         private IQueueBackRun _queueBackRun;
         private ConcurrentDictionary<Type, IQueueBackRun> _queueBackRuns;
-        //只需要限制实例并发
+        //只需要限制实例冲突
         //private readonly object backRun_LOCK = new object();
         public QueueWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {

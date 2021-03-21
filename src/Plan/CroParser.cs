@@ -175,6 +175,7 @@ namespace Brun.Plan
         /// <returns></returns>
         private void ParseStep(TimeCloumn cloumn)
         {
+            
             if (cloumn.Plan.IndexOf("/") > -1)
             {
                 string[] nbs = cloumn.Plan.Split("/");
@@ -243,6 +244,10 @@ namespace Brun.Plan
                 }
                 if (!IsError)
                 {
+                    if (cloumn.CloumnType == TimeCloumnType.Week)
+                    {
+                        AddError(cloumn.CloumnType, "week not support for step");
+                    }
                     cloumn.SetStrategy(TimeStrategy.Step);
                 }
             }

@@ -7,8 +7,8 @@ namespace Brun.Plan.TimeComputers
     public class WeekComputer : BasePlanTimeComputer
     {
         //保存这里计算后的年月，如果是从月/年回来，肯定不一样
-        private int initYear=0;
-        private int initMonth=0;
+        private int initYear = 0;
+        private int initMonth = 0;
         private DateTimeOffset? _next;
         public WeekComputer() : base(TimeCloumnType.Week)
         {
@@ -25,7 +25,7 @@ namespace Brun.Plan.TimeComputers
                     startTime = new DateTimeOffset(startTime.Value.Year, startTime.Value.Month, 1, startTime.Value.Hour, startTime.Value.Minute, startTime.Value.Second, startTime.Value.Offset);
                 }
             }
-            _next= base.Compute(startTime, planTime);
+            _next = base.Compute(startTime, planTime);
             if (_next != null)
             {
                 initYear = _next.Value.Year;
@@ -36,23 +36,23 @@ namespace Brun.Plan.TimeComputers
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
             string[] nbs = cloumn.Plan.Split(",");
-            SortedSet<int> weeks = new ();
+            SortedSet<int> weeks = new();
             for (int i = 0; i < nbs.Length; i++)
             {
                 weeks.Add(int.Parse(nbs[i]));
             }
             int nowWeek = (int)start.DayOfWeek;
-            if (weeks.Max-1 < start.DayOfYear)
+            if (weeks.Max - 1 < nowWeek)
             {
                 //下周
-                return start.AddDays(7 - nowWeek + weeks.Min-1);
+                return start.AddDays(7 - nowWeek + weeks.Min - 1);
             }
             //本周
             foreach (var item in weeks)
             {
-                if (item - 1 >= (int)start.DayOfWeek)
+                if (item - 1 >= nowWeek)
                 {
-                    return start.AddDays(item - 1 - (int)start.DayOfWeek);
+                    return start.AddDays(item - 1 - nowWeek);
                 }
             }
             throw new Exception("weekComputer unknow error.");
@@ -95,15 +95,27 @@ namespace Brun.Plan.TimeComputers
 
         protected override DateTimeOffset? Step(DateTimeOffset start)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         protected override DateTimeOffset? To(DateTimeOffset start)
         {
-            throw new NotImplementedException();
             string[] nbs = cloumn.Plan.Split("-");
-            int min= int.Parse(nbs[0]);
-            int max = int.Parse(nbs[1]);
+            int minWeek = int.Parse(nbs[0]);
+            int maxWeek = int.Parse(nbs[1]);
+            if ((int)start.DayOfWeek < minWeek - 1)
+            {
+                return start.AddDays(minWeek - 1 - (int)start.DayOfWeek);
+            }
+            else if ((int)start.DayOfWeek >= minWeek - 1 && (int)start.DayOfWeek <= maxWeek - 1)
+            {
+                return start;
+            }
+            else //start.DayOfWeek>maxWeek-1
+            {
+                //超出范围，快进到下周1,再快进到minWeek    pre= maxWeek - 1 - (int)start.DayOfWeek + 1 + minWeek - 1
+                return start.AddDays(maxWeek - (int)start.DayOfWeek + minWeek - 1);
+            }
         }
     }
 }

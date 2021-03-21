@@ -19,7 +19,8 @@ namespace Brun.Plan
         private WeekComputer weekComputer = new WeekComputer();
         private MonthComputer monthComputer = new MonthComputer();
         private YearComputer yearComputer = new YearComputer();
-
+        private DateTimeOffset? lastTime;
+        private DateTimeOffset? nextTime;
         //private BasePlanTimeComputer timeComputer;
         private PlanTime planTime;
         /// <summary>
@@ -45,15 +46,44 @@ namespace Brun.Plan
             this.planTime = planTime;
         }
         /// <summary>
-        /// 以当前时间准基础，计算下一次执行时间
+        /// 计算下一次执行时间,如果上次执行时间为null，则以当前时间为基准
         /// </summary>
         /// <returns>找不到或超出范围返回null</returns>
         public DateTimeOffset? GetNextTime()
         {
-            return GetNextTime(DateTime.Now);
+            if (lastTime == null)
+            {
+                return GetNextTime(DateTime.Now);
+            }
+            else
+                return GetNextTime(lastTime.Value);
         }
         /// <summary>
-        /// 获取下一次计划时间
+        /// 上一次执行时间，没有为null
+        /// </summary>
+        public DateTimeOffset? LastTime => lastTime;
+        /// <summary>
+        /// 获取下一次执行时间，没有为null
+        /// </summary>
+        public DateTimeOffset? NextTime=>nextTime;
+        /// <summary>
+        /// 设置上一次执行时间
+        /// </summary>
+        /// <param name="lastTime"></param>
+        public void SetLastTime(DateTimeOffset lastTime)
+        {
+            this.lastTime = lastTime;
+        }
+        /// <summary>
+        /// 设置下一次执行时间
+        /// </summary>
+        /// <param name="nextTime"></param>
+        public void SetNextTime(DateTimeOffset nextTime)
+        {
+            this.nextTime=nextTime;
+        }
+        /// <summary>
+        /// 计算下一次计划时间
         /// </summary>
         /// <param name="start">开始时间</param>
         /// <returns>找不到或超出范围返回null</returns>
