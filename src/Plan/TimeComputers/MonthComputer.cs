@@ -15,7 +15,7 @@ namespace Brun.Plan.TimeComputers
         /// <summary>
         /// 特殊的日期，29，30，31，月和年变动的时候可能需要回到dayComputer重新计算
         /// </summary>
-        private bool isSpecialDay = false;
+        //private bool isSpecialDay = false;
         /// <summary>
         /// 初始月，在这里变化后可能需要重新计算天
         /// </summary>
@@ -25,21 +25,31 @@ namespace Brun.Plan.TimeComputers
         /// </summary>
         private int initYear;
         private DateTimeOffset? _next;
+        private bool goBack = false;
         public MonthComputer() : base(TimeCloumnType.Month)
         {
 
         }
-        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        //TODO 重写返回逻辑，判断是否增加了月，增加了直接就返回去，简单粗暴。
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, PlanTime planTime)
         {
             if (startTime != null)
             {
+                this.goBack = false;
                 initMonth = startTime.Value.Month;
                 initYear = startTime.Value.Year;
-                int day = startTime.Value.Day;
-                if (day == 29 || day == 30 || day == 31)
-                    isSpecialDay = true;
+                //int day = startTime.Value.Day;
+                //if (day == 29 || day == 30 || day == 31)
+                //    isSpecialDay = true;
             }
-            this._next = base.Compute(startTime, timeCloumns);
+            this._next = base.Compute(startTime, planTime);
+            if (_next != null)
+            {
+                if (initMonth != _next.Value.Month || initYear != _next.Value.Year)
+                {
+                    this.goBack = true;
+                }
+            }
             return this._next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
@@ -149,7 +159,8 @@ namespace Brun.Plan.TimeComputers
         /// <summary>
         /// 是否回到Day重新计算
         /// </summary>
-        public bool ReturnToDay => isSpecialDay && (_next != null && _next.Value.Year != initYear && _next.Value.Month != initMonth);
+        //public bool ReturnToDay => isSpecialDay && (_next != null && _next.Value.Year != initYear && _next.Value.Month != initMonth);
+        public bool GoBack => goBack;
         protected override DateTimeOffset? Last(DateTimeOffset start)
         {
             throw new NotImplementedException("just day can use L");

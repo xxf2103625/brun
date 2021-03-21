@@ -24,12 +24,11 @@ namespace Brun.Plan.TimeComputers
         /// <param name="startTime"></param>
         /// <param name="timeCloumns"></param>
         /// <returns></returns>
-        public virtual DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        public virtual DateTimeOffset? Compute(DateTimeOffset? startTime, PlanTime planTime)
         {
             if (startTime == null)
                 return null;
-
-            cloumn = timeCloumns.First(m => m.CloumnType == timeCloumnType);
+            cloumn = planTime.Times.FirstOrDefault(m => m.CloumnType == timeCloumnType);
             switch (cloumn.TimeStrategy)
             {
                 case TimeStrategy.None:

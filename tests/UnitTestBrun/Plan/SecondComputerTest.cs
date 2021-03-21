@@ -23,7 +23,8 @@ namespace UnitTestBrun.Plan
             {
                 timeCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            PlanTime planTime = new PlanTime();
+            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next);
             Assert.AreEqual(start.AddSeconds(1), next);
         }
@@ -39,7 +40,7 @@ namespace UnitTestBrun.Plan
                 {
                 timeCloumn
                 };
-                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
                 Console.WriteLine(next);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 0:0:5"), next);
             }
@@ -51,7 +52,7 @@ namespace UnitTestBrun.Plan
                 {
                 timeCloumn
                 };
-                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
                 Console.WriteLine(next);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 0:0:31"), next);
             }
@@ -63,7 +64,7 @@ namespace UnitTestBrun.Plan
                 {
                 timeCloumn
                 };
-                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
                 Console.WriteLine(next);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:5"), next);
             }
@@ -75,7 +76,7 @@ namespace UnitTestBrun.Plan
                 {
                 timeCloumn
                 };
-                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+                DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
                 Console.WriteLine(next);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 0:0:31"), next);
             }
@@ -91,16 +92,16 @@ namespace UnitTestBrun.Plan
             {
                 timeCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:10"), next);
-            var next2= secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            var next2= secondComputer.Compute(next.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:11"), next2);
-            var next3= secondComputer.Compute(next2.Value.AddSeconds(1), tcs);
+            var next3= secondComputer.Compute(next2.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:12"), next3);
-            var next4= secondComputer.Compute(next3.Value.AddSeconds(1), tcs);
+            var next4= secondComputer.Compute(next3.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:2:10"), next4);
-            var next5= secondComputer.Compute(next4.Value.AddSeconds(1), tcs);
+            var next5= secondComputer.Compute(next4.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:2:11"), next5);
         }
         [TestMethod]
@@ -114,12 +115,12 @@ namespace UnitTestBrun.Plan
             {
                 timeCloumn
             };
-            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = secondComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:0"), next);
-            var next2= secondComputer.Compute(next.Value.AddSeconds(1), tcs);
+            var next2= secondComputer.Compute(next.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:5"), next2);
-            var next3 = secondComputer.Compute(next2.Value.AddSeconds(1), tcs);
+            var next3 = secondComputer.Compute(next2.Value.AddSeconds(1),new PlanTime(tcs));
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:10"), next3);
         }
     }

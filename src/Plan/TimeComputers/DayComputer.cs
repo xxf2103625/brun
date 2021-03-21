@@ -18,12 +18,12 @@ namespace Brun.Plan.TimeComputers
         {
 
         }
-        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, PlanTime planTime)
         {
             if (startTime == null)
                 return null;
             returnToDay = false;
-            this._next = base.Compute(startTime, timeCloumns);
+            this._next = base.Compute(startTime, planTime);
             return _next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
@@ -161,6 +161,7 @@ namespace Brun.Plan.TimeComputers
                     {
                         start = start.AddMonths(1);
                         returnToDay = true;
+                        //不能在这里直接加月，可能13月
                         return new DateTimeOffset(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second, start.Offset);
                     }
                     return new DateTimeOffset(start.Year, start.Month, planDay, start.Hour, start.Minute, start.Second, start.Offset);
@@ -169,6 +170,7 @@ namespace Brun.Plan.TimeComputers
                 {
                     start = start.AddMonths(1);
                     returnToDay = true;
+                    //不能在这里直接加月，可能13月
                     return new DateTimeOffset(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second, start.Offset);
                 }
             }
@@ -198,7 +200,7 @@ namespace Brun.Plan.TimeComputers
             }
             else
             {
-                //不能直接加月
+                //不能直接加月 可能13月
                 start = start.AddDays(maxDay - start.Day + 1);//到下月1号
                 //goto day
                 returnToDay = true;

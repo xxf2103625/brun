@@ -15,22 +15,32 @@ namespace Brun.Plan.TimeComputers
         /// <summary>
         /// 特殊的日期，28,29，年变动的时候可能需要回到dayComputer重新计算
         /// </summary>
-        private bool isSpecialDay = false;
+        //private bool isSpecialDay = false;
         private int initYear;
+        private bool goBack=false;
         private DateTimeOffset? _next;
         public YearComputer() : base(TimeCloumnType.Year)
         {
         }
-        public override DateTimeOffset? Compute(DateTimeOffset? startTime, List<TimeCloumn> timeCloumns)
+        //TODO 重写返回逻辑，判断是否增加了年，增加了直接就返回去，简单粗暴。
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime,PlanTime planTime)
         {
             if (startTime == null)
                 return null;
-            if (!timeCloumns.Any(m => m.CloumnType == TimeCloumnType.Year))
+            if (!planTime.Times.Any(m => m.CloumnType == TimeCloumnType.Year))
                 return startTime;
-            if ((startTime.Value.Day == 29 || startTime.Value.Day == 28) && startTime.Value.Month == 2)
-                this.isSpecialDay = true;
+            //if ((startTime.Value.Day == 29 || startTime.Value.Day == 28) && startTime.Value.Month == 2)
+            //    this.isSpecialDay = true;
+            this.goBack = false;
             initYear = startTime.Value.Year;
-            this._next = base.Compute(startTime, timeCloumns);
+            this._next = base.Compute(startTime, planTime);
+            if (_next != null)
+            {
+                if (initYear != _next.Value.Year)
+                {
+                    this.goBack = true;
+                }
+            }
             return _next;
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
@@ -150,7 +160,8 @@ namespace Brun.Plan.TimeComputers
         /// <summary>
         /// 是否回到Day重新计算
         /// </summary>
-        public bool ReturnToDay => isSpecialDay && (_next != null && initYear != _next.Value.Year);
+        //public bool ReturnToDay => isSpecialDay && (_next != null && initYear != _next.Value.Year);
+        public bool GoBack => goBack;
         protected override DateTimeOffset? Last(DateTimeOffset start)
         {
             throw new NotImplementedException("just day can use L");

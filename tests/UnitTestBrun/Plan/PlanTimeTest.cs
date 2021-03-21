@@ -226,10 +226,42 @@ namespace UnitTestBrun.Plan
                 if (next != null)
                 {
                     next = computer.GetNextTime(next.Value);
-                    
+
                     Assert.AreEqual(rs[i], next);
                 }
             }
+        }
+        [TestMethod]
+        public void TestComputeWeek()
+        {
+            PlanTimeComputer computer = new PlanTimeComputer();
+            PlanTime planTime = new PlanTime();
+            computer.SetPlanTime(planTime);
+            {
+                planTime.Parse("0 0 0 x1 3,6 2021,2023");
+                DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
+                Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
+                next = computer.GetNextTime(next.Value);
+                Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
+                Assert.AreEqual(DateTime.Parse("03/21/2021 00:00:00 +08:00"), next);
+            }
+            {
+                planTime.Parse("0 0 0 x7 3,6 2021,2023");
+                DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
+                Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
+                next = computer.GetNextTime(next.Value);
+                Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
+                Assert.AreEqual(DateTime.Parse("03/27/2021 00:00:00 +08:00"), next);
+            }
+            {
+                planTime.Parse("0 0 0 x3 3,6 2021,2023");//周2
+                DateTimeOffset? next = DateTime.Parse("03/24/2021 07:38:14 +08:00");//周三
+                Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
+                next = computer.GetNextTime(next.Value);
+                Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
+                Assert.AreEqual(DateTime.Parse("03/30/2021 00:00:00 +08:00"), next);//周二
+            }
+
         }
     }
 }

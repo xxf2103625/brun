@@ -23,10 +23,10 @@ namespace UnitTestBrun.Plan
             {
                 hourCloumn,
             };
-            DateTimeOffset? next = hourComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = hourComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:0"), next);
-            DateTimeOffset? next2 = hourComputer.Compute(next.Value.AddSeconds(1), tcs);
+            DateTimeOffset? next2 = hourComputer.Compute(next.Value.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next2);
             Assert.AreEqual(DateTime.Parse("2021-3-18 0:1:1"), next2);
         }
@@ -41,13 +41,13 @@ namespace UnitTestBrun.Plan
             {
                 hourCloumn,
             };
-            DateTimeOffset? next = hourComputer.Compute(start.AddSeconds(1), tcs);
+            DateTimeOffset? next = hourComputer.Compute(start.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next);
             Assert.AreEqual(DateTime.Parse("2021-3-18 3:1:0"), next);
-            DateTimeOffset? next2 = hourComputer.Compute(next.Value.AddSeconds(1), tcs);
+            DateTimeOffset? next2 = hourComputer.Compute(next.Value.AddSeconds(1),new PlanTime(tcs));
             Console.WriteLine(next2);
             Assert.AreEqual(DateTime.Parse("2021-3-18 3:1:1"), next2);
-            DateTimeOffset? next3 = hourComputer.Compute(DateTime.Parse("2021-3-18 4:1:1"), tcs);
+            DateTimeOffset? next3 = hourComputer.Compute(DateTime.Parse("2021-3-18 4:1:1"),new PlanTime(tcs));
             Console.WriteLine(next3);
             Assert.AreEqual(DateTime.Parse("2021-3-19 3:1:1"), next3);
         }

@@ -38,6 +38,10 @@ namespace Brun.Plan
             this.expression = strExpression;
             Parse(strExpression);
         }
+        public PlanTime(IEnumerable<TimeCloumn> timeCloumns)
+        {
+            this.times = timeCloumns.ToList();
+        }
         /// <summary>
         /// 解析时间计划表达式
         /// </summary>
@@ -100,5 +104,6 @@ namespace Brun.Plan
         /// 解析后的结果，仅储存原始字符串和计划策略
         /// </summary>
         public List<TimeCloumn> Times => times;
+        public bool IsWeek => result.IsWeek;
     }
 }

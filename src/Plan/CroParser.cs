@@ -43,6 +43,7 @@ namespace Brun.Plan
                     {
                         //day切换到week 移除X
                         _cros[3] = _cros[3].Substring(1);
+                        result.IsWeek = true;
                         r = CoumnParse(TimeCloumnType.Week, _cros[3]);
                     }
                     else

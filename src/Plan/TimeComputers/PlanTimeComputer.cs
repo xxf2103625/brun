@@ -16,6 +16,7 @@ namespace Brun.Plan
         private MinuteComputer minuteComputer = new MinuteComputer();
         private HourComputer hourComputer = new HourComputer();
         private DayComputer dayComputer = new DayComputer();
+        private WeekComputer weekComputer = new WeekComputer();
         private MonthComputer monthComputer = new MonthComputer();
         private YearComputer yearComputer = new YearComputer();
 
@@ -65,24 +66,31 @@ namespace Brun.Plan
             //开始前就加1秒
             start = start.AddSeconds(1);
             //需要手动控制计算流程
-            DateTimeOffset? next = secondComputer.Compute(start, planTime.Times);
-            next = minuteComputer.Compute(next, planTime.Times);
-            next = hourComputer.Compute(next, planTime.Times);
+            DateTimeOffset? next = secondComputer.Compute(start, planTime);
+            next = minuteComputer.Compute(next, planTime);
+            next = hourComputer.Compute(next, planTime);
 
         returnToDay://重新确认
 
-            next = dayComputer.Compute(next, planTime.Times);
-            if (dayComputer.ReturnToDay)
+            if (!planTime.IsWeek)
+            {
+                next = dayComputer.Compute(next, planTime);
+                if (dayComputer.ReturnToDay)
+                {
+                    goto returnToDay;
+                }
+            }
+            else
+            {
+                next = weekComputer.Compute(next, planTime);
+            }
+            next = monthComputer.Compute(next, planTime);
+            if (monthComputer.GoBack)
             {
                 goto returnToDay;
             }
-            next = monthComputer.Compute(next, planTime.Times);
-            if (monthComputer.ReturnToDay)
-            {
-                goto returnToDay;
-            }
-            next = yearComputer.Compute(next, planTime.Times);
-            if (yearComputer.ReturnToDay)
+            next = yearComputer.Compute(next, planTime);
+            if (yearComputer.GoBack)
             {
                 goto returnToDay;
             }

@@ -45,5 +45,9 @@ namespace Brun.Plan
         /// 结果
         /// </summary>
         public List<TimeCloumn> TimeCloumns => timeCloumns;
+        /// <summary>
+        /// 是否星期，和日期互斥
+        /// </summary>
+        public bool IsWeek { get; set; }
     }
 }

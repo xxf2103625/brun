@@ -12,6 +12,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReleaseNotes>优化worker执行流程，OnceWorker和QueueWorker支持配置多个BackRun</PackageReleaseNotes>
     <Version>1.0.4</Version>
+    <Configurations>Release;Debug</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

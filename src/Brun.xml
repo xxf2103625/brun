@@ -334,6 +334,11 @@
             结果
             </summary>
         </member>
+        <member name="P:Brun.Plan.ParseResult.IsWeek">
+            <summary>
+            是否星期，和日期互斥
+            </summary>
+        </member>
         <member name="T:Brun.Plan.PlanTime">
             <summary>
             时间计划
@@ -501,7 +506,7 @@
             计算PlanTime下次执行时间，计算流程需要单独控制，特殊情况会递归
             </summary>
         </member>
-        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},System.Collections.Generic.List{Brun.Plan.TimeCloumn})">
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},Brun.Plan.PlanTime)">
             <summary>
             计算下次执行时间
             </summary>
@@ -626,11 +631,6 @@
             计算月
             </summary>
         </member>
-        <member name="F:Brun.Plan.TimeComputers.MonthComputer.isSpecialDay">
-            <summary>
-            特殊的日期，29，30，31，月和年变动的时候可能需要回到dayComputer重新计算
-            </summary>
-        </member>
         <member name="F:Brun.Plan.TimeComputers.MonthComputer.initMonth">
             <summary>
             初始月，在这里变化后可能需要重新计算天
@@ -641,7 +641,7 @@
             初始年，这里可能跨年，也可能需要重新计算天
             </summary>
         </member>
-        <member name="P:Brun.Plan.TimeComputers.MonthComputer.ReturnToDay">
+        <member name="P:Brun.Plan.TimeComputers.MonthComputer.GoBack">
             <summary>
             是否回到Day重新计算
             </summary>
@@ -684,12 +684,12 @@
             计算年
             </summary>
         </member>
-        <member name="F:Brun.Plan.TimeComputers.YearComputer.isSpecialDay">
+        <member name="F:Brun.Plan.TimeComputers.YearComputer.initYear">
             <summary>
             特殊的日期，28,29，年变动的时候可能需要回到dayComputer重新计算
             </summary>
         </member>
-        <member name="P:Brun.Plan.TimeComputers.YearComputer.ReturnToDay">
+        <member name="P:Brun.Plan.TimeComputers.YearComputer.GoBack">
             <summary>
             是否回到Day重新计算
             </summary>
@@ -880,48 +880,6 @@
         <member name="P:Brun.WorkerContext.State">
             <summary>
             TODO 当前状态
-            </summary>
-        </member>
-        <member name="T:Brun.WorkerServer">
-            <summary>
-            进程单例，暂时只考虑单机运行
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.ServerConfig">
-            <summary>
-            server配置，用于设置系统默认配置
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.Worders">
-            <summary>
-            所有运行中的worker
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.ServiceProvider">
-            <summary>
-            服务容器
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.StoppingToken">
-            <summary>
-            服务结束Token
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.TaskFactory">
-            <summary>
-            公共的Task管理
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
-            <summary>
-            启动Brun
-            </summary>
-            <param name="serviceProvider"></param>
-            <param name="stoppingToken"></param>
-        </member>
-        <member name="P:Brun.WorkerServer.Instance">
-            <summary>
-            进程单例
             </summary>
         </member>
         <member name="T:Brun.Workers.AbstractWorker">
@@ -1180,6 +1138,48 @@
             恢复
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Brun.WorkerServer">
+            <summary>
+            进程单例，暂时只考虑单机运行
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServerConfig">
+            <summary>
+            server配置，用于设置系统默认配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Worders">
+            <summary>
+            所有运行中的worker
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServiceProvider">
+            <summary>
+            服务容器
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.StoppingToken">
+            <summary>
+            服务结束Token
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.TaskFactory">
+            <summary>
+            公共的Task管理
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            启动Brun
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="stoppingToken"></param>
+        </member>
+        <member name="P:Brun.WorkerServer.Instance">
+            <summary>
+            进程单例
+            </summary>
         </member>
     </members>
 </doc>
