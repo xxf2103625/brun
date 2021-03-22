@@ -13,24 +13,20 @@ namespace Brun.Plan.TimeComputers
     public class YearComputer : BasePlanTimeComputer
     {
         /// <summary>
-        /// 特殊的日期，28,29，年变动的时候可能需要回到dayComputer重新计算
+        /// 年变化后回到dayComputer重新计算
         /// </summary>
-        //private bool isSpecialDay = false;
         private int initYear;
-        private bool goBack=false;
+        private bool goBack = false;
         private DateTimeOffset? _next;
         public YearComputer() : base(TimeCloumnType.Year)
         {
         }
-        //TODO 重写返回逻辑，判断是否增加了年，增加了直接就返回去，简单粗暴。
-        public override DateTimeOffset? Compute(DateTimeOffset? startTime,PlanTime planTime)
+        public override DateTimeOffset? Compute(DateTimeOffset? startTime, PlanTime planTime)
         {
             if (startTime == null)
                 return null;
             if (!planTime.Times.Any(m => m.CloumnType == TimeCloumnType.Year))
                 return startTime;
-            //if ((startTime.Value.Day == 29 || startTime.Value.Day == 28) && startTime.Value.Month == 2)
-            //    this.isSpecialDay = true;
             this.goBack = false;
             initYear = startTime.Value.Year;
             this._next = base.Compute(startTime, planTime);

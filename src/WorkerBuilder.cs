@@ -13,7 +13,8 @@ using System.Text;
 namespace Brun
 {
     /// <summary>
-    /// Woker建造器
+    /// Woker建造器,在WorkerServer启动之前先配置好worker
+    /// TODO 创建Client，在WorkerServer运行之后再生成worker
     /// </summary>
     public sealed class WorkerBuilder
     {
@@ -79,6 +80,7 @@ namespace Brun
             builder.option.WorkerType = typeof(QueueWorker);
             return builder;
         }
+
         /// <summary>
         /// 配置其他的QueueBackRun在同一个QueueBackRun中运行，
         /// </summary>
@@ -86,6 +88,11 @@ namespace Brun
         /// <returns></returns>
         public WorkerBuilder AddQueue<TQueueBackRun>() where TQueueBackRun : QueueBackRun, new()
         {
+            if (option.BrunTypes.Any(m => m == typeof(TQueueBackRun)))
+            {
+                log?.LogWarning("同一个Worker中不能配置2个相同类型的QueueBackRun,type:{0}", typeof(TQueueBackRun).FullName);
+                return this;
+            }
             this.option.BrunTypes.Add(typeof(TQueueBackRun));
             return this;
         }
@@ -107,11 +114,31 @@ namespace Brun
             return builder;
         }
         /// <summary>
+        /// 创建定时任务
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public static WorkerBuilder CreateTime<TBackRun>(TimeSpan cycle, bool runWithStart = false) where TBackRun : IBackRun, new()
+        {
+            WorkerBuilder builder = new WorkerBuilder()
+            {
+                //创建了新的对象
+                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+                option = WorkerServer.Instance.ServerConfig.DefaultTimeWorkerOption
+            };
+            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
+            builder.option.WorkerType = typeof(TimeWorker);
+            ((TimeWorkerOption)builder.option).RunWithStart = runWithStart;
+            ((TimeWorkerOption)builder.option).Cycle = cycle;
+            return builder;
+        }
+        /// <summary>
         /// 设置TimeWorker的定时执行周期
         /// </summary>
         /// <param name="cycle">运行周期</param>
         /// <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
         /// <returns></returns>
+        [Obsolete("直接在CreateTime中传入参数")]
         public WorkerBuilder SetCycle(TimeSpan cycle, bool runWithStart = false)
         {
             if (option is TimeWorkerOption option1)
@@ -124,6 +151,45 @@ namespace Brun
                 throw new Exception("only TimeWorker can SetCycle");
             }
 
+            return this;
+        }
+        /// <summary>
+        /// 创建PlanTimeWorker，用于复杂的定时计划任务
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <param name="croExpression"></param>
+        /// <returns></returns>
+        public static WorkerBuilder CreatePlanTime<TBackRun>(params string[] croExpression) where TBackRun : BackRun, new()
+        {
+            WorkerBuilder builder = new WorkerBuilder
+            {
+                //创建了新的对象
+                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
+                option = WorkerServer.Instance.ServerConfig.DefaultPlanTimeWorkerOption
+            };
+            //builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
+            List<string> planTimes = new List<string>(croExpression);
+            ((PlanTimeWorkerOption)builder.option).planTimeRuns = new Dictionary<Type, List<string>>();
+            ((PlanTimeWorkerOption)builder.option).planTimeRuns[typeof(TBackRun)] = planTimes;
+            builder.option.WorkerType = typeof(PlanTimeWorker);
+            //TODO 解析时间表达式
+            return builder;
+        }
+        public WorkerBuilder AddPlanTime<TBackRun>(params string[] croExpression) where TBackRun : BackRun, new()
+        {
+            PlanTimeWorkerOption planOption = (PlanTimeWorkerOption)this.option;
+            if (croExpression == null || croExpression.Length == 0)
+            {
+                throw new Exception("corExpression can not empty.");
+            }
+            if (planOption.planTimeRuns.ContainsKey(typeof(TBackRun)))
+            {
+                throw new Exception($"planTime's backRunType:{typeof(TBackRun).Name} is allready in option.");
+            }
+            else
+            {
+                planOption.planTimeRuns.Add(typeof(TBackRun), new List<string>(croExpression));
+            }
             return this;
         }
         /// <summary>
@@ -215,7 +281,6 @@ namespace Brun
                 option.Name = option.DefaultBrunType.Name;
             if (string.IsNullOrEmpty(option.Tag))
                 option.Tag = defaultTag;
-
 
             if (option.WorkerType == null)
                 option.WorkerType = typeof(OnceWorker);

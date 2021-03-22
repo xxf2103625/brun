@@ -112,6 +112,10 @@ namespace Brun
                 //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
                 Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
             }
+            foreach (var item in worders.Where(m => m is IPlanTimeWorker))
+            {
+                ((IPlanTimeWorker)item).Start();
+            }
             logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());
         }

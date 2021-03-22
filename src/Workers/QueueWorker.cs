@@ -63,11 +63,11 @@ namespace Brun.Workers
                 return bRun;
             }
         }
-      
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="burnType"></param>
+        /// <param name="brunType"></param>
         /// <param name="message"></param>
         /// <returns></returns>
         protected async Task Execute(Type brunType, string message)

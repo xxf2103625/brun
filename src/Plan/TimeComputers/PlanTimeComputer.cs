@@ -53,7 +53,8 @@ namespace Brun.Plan
         {
             if (lastTime == null)
             {
-                return GetNextTime(DateTime.Now);
+                DateTimeOffset t = DateTime.Now;
+                return GetNextTime(new DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, t.Second, t.Offset));
             }
             else
                 return GetNextTime(lastTime.Value);
@@ -65,22 +66,26 @@ namespace Brun.Plan
         /// <summary>
         /// 获取下一次执行时间，没有为null
         /// </summary>
-        public DateTimeOffset? NextTime=>nextTime;
+        public DateTimeOffset? NextTime => nextTime;
+        /// <summary>
+        /// 对应的PlanTime
+        /// </summary>
+        public PlanTime PlanTime => planTime;
         /// <summary>
         /// 设置上一次执行时间
         /// </summary>
-        /// <param name="lastTime"></param>
-        public void SetLastTime(DateTimeOffset lastTime)
+        /// <param name="t"></param>
+        public void SetLastTime(DateTimeOffset t)
         {
-            this.lastTime = lastTime;
+            this.lastTime = new DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, t.Second, t.Offset);
         }
         /// <summary>
         /// 设置下一次执行时间
         /// </summary>
-        /// <param name="nextTime"></param>
-        public void SetNextTime(DateTimeOffset nextTime)
+        /// <param name="t"></param>
+        public void SetNextTime(DateTimeOffset t)
         {
-            this.nextTime=nextTime;
+            this.nextTime = new DateTimeOffset(t.Year, t.Month, t.Day, t.Hour, t.Minute, t.Second, t.Offset);
         }
         /// <summary>
         /// 计算下一次计划时间
@@ -125,6 +130,47 @@ namespace Brun.Plan
                 goto returnToDay;
             }
             return next;
+        }
+        /// <summary>
+        /// 重写相等判断，以PlanTime.Expression是否相同为标准（大写），PlanTime=null永不相等
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            PlanTimeComputer other = (PlanTimeComputer)obj;
+            if (other.planTime == null || this.planTime == null)
+            {
+                return false;
+            }
+            else
+            {
+                if (other.planTime.Expression == this.planTime.Expression)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public override string ToString()
+        {
+            if (planTime == null || !planTime.IsSuccess)
+            {
+                return null;
+            }
+            else
+            {
+                return planTime.Expression;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            if (planTime == null || !planTime.IsSuccess)
+            {
+                return base.GetHashCode();
+            }
+            return this.planTime.Expression.GetHashCode();
         }
     }
 }

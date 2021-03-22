@@ -33,7 +33,9 @@ namespace Brun.Workers
         /// 管理单个实例的token
         /// </summary>
         protected CancellationTokenSource tokenSource;
-        //TODO 管理Task
+        /// <summary>
+        /// 统一配置实例内的Task
+        /// </summary>
         protected TaskFactory taskFactory;
         public AbstractWorker(WorkerOption option, WorkerConfig config)
         {
@@ -73,7 +75,7 @@ namespace Brun.Workers
         public string Name => _option.Name;
 
         public string Tag => _option.Tag;
-        public Type WorkerType => _option.DefaultBrunType;
+        public Type WorkerType => _option.WorkerType;
 
         public string GetData(string key)
         {
@@ -102,6 +104,7 @@ namespace Brun.Workers
             }
             else
             {
+                tokenSource.Cancel();
                 this.Context.Dispose();
             }
         }

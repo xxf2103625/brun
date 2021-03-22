@@ -22,7 +22,7 @@ namespace Brun.Plan.TimeComputers
         /// 计算下次执行时间
         /// </summary>
         /// <param name="startTime"></param>
-        /// <param name="timeCloumns"></param>
+        /// <param name="planTime"></param>
         /// <returns></returns>
         public virtual DateTimeOffset? Compute(DateTimeOffset? startTime, PlanTime planTime)
         {
@@ -58,7 +58,7 @@ namespace Brun.Plan.TimeComputers
             return startTime;
         }
         /// <summary>
-        /// L 仅TimeCloumnType.Day中可用
+        /// L 最后n天 仅TimeCloumnType.Day中可用
         /// </summary>
         /// <param name="start"></param>
         /// <returns></returns>

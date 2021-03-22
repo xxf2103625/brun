@@ -12,7 +12,7 @@ namespace UnitTestBrun.Plan
     public class PlanTimeTest
     {
         [TestMethod]
-        public void TestCompute()
+        public void TestComputeSimple()
         {
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
@@ -70,7 +70,7 @@ namespace UnitTestBrun.Plan
             }
         }
         [TestMethod]
-        public void TestComputeMouth()
+        public void TestComputeMouth_2_29()
         {
             List<DateTime> rs = new List<DateTime>()
             {

@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 namespace BrunWebTest
 {
+    public class LogTimeRun : BackRun
+    {
+        public override Task Run(CancellationToken stoppingToken)
+        {
+            GetRequiredService<ILogger<LogTimeRun>>().LogInformation("{0} this is logTimeRun", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
+            return Task.CompletedTask;
+        }
+    }
     public class ErrorTestRun : BackRun
     {
         public override Task Run(CancellationToken stoppingToken)
@@ -25,7 +33,7 @@ namespace BrunWebTest
             for (int i = 0; i < 1; i++)
             {
                 var log = GetRequiredService<ILogger<TestHttpWorker>>();
-                
+
                 HttpClient httpClient = new HttpClient();
                 var r = await httpClient.GetAsync("http://127.0.0.1:5000/", stoppingToken);
                 log.LogWarning("httpClient发起了请求,state:" + r.StatusCode);
@@ -49,7 +57,7 @@ namespace BrunWebTest
     {
         public override Task Run(string message, CancellationToken stoppingToken)
         {
-           
+
             var log = GetRequiredService<ILogger<TestQueueWorker>>();
             if (message == "2")
             {

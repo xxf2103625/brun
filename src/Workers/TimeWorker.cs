@@ -14,9 +14,8 @@ using System.Threading.Tasks;
 namespace Brun.Workers
 {
     /// <summary>
-    /// 简单的内存定时任务,执行周期会微小偏移
-    /// //TODO 定义为最简易定时任务，继续简化使用
-    /// //TODO 创建新的TriggerWorker 只负责管理触发条件 支持复杂的定时，支持Cron
+    /// 简单的时间循环任务，复杂的定时使用<see cref="PlanTimeWorker"/>
+    /// //TODO 最简易循环执行任务，继续简化使用
     /// </summary>
     public class TimeWorker : AbstractWorker, ITimeWorker
     {

@@ -15,7 +15,6 @@ namespace Brun.Workers
 {
     /// <summary>
     /// 基础Worker，每次执行一次
-    /// TODO 让一个OnceWorker可以配置多个不同类型的Backrun
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
@@ -73,7 +72,7 @@ namespace Brun.Workers
             });
         }
         /// <summary>
-        /// 返回一个空的Task，因为任何时候都不需要等待
+        /// 慎用，可能会等待后台任务
         /// </summary>
         /// <returns></returns>
         public Task Run()
@@ -81,7 +80,7 @@ namespace Brun.Workers
             return Run(_option.DefaultBrunType);
         }
         /// <summary>
-        /// 运行指定类型的BanRun
+        /// 慎用，可能会等待后台任务
         /// </summary>
         /// <typeparam name="TBackRun"></typeparam>
         /// <returns></returns>
@@ -95,7 +94,6 @@ namespace Brun.Workers
         /// <returns></returns>
         public Task Run(Type backRunType)
         {
-            
             Task t = RealRun(backRunType);
             RunningTasks.TryAdd(t);
             return t.ContinueWith(t =>

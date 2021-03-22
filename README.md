@@ -1,29 +1,33 @@
-# Brun
-### 介绍
-#### netcore 轻量级后台任务，asp.net中简单易用。
 
-目前仅支持内存运行，后期可能会支持持久化。
+### Brun是netcore中轻量级后台任务组件，asp.net中简单易用
 
+>目前仅支持内存运行，后期会支持持久化。
 
 #### 软件架构
-基于netcore IHostedService 的后台任务组件。
 
-控制台和web项目都可以直接用。
-#### IWorker：我把它定义为工作中心，定义了后台任务以什么样的流程来执行 
-1. OnceWorker：调用一次执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 配置BackRun来执行自己的业务逻辑，一个Worker可以配置多个BackRun。
-2. QueueWorker: 队列任务，用QueueWorker添加string到队列，后台任务会立即执行。配置QueueBackRun来写自己的任务逻辑，请自己序列化String，一个Worker可以配置多个QueueBackRun。。
-3. TimeWorker: 简单的定时任务，配置一个TimeSpan，周期循环执行定义的BackRun。继承BackRun/ScopeBackRun来写自己的任务逻辑。
+>dotnet core的后台任务组件，控制台和web项目都可以直接用。
 
-#### IBackRun：写业务逻辑的地方，需要自己继承实现抽象方法，不同的Worker可能会有不同的上下文/参数
-1. BackRun：最基础的执行逻辑，公开一个字典属性，在同一个Worker实例中每次执行时共享数据，OnceWorker和TimeWorker都使用这个。不同的BackRun可以配置给同一个OnceWorker。
-2. QueueBackRun：QueueWorker独有的执行器，接受一个string类型的参数，为每次添加到队列的String数据，目前需要自己序列化。不同的QueueBackRun可以配置给同一个QueueWorke。
-3. ScopeBackRun：和BackRun类似，不过每次调用会创建属于自己的Ioc生命周期，从ServiceProvider取服务时可以直接取services.AddScoped的服务(BackRun中需要自己NewScope)。
-#### WorkerObserver：Worker的观察者（拦截器），目前只是简单的计数、Log，用户也能方便的添加自定义拦截器，后期会用他们实现持久化。
-#### WorkerContext：Worker的上下文，储存每个Worker实例运行时的数据，实时监控就是取它的数据。
+##### 工作中心`Worker`，定义了后台任务以什么样的流程来执行
 
-#### 安装教程
+- **OnceWorker** 调用一次执行一次的后台任务，可配置自定义数据。在Action里、服务里、任何其他位置调用. 配置BackRun来执行自己的业务逻辑，一个Worker可以配置多个BackRun。
 
-nuget搜索Brun 或自己编译
+- **QueueWorker** 队列任务，用QueueWorker添加string到队列，后台任务会立即执行。配置QueueBackRun来写自己的任务逻辑，请自己序列化String，一个Worker可以配置多个QueueBackRun。。
+- **TimeWorker** 简单的周期执行任务，配置一个TimeSpan，周期循环执行定义的BackRun。继承BackRun/ScopeBackRun来写自己的任务逻辑。
+- **PlanTimeWorker** 按时间计划执行的任务，配置[Cro表达式](#cro)（**Cron表达式的简化版**），在指定时间执行Backrun。继承BackRun/ScopeBackRun来写自己的任务逻辑。一个BackRun可以配置多个时间计划，一个时间计划可以对应多个不同类型的BackRun。
+
+##### IBackRun：写业务逻辑的地方，需要自己继承实现抽象方法，不同的Worker可能要求不同的BackRun
+
+- **BackRun** 最基础的执行逻辑，公开一个字典属性，在同一个Worker实例中每次执行时共享数据，OnceWorker和TimeWorker都使用这个。不同的BackRun可以配置给同一个OnceWorker。
+- **QueueBackRun** QueueWorker独有的执行器，接受一个string类型的参数，为每次添加到队列的String数据，目前需要自己序列化。不同的QueueBackRun可以配置给同一个QueueWorke。
+- **ScopeBackRun** 和BackRun类似，不过每次调用会创建属于自己的Ioc生命周期，GetService\<T>取对象时可以直接取services.AddScoped的服务(BackRun中需要自己NewScope)。
+
+##### WorkerObserver：Worker的观察者（拦截器），目前只是简单的计数、Log，用户也能方便的添加自定义拦截器，后期会用他们实现持久化
+
+##### WorkerContext：Worker的上下文，储存每个Worker实例运行时的数据，实时监控就是取它的数据
+
+##### 安装教程
+
+>nuget搜索Brun 或自己编译
 
 #### 使用说明
 
@@ -110,7 +114,7 @@ public class Program
                     .Build();
 
 
-                    //配置定时任务
+                    //配置简单循环执行任务
                     //WorkerBuilder.CreateTime<ErrorTestRun>()
                     WorkerBuilder.CreateTime<LongTimeBackRun>()
                     .SetCycle(TimeSpan.FromSeconds(5), true)
@@ -118,12 +122,18 @@ public class Program
                     .Build()
                     ;
 
+                    //配置复杂时间计划任务
+                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * * *", "5 * * * *", "* * * * *")
+                    .AddPlanTime<ErrorTestRun>("* * * * *")
+                    .SetKey(PlanKey)
+                    .Build();
+
                     //启动后台服务
                     services.AddBrunService();
                 })
                 ;
     }
-``` 
+```
 
 3. Action中使用例子
 
@@ -166,12 +176,28 @@ public class HomeController : Controller
         }
     }
 ```
+
 4. 完整代码参考simples/BrunWebTest项目，DocFx生成的文档：[http://www.dotnet6.net/api/Brun.html](http://www.dotnet6.net/api/Brun.html)
+
+#### <a name="cro">Cro表达式</a> ：Cron表达式的简化版
+- 合并了日期和星期域，比Cron表达式少一个域，Cron表达式是6-7个域，Cro是5-6个。移除了第6个DayofWeek域
+- 不支持第几个星期几这种计划，其他的基本都能满足
+>**Cro域的格式，特殊字符不能是中文版**
+
+| 秒(0-59) | 分(0-59) | 时(0-23) | 日/星期(1-31/1-7) | 月(1-12) | 年(1970-2099) |
+| :-----| ----: | :----: |:----: |:----: |:----: |
+| * , - / 数字 | * , - / 数字 | * , - / 数字 | * , - L 数字 X | * , - / 数字 | 可空 * , - / 数字 |
+
+- **\*** 匹配任意，如秒域指定 \* 表示每秒都会执行, 年可空，默认也是*
+- **\,** 数组匹配，如分钟域指定 0,10,40 表示0分，10分，40分钟的时候都满足条件
+- **\-** 范围匹配，如小时域指定 10-17 表示10点到17点内都满足条件
+- **\/** 步进匹配，如日期域指定 1/2 表示从1月开始（包含1月），每过2个月，那么3月，5月，7月...满足条件。\*\/2等同1\/2。如果是秒（初始是0）\*\/10 等同0\/10。还能和范围组合使用 3\-12\/3 表示在3-12月内，从3月开始，每过3个月满足条件。注意：星期暂时不支持步进（这种需求很少）。
+- L 只能在日期域中使用，表示最后一天，2L表示最后一天再往前2天，30L在遇到不是31天的月份都会跳过当月。
+- X 只能在日期域中使用，表示以星期判断，和日期互斥，X1表示每个星期天，X2表示星期一，X7表示星期六。X2-6表示星期一到星期五，X1,7表示周末。
+
 #### 参与贡献
 
 1.  Fork 本仓库
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
-
-

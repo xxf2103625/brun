@@ -24,7 +24,7 @@ namespace Brun.Observers
             {
                 _context.startNb++;
             }
-            logger.LogDebug("backrun:{0} is start,startNb:{1}", brunType, _context.startNb);
+            logger.LogDebug("backrun:{0} is start,startNb:{1} {2}", brunType.Name, _context.startNb, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
             return Task.CompletedTask;
         }
     }
