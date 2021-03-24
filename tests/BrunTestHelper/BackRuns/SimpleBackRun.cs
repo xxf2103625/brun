@@ -12,10 +12,9 @@ namespace BrunTestHelper.BackRuns
     public class SimpleBackRun : BackRun
     {
         public static int SimNb = 0;
-        private object LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
-            lock (LOCK)
+            lock (SharedLock.Nb_LOCK)
             {
                 SimNb++;
             }

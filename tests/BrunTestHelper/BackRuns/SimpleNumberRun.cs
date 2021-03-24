@@ -73,8 +73,7 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfter : BackRun
     {
-        private static object SimpNbDelayAfter_LOCK = new object();
-        public override async Task Run(CancellationToken stoppingToken)
+        public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
             {
@@ -94,6 +93,7 @@ namespace BrunTestHelper.BackRuns
             }
             Thread.Sleep(TimeSpan.FromSeconds(3));
             Console.WriteLine("SimpNbDelayAfter 计算后已等待5秒...");
+            return Task.CompletedTask;
         }
 
     }
@@ -131,7 +131,6 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfterTask : BackRun
     {
-        private static object SimpNbDelayAfterTask_LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)

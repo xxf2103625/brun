@@ -75,7 +75,6 @@ namespace BrunTestHelper.BackRuns
     }
     public class ErrorLongBackRun : BackRun
     {
-        private static object ErrorLongBackRun_LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
             //await Task.Delay(TimeSpan.FromSeconds(0.2),stoppingToken);

@@ -23,7 +23,7 @@ namespace UnitTestBrun
     public class WorkerTest : BaseHostTest
     {
         [TestMethod]
-        public async Task TestSimpleRunDontWaitAsync()
+        public void TestSimpleRunDontWaitAsync()
         {
             StartHost(m =>
             {
@@ -106,7 +106,7 @@ namespace UnitTestBrun
             Assert.AreEqual("0", work.GetData("nb"));
         }
         [TestMethod]
-        public async Task TestSimpleRunBeforeTaskWaitWorkerVoidAsync()
+        public void TestSimpleRunBeforeTaskWaitWorkerVoidAsync()
         {
             StartHost(m =>
             {
@@ -139,7 +139,7 @@ namespace UnitTestBrun
             Assert.AreEqual("0", work.GetData("nb"));
         }
         [TestMethod]
-        public async Task TestSimpleRunBeforeVoidAsync()
+        public void TestSimpleRunBeforeVoidAsync()
         {
             StartHost(m =>
             {
@@ -155,7 +155,7 @@ namespace UnitTestBrun
             Assert.AreEqual("0", work.GetData("nb"));
         }
         [TestMethod]
-        public async Task TestAsyncSimpleRunBefore()
+        public void TestAsyncSimpleRunBefore()
         {
             StartHost(m =>
             {
@@ -171,7 +171,7 @@ namespace UnitTestBrun
             Assert.AreEqual("0", work.GetData("nb"));
         }
         [TestMethod]
-        public async Task TestSimpleRunBeforeTaskVoidAsync()
+        public void TestSimpleRunBeforeTaskVoidAsync()
         {
             StartHost(m =>
             {
@@ -304,7 +304,7 @@ namespace UnitTestBrun
             Assert.AreEqual(10, work.Context.exceptNb);
         }
         [TestMethod]
-        public async Task WaitTaskTestErrorRunNotAwaitAsync()
+        public void WaitTaskTestErrorRunNotAwaitAsync()
         {
             StartHost(m =>
             {
@@ -330,7 +330,7 @@ namespace UnitTestBrun
             Assert.AreEqual(10, work.Context.exceptNb);
         }
         [TestMethod]
-        public async Task TaskTestErrorRunAwaitAsync()
+        public void TaskTestErrorRunAwaitAsync()
         {
             StartHost(m =>
             {
@@ -359,10 +359,10 @@ namespace UnitTestBrun
             }
             WaitForBackRun();
             Console.WriteLine(SimpleBackRun.SimNb);
-            //Assert.AreEqual(max, SimpleBackRun.SimNb);
+            Assert.AreEqual(max, SimpleBackRun.SimNb);
         }
         [TestMethod]
-        public async Task SynchroWorkerManyTest()
+        public void SynchroWorkerManyTest()
         {
             StartHost(m =>
             {
@@ -374,9 +374,10 @@ namespace UnitTestBrun
             {
                 worker.Run();
             }
+            WaitForBackRun();
         }
         [TestMethod]
-        public async Task SynchroWorkerManyDontWaitTestAsync()
+        public void SynchroWorkerManyDontWaitTestAsync()
         {
             StartHost(m =>
             {
@@ -388,7 +389,7 @@ namespace UnitTestBrun
             {
                 worker.RunDontWait();
             }
-            //测试进程会直接结束
+            WaitForBackRun();
         }
         [TestMethod]
         public async Task CuntomDataTest()
@@ -414,7 +415,7 @@ namespace UnitTestBrun
 
         //多个Backrun
         [TestMethod]
-        public async Task TestSimpleMultAsync()
+        public void TestSimpleMultAsync()
         {
             StartHost(m =>
             {
@@ -429,8 +430,7 @@ namespace UnitTestBrun
             work.RunDontWait<SimpNbDelayBefore>();
             work.RunDontWait<SimpNbDelayAfter>();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
-            //都不等待
-            Assert.AreEqual(null, work.GetData("nb"));
+
             WaitForBackRun();
             //完成之后
             Assert.AreEqual("300", work.GetData("nb"));
@@ -440,22 +440,23 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
+                var data = new ConcurrentDictionary<string, string>();
+                data["nb"] = "0";
                 WorkerBuilder
-                .Create<SimpleNumberRun>()//内部没有await
-                .Add<SimpNbDelayBefore>()
-                .Add<SimpNbDelayAfter>()
-                .BuildOnceWorker();
+                    .Create<SimpleNumberRun>()//内部没有await
+                    .SetData(data)
+                    .Add<SimpNbDelayBefore>()
+                    .Add<SimpNbDelayAfter>()
+                    .BuildOnceWorker();
             });
             IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
             work.RunDontWait();
             work.Run<SimpNbDelayBefore>();
             work.Run<SimpNbDelayAfter>();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
-            //不会等待第一个
-            Assert.AreEqual(null, work.GetData("nb"));
+
             //第一个会在这个后面继续运行
             WaitForBackRun();
-
             Assert.AreEqual("300", work.GetData("nb"));
             Console.WriteLine("进程结束。。。。。。。。。。。。。。");
         }
