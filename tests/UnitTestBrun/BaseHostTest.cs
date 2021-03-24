@@ -16,54 +16,84 @@ namespace UnitTestBrun
     /// <summary>
     /// 测试Host托管的后台任务基类
     /// </summary>
+
     public abstract class BaseHostTest
     {
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
         //TimeSpan waitTime = TimeSpan.FromSeconds(3);
-
+        private object LOCK = new object();
         [TestInitialize]
-        public async Task InitAsync()
+        public void InitAsync()
+        {
+            WorkerServer.ClearInstance();
+            //tokenSource = new CancellationTokenSource();
+            //cancellationToken = tokenSource.Token;
+            //host = Host.CreateDefaultBuilder()
+            //    .ConfigureServices((hostContext, services) =>
+            //    {
+            //        services.AddBrunService();
+            //    })
+            //    .Build();
+            //await host.StartAsync(cancellationToken);
+        }
+        protected void StartHost(Action<IServiceCollection> configure)
         {
             tokenSource = new CancellationTokenSource();
             cancellationToken = tokenSource.Token;
             host = Host.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
+                    configure(services);
                     services.AddBrunService();
                 })
                 .Build();
-            await host.StartAsync(cancellationToken);
-            //WorkerServer.Instance.Start(host.Services, cancellationToken);
+            host.Start();
+            //await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
+        }
+        protected IWorker GetWorkerByKey(string key)
+        {
+            return WorkerServer.Instance.GetWorker(key);
+        }
+        public IEnumerable<IWorker> GetWorkerByName(string name)
+        {
+            return WorkerServer.Instance.GetWokerByName(name);
+        }
+        public IEnumerable<IOnceWorker> GetOnceWorkerByName(string name)
+        {
+            return WorkerServer.Instance.GetWokerByName(name).Cast<IOnceWorker>();
+        }
+        public IEnumerable<IWorker> GetWorkerByTag(string tag)
+        {
+            return WorkerServer.Instance.GetWokerByTag(tag);
         }
         /// <summary>
         /// 等待所有任务完成
         /// </summary>
         /// <returns></returns>
-        protected async Task WaitForBackRun()
+        protected void WaitForBackRun()
         {
-            WorkerServer server = (WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
-            await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
-            while (server.GetAllWorker().Any(m => m.RunningTasks.Count > 0))
+            WorkerServer server = WorkerServer.Instance; //(WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
+            //await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
+            Thread.Sleep(TimeSpan.FromSeconds(0.1));
+            while (server.GetAllWorker().Any(m => m.Context.endNb<m.Context.startNb))
             {
-                await Task.Delay(5);
+                Thread.Sleep(5);
             }
         }
         [TestCleanup]
         public async Task CleanupAsync()
         {
-            //await Task.Delay(waitTime);
-            //tokenSource.CancelAfter(waitTime);
-            tokenSource.Cancel();
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(5);
-            }
-            if (host != null)
-            {
-                await host.StopAsync();
-            }
+            await host.StopAsync();
+            host = null;
+            ////tokenSource.Cancel();
+            //if (host != null)
+            //{
+
+            //    //host = null;
+            //}
+            //return Task.CompletedTask;
         }
     }
 }

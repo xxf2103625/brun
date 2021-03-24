@@ -144,6 +144,285 @@
         "detailedType": 4
     },
     {
+        "uid": "Brun.OnceWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.OnceWorker",
+        "title": "OnceWorker",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.OnceWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.OnceWorker.OnceWorker(Brun.WorkerOption, Brun.WorkerConfig)",
+        "title": "OnceWorker.OnceWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary<System.String, System.String>)",
+        "title": "OnceWorker.Execute(ConcurrentDictionary<String, String>)",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.OnceWorker.RunDontWait",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.OnceWorker.RunDontWait()",
+        "title": "OnceWorker.RunDontWait()",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.OnceWorker.Run",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.OnceWorker.Run()",
+        "title": "OnceWorker.Run()",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.OnceWorker.GetData",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.OnceWorker.GetData()",
+        "title": "OnceWorker.GetData()",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.OnceWorker.GetData``1(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.OnceWorker.GetData<T>(System.String)",
+        "title": "OnceWorker.GetData<T>(String)",
+        "sourceFile": "api\\Brun.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.QueueWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.QueueWorker",
+        "title": "QueueWorker",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.QueueWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.QueueWorker.QueueWorker(Brun.WorkerOption, Brun.WorkerConfig)",
+        "title": "QueueWorker.QueueWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.QueueWorker.Execute(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.QueueWorker.Execute(System.String)",
+        "title": "QueueWorker.Execute(String)",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.QueueWorker.Start",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.QueueWorker.Start()",
+        "title": "QueueWorker.Start()",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.QueueWorker.Start(System.Object)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.QueueWorker.Start(System.Object)",
+        "title": "QueueWorker.Start(Object)",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.QueueWorker.Enqueue(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.QueueWorker.Enqueue(System.String)",
+        "title": "QueueWorker.Enqueue(String)",
+        "sourceFile": "api\\Brun.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.SynchroWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.SynchroWorker",
+        "title": "SynchroWorker",
+        "sourceFile": "api\\Brun.SynchroWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.SynchroWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.SynchroWorker.SynchroWorker(Brun.WorkerOption, Brun.WorkerConfig)",
+        "title": "SynchroWorker.SynchroWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.SynchroWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.TimeWorker",
+        "title": "TimeWorker",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.TimeWorker.TimeWorker(Brun.Options.TimeWorkerOption, Brun.WorkerConfig)",
+        "title": "TimeWorker.TimeWorker(TimeWorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Start(System.Object)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Start(System.Object)",
+        "title": "TimeWorker.Start(Object)",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Start",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Start()",
+        "title": "TimeWorker.Start()",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Run",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Run()",
+        "title": "TimeWorker.Run()",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary<System.String, System.String>)",
+        "title": "TimeWorker.Execute(ConcurrentDictionary<String, String>)",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Pause",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Pause()",
+        "title": "TimeWorker.Pause()",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.TimeWorker.Resume",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.TimeWorker.Resume()",
+        "title": "TimeWorker.Resume()",
+        "sourceFile": "api\\Brun.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.WorkerOption",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.WorkerOption",
+        "title": "WorkerOption",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.WorkerOption.#ctor",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.WorkerOption.WorkerOption()",
+        "title": "WorkerOption.WorkerOption()",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.WorkerOption.BrunType",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.BrunType",
+        "title": "WorkerOption.BrunType",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.WorkerOption.WorkerType",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.WorkerType",
+        "title": "WorkerOption.WorkerType",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.WorkerOption.Key",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.Key",
+        "title": "WorkerOption.Key",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.WorkerOption.Name",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.Name",
+        "title": "WorkerOption.Name",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.WorkerOption.Tag",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.Tag",
+        "title": "WorkerOption.Tag",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.WorkerOption.Data",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerOption.Data",
+        "title": "WorkerOption.Data",
+        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
         "uid": "Brun.BackRun",
         "type": "Reference.Managed",
         "memberType": "Class",
@@ -277,6 +556,132 @@
         "title": "IQueueBackRun.Run(String, CancellationToken)",
         "sourceFile": "api\\Brun.BaskRuns.IQueueBackRun.yml",
         "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.BaskRuns.ScopeBackRun",
+        "title": "ScopeBackRun",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.ServiceProvider",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.BaskRuns.ScopeBackRun.ServiceProvider",
+        "title": "ScopeBackRun.ServiceProvider",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.RunInScope(System.Threading.CancellationToken)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRun.RunInScope(System.Threading.CancellationToken)",
+        "title": "ScopeBackRun.RunInScope(CancellationToken)",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.Run(System.Threading.CancellationToken)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRun.Run(System.Threading.CancellationToken)",
+        "title": "ScopeBackRun.Run(CancellationToken)",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.GetRequiredService``1",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRun.GetRequiredService<TService>()",
+        "title": "ScopeBackRun.GetRequiredService<TService>()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.GetService``1",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRun.GetService<TService>()",
+        "title": "ScopeBackRun.GetService<TService>()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.#ctor",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.BaskRuns.ScopeBackRun.ScopeBackRun()",
+        "title": "ScopeBackRun.ScopeBackRun()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRun.Data",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.BaskRuns.ScopeBackRun.Data",
+        "title": "ScopeBackRun.Data",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRun.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder",
+        "title": "ScopeBackRunServicePrivoder",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder.GetRequiredService``1",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder.GetRequiredService<TService>()",
+        "title": "ScopeBackRunServicePrivoder.GetRequiredService<TService>()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder.GetService``1",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder.GetService<TService>()",
+        "title": "ScopeBackRunServicePrivoder.GetService<TService>()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope()",
+        "title": "ScopeBackRunServicePrivoder.NewScope()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder.#ctor",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder.ScopeBackRunServicePrivoder()",
+        "title": "ScopeBackRunServicePrivoder.ScopeBackRunServicePrivoder()",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.BaskRuns.ScopeBackRunServicePrivoder.ServiceProvider",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.BaskRuns.ScopeBackRunServicePrivoder.ServiceProvider",
+        "title": "ScopeBackRunServicePrivoder.ServiceProvider",
+        "sourceFile": "api\\Brun.BaskRuns.ScopeBackRunServicePrivoder.yml",
+        "detailedType": 4
     },
     {
         "uid": "Brun.BaskRuns.TimeBackRun",
@@ -567,15 +972,6 @@
         "detailedType": 5
     },
     {
-        "uid": "Brun.IQueueWorker.Start(System.Object)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.IQueueWorker.Start(System.Object)",
-        "title": "IQueueWorker.Start(Object)",
-        "sourceFile": "api\\Brun.IQueueWorker.yml",
-        "detailedType": 5
-    },
-    {
         "uid": "Brun.ITimeWorker",
         "type": "Reference.Managed",
         "memberType": "Interface",
@@ -662,6 +1058,24 @@
         "memberType": "Property",
         "name": "Brun.IWorker.Context",
         "title": "IWorker.Context",
+        "sourceFile": "api\\Brun.IWorker.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.IWorker.TaskFactory",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.IWorker.TaskFactory",
+        "title": "IWorker.TaskFactory",
+        "sourceFile": "api\\Brun.IWorker.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.IWorker.RunningTasks",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.IWorker.RunningTasks",
+        "title": "IWorker.RunningTasks",
         "sourceFile": "api\\Brun.IWorker.yml",
         "detailedType": 4
     },
@@ -909,69 +1323,6 @@
         "detailedType": 2
     },
     {
-        "uid": "Brun.OnceWorker",
-        "type": "Reference.Managed",
-        "memberType": "Class",
-        "name": "Brun.OnceWorker",
-        "title": "OnceWorker",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 3
-    },
-    {
-        "uid": "Brun.OnceWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
-        "type": "Reference.Managed",
-        "memberType": "Constructor",
-        "name": "Brun.OnceWorker.OnceWorker(Brun.WorkerOption, Brun.WorkerConfig)",
-        "title": "OnceWorker.OnceWorker(WorkerOption, WorkerConfig)",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary<System.String, System.String>)",
-        "title": "OnceWorker.Execute(ConcurrentDictionary<String, String>)",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.OnceWorker.RunDontWait",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.OnceWorker.RunDontWait()",
-        "title": "OnceWorker.RunDontWait()",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.OnceWorker.Run",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.OnceWorker.Run()",
-        "title": "OnceWorker.Run()",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.OnceWorker.GetData",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.OnceWorker.GetData()",
-        "title": "OnceWorker.GetData()",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.OnceWorker.GetData``1(System.String)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.OnceWorker.GetData<T>(System.String)",
-        "title": "OnceWorker.GetData<T>(String)",
-        "sourceFile": "api\\Brun.OnceWorker.yml",
-        "detailedType": 5
-    },
-    {
         "uid": "Brun.Options.TimeWorkerOption",
         "type": "Reference.Managed",
         "memberType": "Class",
@@ -996,6 +1347,87 @@
         "name": "Brun.Options.TimeWorkerOption.Cycle",
         "title": "TimeWorkerOption.Cycle",
         "sourceFile": "api\\Brun.Options.TimeWorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.TimeWorkerOption.RunWithStart",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.TimeWorkerOption.RunWithStart",
+        "title": "TimeWorkerOption.RunWithStart",
+        "sourceFile": "api\\Brun.Options.TimeWorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.Options.WorkerOption",
+        "title": "WorkerOption",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.#ctor",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.Options.WorkerOption.WorkerOption()",
+        "title": "WorkerOption.WorkerOption()",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.BrunType",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.BrunType",
+        "title": "WorkerOption.BrunType",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.WorkerType",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.WorkerType",
+        "title": "WorkerOption.WorkerType",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.Key",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.Key",
+        "title": "WorkerOption.Key",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.Name",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.Name",
+        "title": "WorkerOption.Name",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.Tag",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.Tag",
+        "title": "WorkerOption.Tag",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Options.WorkerOption.Data",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Options.WorkerOption.Data",
+        "title": "WorkerOption.Data",
+        "sourceFile": "api\\Brun.Options.WorkerOption.yml",
         "detailedType": 4
     },
     {
@@ -1035,60 +1467,6 @@
         "detailedType": 5
     },
     {
-        "uid": "Brun.QueueWorker",
-        "type": "Reference.Managed",
-        "memberType": "Class",
-        "name": "Brun.QueueWorker",
-        "title": "QueueWorker",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 3
-    },
-    {
-        "uid": "Brun.QueueWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
-        "type": "Reference.Managed",
-        "memberType": "Constructor",
-        "name": "Brun.QueueWorker.QueueWorker(Brun.WorkerOption, Brun.WorkerConfig)",
-        "title": "QueueWorker.QueueWorker(WorkerOption, WorkerConfig)",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.QueueWorker.Execute(System.String)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.QueueWorker.Execute(System.String)",
-        "title": "QueueWorker.Execute(String)",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.QueueWorker.Start",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.QueueWorker.Start()",
-        "title": "QueueWorker.Start()",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.QueueWorker.Start(System.Object)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.QueueWorker.Start(System.Object)",
-        "title": "QueueWorker.Start(Object)",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.QueueWorker.Enqueue(System.String)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.QueueWorker.Enqueue(System.String)",
-        "title": "QueueWorker.Enqueue(String)",
-        "sourceFile": "api\\Brun.QueueWorker.yml",
-        "detailedType": 5
-    },
-    {
         "uid": "Brun.ServiceCollectionExtensions",
         "type": "Reference.Managed",
         "memberType": "Class",
@@ -1113,96 +1491,6 @@
         "name": "Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection>)",
         "title": "ServiceCollectionExtensions.AddBrunService(IServiceCollection, Action<IServiceCollection>)",
         "sourceFile": "api\\Brun.ServiceCollectionExtensions.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.SynchroWorker",
-        "type": "Reference.Managed",
-        "memberType": "Class",
-        "name": "Brun.SynchroWorker",
-        "title": "SynchroWorker",
-        "sourceFile": "api\\Brun.SynchroWorker.yml",
-        "detailedType": 3
-    },
-    {
-        "uid": "Brun.SynchroWorker.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
-        "type": "Reference.Managed",
-        "memberType": "Constructor",
-        "name": "Brun.SynchroWorker.SynchroWorker(Brun.WorkerOption, Brun.WorkerConfig)",
-        "title": "SynchroWorker.SynchroWorker(WorkerOption, WorkerConfig)",
-        "sourceFile": "api\\Brun.SynchroWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker",
-        "type": "Reference.Managed",
-        "memberType": "Class",
-        "name": "Brun.TimeWorker",
-        "title": "TimeWorker",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 3
-    },
-    {
-        "uid": "Brun.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)",
-        "type": "Reference.Managed",
-        "memberType": "Constructor",
-        "name": "Brun.TimeWorker.TimeWorker(Brun.Options.TimeWorkerOption, Brun.WorkerConfig)",
-        "title": "TimeWorker.TimeWorker(TimeWorkerOption, WorkerConfig)",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Start(System.Object)",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Start(System.Object)",
-        "title": "TimeWorker.Start(Object)",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Start",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Start()",
-        "title": "TimeWorker.Start()",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Run",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Run()",
-        "title": "TimeWorker.Run()",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary<System.String, System.String>)",
-        "title": "TimeWorker.Execute(ConcurrentDictionary<String, String>)",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Pause",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Pause()",
-        "title": "TimeWorker.Pause()",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
-        "detailedType": 5
-    },
-    {
-        "uid": "Brun.TimeWorker.Resume",
-        "type": "Reference.Managed",
-        "memberType": "Method",
-        "name": "Brun.TimeWorker.Resume()",
-        "title": "TimeWorker.Resume()",
-        "sourceFile": "api\\Brun.TimeWorker.yml",
         "detailedType": 5
     },
     {
@@ -1251,11 +1539,11 @@
         "detailedType": 5
     },
     {
-        "uid": "Brun.WorkerBuilder.SetCycle(System.TimeSpan)",
+        "uid": "Brun.WorkerBuilder.SetCycle(System.TimeSpan,System.Boolean)",
         "type": "Reference.Managed",
         "memberType": "Method",
-        "name": "Brun.WorkerBuilder.SetCycle(System.TimeSpan)",
-        "title": "WorkerBuilder.SetCycle(TimeSpan)",
+        "name": "Brun.WorkerBuilder.SetCycle(System.TimeSpan, System.Boolean)",
+        "title": "WorkerBuilder.SetCycle(TimeSpan, Boolean)",
         "sourceFile": "api\\Brun.WorkerBuilder.yml",
         "detailedType": 5
     },
@@ -1278,10 +1566,10 @@
         "detailedType": 5
     },
     {
-        "uid": "Brun.WorkerBuilder.SetOption(System.Action{Brun.WorkerOption})",
+        "uid": "Brun.WorkerBuilder.SetOption(System.Action{Brun.Options.WorkerOption})",
         "type": "Reference.Managed",
         "memberType": "Method",
-        "name": "Brun.WorkerBuilder.SetOption(System.Action<Brun.WorkerOption>)",
+        "name": "Brun.WorkerBuilder.SetOption(System.Action<Brun.Options.WorkerOption>)",
         "title": "WorkerBuilder.SetOption(Action<WorkerOption>)",
         "sourceFile": "api\\Brun.WorkerBuilder.yml",
         "detailedType": 5
@@ -1485,10 +1773,10 @@
         "detailedType": 6
     },
     {
-        "uid": "Brun.WorkerContext.#ctor(Brun.WorkerOption,Brun.WorkerConfig)",
+        "uid": "Brun.WorkerContext.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)",
         "type": "Reference.Managed",
         "memberType": "Constructor",
-        "name": "Brun.WorkerContext.WorkerContext(Brun.WorkerOption, Brun.WorkerConfig)",
+        "name": "Brun.WorkerContext.WorkerContext(Brun.Options.WorkerOption, Brun.WorkerConfig)",
         "title": "WorkerContext.WorkerContext(WorkerOption, WorkerConfig)",
         "sourceFile": "api\\Brun.WorkerContext.yml",
         "detailedType": 5
@@ -1584,76 +1872,391 @@
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption",
+        "uid": "Brun.WorkerContext.Tasks",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.WorkerContext.Tasks",
+        "title": "WorkerContext.Tasks",
+        "sourceFile": "api\\Brun.WorkerContext.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker",
         "type": "Reference.Managed",
         "memberType": "Class",
-        "name": "Brun.WorkerOption",
-        "title": "WorkerOption",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker",
+        "title": "AbstractWorker",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 3
     },
     {
-        "uid": "Brun.WorkerOption.#ctor",
+        "uid": "Brun.Workers.AbstractWorker._option",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.AbstractWorker._option",
+        "title": "AbstractWorker._option",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker._config",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.AbstractWorker._config",
+        "title": "AbstractWorker._config",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker._context",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.AbstractWorker._context",
+        "title": "AbstractWorker._context",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.tokenSource",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.AbstractWorker.tokenSource",
+        "title": "AbstractWorker.tokenSource",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.taskFactory",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.AbstractWorker.taskFactory",
+        "title": "AbstractWorker.taskFactory",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)",
         "type": "Reference.Managed",
         "memberType": "Constructor",
-        "name": "Brun.WorkerOption.WorkerOption()",
-        "title": "WorkerOption.WorkerOption()",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.AbstractWorker(Brun.Options.WorkerOption, Brun.WorkerConfig)",
+        "title": "AbstractWorker.AbstractWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 5
     },
     {
-        "uid": "Brun.WorkerOption.BrunType",
+        "uid": "Brun.Workers.AbstractWorker.Destroy",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.AbstractWorker.Destroy()",
+        "title": "AbstractWorker.Destroy()",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.Observe(Brun.Enums.WorkerEvents)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.AbstractWorker.Observe(Brun.Enums.WorkerEvents)",
+        "title": "AbstractWorker.Observe(WorkerEvents)",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.GetData(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.AbstractWorker.GetData(System.String)",
+        "title": "AbstractWorker.GetData(String)",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.Dispose",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.AbstractWorker.Dispose()",
+        "title": "AbstractWorker.Dispose()",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.Context",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.BrunType",
-        "title": "WorkerOption.BrunType",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.Context",
+        "title": "AbstractWorker.Context",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption.WorkerType",
+        "uid": "Brun.Workers.AbstractWorker.Key",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.WorkerType",
-        "title": "WorkerOption.WorkerType",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.Key",
+        "title": "AbstractWorker.Key",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption.Key",
+        "uid": "Brun.Workers.AbstractWorker.Name",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.Key",
-        "title": "WorkerOption.Key",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.Name",
+        "title": "AbstractWorker.Name",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption.Name",
+        "uid": "Brun.Workers.AbstractWorker.Tag",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.Name",
-        "title": "WorkerOption.Name",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.Tag",
+        "title": "AbstractWorker.Tag",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption.Tag",
+        "uid": "Brun.Workers.AbstractWorker.WorkerType",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.Tag",
-        "title": "WorkerOption.Tag",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.WorkerType",
+        "title": "AbstractWorker.WorkerType",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
     },
     {
-        "uid": "Brun.WorkerOption.Data",
+        "uid": "Brun.Workers.AbstractWorker.RunningTasks",
         "type": "Reference.Managed",
         "memberType": "Property",
-        "name": "Brun.WorkerOption.Data",
-        "title": "WorkerOption.Data",
-        "sourceFile": "api\\Brun.WorkerOption.yml",
+        "name": "Brun.Workers.AbstractWorker.RunningTasks",
+        "title": "AbstractWorker.RunningTasks",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
         "detailedType": 4
+    },
+    {
+        "uid": "Brun.Workers.AbstractWorker.TaskFactory",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Workers.AbstractWorker.TaskFactory",
+        "title": "AbstractWorker.TaskFactory",
+        "sourceFile": "api\\Brun.Workers.AbstractWorker.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.Workers.OnceWorker",
+        "title": "OnceWorker",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.backRun",
+        "type": "Reference.Managed",
+        "memberType": "Field",
+        "name": "Brun.Workers.OnceWorker.backRun",
+        "title": "OnceWorker.backRun",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 6
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.Workers.OnceWorker.OnceWorker(Brun.Options.WorkerOption, Brun.WorkerConfig)",
+        "title": "OnceWorker.OnceWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.OnceWorker.Execute(System.Collections.Concurrent.ConcurrentDictionary<System.String, System.String>)",
+        "title": "OnceWorker.Execute(ConcurrentDictionary<String, String>)",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.RunDontWait",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.OnceWorker.RunDontWait()",
+        "title": "OnceWorker.RunDontWait()",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.Run",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.OnceWorker.Run()",
+        "title": "OnceWorker.Run()",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.GetData",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.OnceWorker.GetData()",
+        "title": "OnceWorker.GetData()",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.OnceWorker.GetData``1(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.OnceWorker.GetData<T>(System.String)",
+        "title": "OnceWorker.GetData<T>(String)",
+        "sourceFile": "api\\Brun.Workers.OnceWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.Workers.QueueWorker",
+        "title": "QueueWorker",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.Workers.QueueWorker.QueueWorker(Brun.Options.WorkerOption, Brun.WorkerConfig)",
+        "title": "QueueWorker.QueueWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker.Execute(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.QueueWorker.Execute(System.String)",
+        "title": "QueueWorker.Execute(String)",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker.Start",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.QueueWorker.Start()",
+        "title": "QueueWorker.Start()",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker.Enqueue(System.String)",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.QueueWorker.Enqueue(System.String)",
+        "title": "QueueWorker.Enqueue(String)",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.QueueWorker.QueueBackRun",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Workers.QueueWorker.QueueBackRun",
+        "title": "QueueWorker.QueueBackRun",
+        "sourceFile": "api\\Brun.Workers.QueueWorker.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Workers.SynchroWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.Workers.SynchroWorker",
+        "title": "SynchroWorker",
+        "sourceFile": "api\\Brun.Workers.SynchroWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.Workers.SynchroWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.Workers.SynchroWorker.SynchroWorker(Brun.Options.WorkerOption, Brun.WorkerConfig)",
+        "title": "SynchroWorker.SynchroWorker(WorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.Workers.SynchroWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker",
+        "type": "Reference.Managed",
+        "memberType": "Class",
+        "name": "Brun.Workers.TimeWorker",
+        "title": "TimeWorker",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 3
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)",
+        "type": "Reference.Managed",
+        "memberType": "Constructor",
+        "name": "Brun.Workers.TimeWorker.TimeWorker(Brun.Options.TimeWorkerOption, Brun.WorkerConfig)",
+        "title": "TimeWorker.TimeWorker(TimeWorkerOption, WorkerConfig)",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.Start",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.TimeWorker.Start()",
+        "title": "TimeWorker.Start()",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.Execute",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.TimeWorker.Execute()",
+        "title": "TimeWorker.Execute()",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.Pause",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.TimeWorker.Pause()",
+        "title": "TimeWorker.Pause()",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.Resume",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.Workers.TimeWorker.Resume()",
+        "title": "TimeWorker.Resume()",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.Workers.TimeWorker.BackRun",
+        "type": "Reference.Managed",
+        "memberType": "Property",
+        "name": "Brun.Workers.TimeWorker.BackRun",
+        "title": "TimeWorker.BackRun",
+        "sourceFile": "api\\Brun.Workers.TimeWorker.yml",
+        "detailedType": 4
+    },
+    {
+        "uid": "Brun.Workers",
+        "type": "Reference.Managed",
+        "memberType": "Namespace",
+        "name": "Brun.Workers",
+        "title": "Brun.Workers",
+        "sourceFile": "api\\Brun.Workers.yml",
+        "detailedType": 2
     },
     {
         "uid": "Brun.WorkerServer",
@@ -1670,6 +2273,15 @@
         "memberType": "Method",
         "name": "Brun.WorkerServer.GetWorker(System.String)",
         "title": "WorkerServer.GetWorker(String)",
+        "sourceFile": "api\\Brun.WorkerServer.yml",
+        "detailedType": 5
+    },
+    {
+        "uid": "Brun.WorkerServer.GetAllWorker",
+        "type": "Reference.Managed",
+        "memberType": "Method",
+        "name": "Brun.WorkerServer.GetAllWorker()",
+        "title": "WorkerServer.GetAllWorker()",
         "sourceFile": "api\\Brun.WorkerServer.yml",
         "detailedType": 5
     },

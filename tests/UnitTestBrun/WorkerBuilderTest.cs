@@ -11,26 +11,34 @@ using System.Threading.Tasks;
 namespace UnitTestBrun
 {
     [TestClass]
-    public class WorkerBuilderTest:BaseHostTest
+    public class WorkerBuilderTest : BaseHostTest
     {
         [TestMethod]
-        public void TestCreate()
+        public async Task TestCreateAsync()
         {
             string key = Guid.NewGuid().ToString();
             string name = "run_1";
             string tag = "myTag";
-            IWorker work = WorkerBuilder.Create<SimpleBackRun>()
-                .SetNameTagKey(name, tag, key)
-                .Build();
+            StartHost(m =>
+            {
+                WorkerBuilder.Create<SimpleBackRun>()
+               .SetNameTagKey(name, tag, key)
+               .Build();
+            });
+            IWorker work = WorkerServer.Instance.GetWorker(key);
             Assert.AreEqual(key, work.Key);
             Assert.AreEqual(name, work.Name);
             Assert.AreEqual(tag, work.Tag);
         }
         [TestMethod]
-        public void TestEmptyCreate()
+        public async Task TestEmptyCreateAsync()
         {
-            IWorker work = WorkerBuilder.Create<SimpleBackRun>()
-                .Build();
+            StartHost(m =>
+           {
+               WorkerBuilder.Create<SimpleBackRun>()
+               .Build();
+           });
+            IWorker work = GetWorkerByName(typeof(SimpleBackRun).Name).First();
             Assert.IsNotNull(work.Key);
             Assert.AreEqual(typeof(SimpleBackRun).Name, work.Name);
             Assert.AreEqual("Default", work.Tag);

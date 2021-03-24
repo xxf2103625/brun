@@ -89,24 +89,27 @@ namespace Brun.Workers
         /// </summary>
         public void Dispose()
         {
-            //TODO 控制进程等待时间，加入可配置
-            if (RunningTasks.Any(m => m.Status == TaskStatus.WaitingForActivation || m.Status == TaskStatus.Running))
+            //控制进程等待时间，加入可配置
+            DateTime now = DateTime.Now;
+            //while (RunningTasks.Any(m => m.Status == TaskStatus.WaitingForActivation || m.Status == TaskStatus.Running) && DateTime.Now - now < _config.TimeWaitForBrun)
+            while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
             {
-                tokenSource.CancelAfter(TimeSpan.FromSeconds(2));
-                tokenSource.Token.Register(() =>
-                {
-                    Context.Dispose();
-                });
-                while (!tokenSource.Token.IsCancellationRequested)
-                {
-                    Thread.Sleep(50);
-                }
-            }
-            else
-            {
-                tokenSource.Cancel();
-                this.Context.Dispose();
-            }
+                now = now.AddSeconds(0.1);
+                Thread.Sleep(TimeSpan.FromSeconds(0.1));
+                //tokenSource.CancelAfter(_config.TimeWaitForBrun);
+                //tokenSource.Token.Register(() =>
+                //{
+                //    Context.Dispose();
+                //});
+                //while (!tokenSource.Token.IsCancellationRequested)
+                //{
+                //    Thread.Sleep(50);
+                //}
+
+            };
+
+            tokenSource.Cancel();
+            this.Context.Dispose();
         }
 
         /// <summary>

@@ -8,25 +8,34 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
+    public class SharedLock
+    {
+        public static object Nb_LOCK = new object();
+    }
     /// <summary>
     /// 基础测试BackRun
     /// </summary>
     public class SimpleNumberRun : BackRun
     {
+        private static object SimpleNumberRun_LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
             {
-                if (Data.TryGetValue("nb", out string v))
+                lock (SharedLock.Nb_LOCK)
                 {
-                    Data["nb"] = (int.Parse(v) + 1).ToString();
+                    if (Data.TryGetValue("nb", out string v))
+                    {
+                        Data["nb"] = (int.Parse(v) + 1).ToString();
+                    }
+                    else
+                    {
+                        Data["nb"] = "1";
+                    }
+                    Console.WriteLine("SimpleNumberRun 计算出的结果：{0}", Data["nb"]);
                 }
-                else
-                {
-                    Data["nb"] = "1";
-                }
+
             }
-            Console.WriteLine("计算出的结果：{0}", Data["nb"]);
             return Task.CompletedTask;
         }
     }
@@ -35,22 +44,28 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayBefore : BackRun
     {
-        public override async Task Run(CancellationToken stoppingToken)
+        private static object SimpNbDelayBefore_LOCK = new object();
+        public override Task Run(CancellationToken stoppingToken)
         {
             Console.WriteLine("计算前的等待...");
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            //await Task.Delay(TimeSpan.FromSeconds(3));
             for (int i = 0; i < 100; i++)
             {
-                if (Data.TryGetValue("nb", out string v))
+                lock (SharedLock.Nb_LOCK)
                 {
-                    Data["nb"] = (int.Parse(v) + 1).ToString();
-                }
-                else
-                {
-                    Data["nb"] = "0";
+                    if (Data.TryGetValue("nb", out string v))
+                    {
+                        Data["nb"] = (int.Parse(v) + 1).ToString();
+                    }
+                    else
+                    {
+                        Data["nb"] = "0";
+                    }
+                    Console.WriteLine("SimpNbDelayBefore 计算出的结果：{0}", Data["nb"]);
                 }
             }
-            Console.WriteLine("计算出的结果：{0}", Data["nb"]);
+            return Task.CompletedTask;
         }
     }
     /// <summary>
@@ -58,23 +73,29 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfter : BackRun
     {
+        private static object SimpNbDelayAfter_LOCK = new object();
         public override async Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
             {
-                if (Data.TryGetValue("nb", out string v))
+                lock (SharedLock.Nb_LOCK)
                 {
-                    Data["nb"] = (int.Parse(v) + 1).ToString();
-                }
-                else
-                {
-                    Data["nb"] = "0";
+                    if (Data.TryGetValue("nb", out string v))
+                    {
+                        Data["nb"] = (int.Parse(v) + 1).ToString();
+                    }
+                    else
+                    {
+                        Data["nb"] = "0";
+                    }
+                    Console.WriteLine("SimpNbDelayAfter 计算出的结果：{0}", Data["nb"]);
+                    
                 }
             }
-            Console.WriteLine("计算出的结果：{0}", Data["nb"]);
-            await Task.Delay(TimeSpan.FromSeconds(3));
-            Console.WriteLine("计算后已等待5秒...");
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+            Console.WriteLine("SimpNbDelayAfter 计算后已等待5秒...");
         }
+
     }
     /// <summary>
     /// 测试逻辑前等待Task
@@ -83,20 +104,25 @@ namespace BrunTestHelper.BackRuns
     {
         public override Task Run(CancellationToken stoppingToken)
         {
-            Console.WriteLine("计算前的等待...");
+            Console.WriteLine("SimpNbDelayBeforeTask 计算前的等待...");
             Thread.Sleep(TimeSpan.FromSeconds(3));
+            
             for (int i = 0; i < 100; i++)
             {
-                if (Data.TryGetValue("nb", out string v))
+                lock (SharedLock.Nb_LOCK)
                 {
-                    Data["nb"] = (int.Parse(v) + 1).ToString();
+                    if (Data.TryGetValue("nb", out string v))
+                    {
+                        Data["nb"] = (int.Parse(v) + 1).ToString();
+                    }
+                    else
+                    {
+                        Data["nb"] = "0";
+                    }
                 }
-                else
-                {
-                    Data["nb"] = "0";
-                }
+                
             }
-            Console.WriteLine("计算出的结果：{0}", Data["nb"]);
+            Console.WriteLine("SimpNbDelayBeforeTask 计算出的结果：{0}", Data["nb"]);
             return Task.CompletedTask;
         }
     }
@@ -105,22 +131,28 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfterTask : BackRun
     {
+        private static object SimpNbDelayAfterTask_LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
             {
-                if (Data.TryGetValue("nb", out string v))
+                lock (SharedLock.Nb_LOCK)
                 {
-                    Data["nb"] = (int.Parse(v) + 1).ToString();
+                    if (Data.TryGetValue("nb", out string v))
+                    {
+                        Data["nb"] = (int.Parse(v) + 1).ToString();
+                    }
+                    else
+                    {
+                        Data["nb"] = "0";
+                    }
+                    Console.WriteLine(" SimpNbDelayAfterTask 计算出的结果：{0}", Data["nb"]);
                 }
-                else
-                {
-                    Data["nb"] = "0";
-                }
+                
             }
-            Console.WriteLine("计算出的结果：{0}", Data["nb"]);
             //await Task.Delay(TimeSpan.FromSeconds(3));
             Thread.Sleep(TimeSpan.FromSeconds(3));
+            Console.WriteLine(" SimpNbDelayAfterTask 等待3秒之后 {0}", Data["nb"]);
             return Task.CompletedTask;
         }
     }

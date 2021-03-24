@@ -137,14 +137,14 @@ namespace Brun
 
         public void Stop()
         {
-            logger.LogDebug("WorkerServer is Stopping! please wait workers dispose...");
+            logger?.LogDebug("WorkerServer is Stopping! please wait workers dispose...");
             //此处用于处理所有worker注销
             foreach (var item in worders)
             {
                 item.Dispose();
             }
 
-            logger.LogDebug("WorkerServer is Stoped");
+            logger?.LogDebug("WorkerServer is Stoped");
         }
         /// <summary>
         /// 进程单例
@@ -162,6 +162,13 @@ namespace Brun
                     }
                 }
                 return _workerServer;
+            }
+        }
+        public static void ClearInstance()
+        {
+            lock (serverCreate_LOCK)
+            {
+                _workerServer = null;
             }
         }
     }

@@ -41,6 +41,6 @@ namespace Brun
             var list = observers.Where(m => m.Evt == eventName);
             return list;
         }
-
+        public TimeSpan TimeWaitForBrun { get; set; } = TimeSpan.FromSeconds(2);
     }
 }

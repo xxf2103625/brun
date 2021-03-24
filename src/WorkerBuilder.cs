@@ -167,12 +167,10 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultPlanTimeWorkerOption
             };
-            //builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
             List<string> planTimes = new List<string>(croExpression);
             ((PlanTimeWorkerOption)builder.option).planTimeRuns = new Dictionary<Type, List<string>>();
             ((PlanTimeWorkerOption)builder.option).planTimeRuns[typeof(TBackRun)] = planTimes;
             builder.option.WorkerType = typeof(PlanTimeWorker);
-            //TODO 解析时间表达式
             return builder;
         }
         public WorkerBuilder AddPlanTime<TBackRun>(params string[] croExpression) where TBackRun : BackRun, new()

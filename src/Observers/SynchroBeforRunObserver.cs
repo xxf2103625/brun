@@ -14,11 +14,17 @@ namespace Brun.Observers
         {
 
         }
-
         public override Task Todo(WorkerContext _context, Type brunType)
         {
-
+            //while (_context.endNb < _context.startNb)
+            //{
+            //    Thread.Sleep(5);
+            //}
             //TODO 优化同步逻辑
+            //while(_context.Tasks.Any(m=>m.Status== TaskStatus.Running))
+            //{
+            //    Thread.Sleep(5);
+            //}
             Task.WaitAny(_context.Tasks.ToArray());
             return Task.CompletedTask;
             //while (_context.Tasks.Any(m => m.Status == TaskStatus.Running))
