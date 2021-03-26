@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Workers;
 using BrunTestHelper.QueueBackRuns;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace UnitTestBrun
 {
-    //TODO QueueWorker单元测试
     [TestClass]
     public class QueueWorkerTest : BaseHostTest
     {
@@ -47,5 +47,45 @@ namespace UnitTestBrun
             Assert.AreEqual(100, worker.Context.exceptNb);
             Assert.AreEqual(200, worker.Context.endNb);
         }
+        [TestMethod]
+        public async Task TestStartAndStopAsync()
+        {
+            string key = nameof(TestStartAndStopAsync);
+            StartHost(services =>
+            {
+                string key = nameof(TestStartAndStopAsync);
+                     WorkerBuilder
+                        .CreateQueue<LogQueueBackRun>()
+                        .AddQueue<ErrorQueueBackRun>()
+                        .SetKey(key)
+                        .Build()
+                        .AsQueueWorker()
+                        ;
+                services.AddBrunService();
+            });
+            IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
+            for (int i = 0; i < 1; i++)
+            {
+                worker.Enqueue($"测试消息:{i}");
+            }
+            WaitForBackRun();
+            Assert.AreEqual(1, worker.Context.endNb);
+
+            await worker.Stop();
+
+            for (int i = 1; i < 11; i++)
+            {
+                worker.Enqueue($"测试消息:{i}");
+            }
+            WaitForBackRun();
+            Assert.AreEqual(1, worker.Context.startNb);
+            Assert.AreEqual(1, worker.Context.endNb);
+
+            worker.Start().Wait();
+            WaitForBackRun();
+            Assert.AreEqual(11, worker.Context.startNb);
+            Assert.AreEqual(11, worker.Context.endNb);
+        }
     }
+    
 }

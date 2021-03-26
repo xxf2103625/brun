@@ -101,14 +101,14 @@ namespace Brun.Workers
             //    Thread.Sleep(5);
             //}
 
-            Task task = await taskFactory.StartNew(async () =>
+            Task task =await taskFactory.StartNew(async () =>
              {
                  await RealRun(backRunType);
              });
 
             RunningTasks.Add(task);
 
-            _ = task.ContinueWith(t =>
+            _= task.ContinueWith(t =>
             {
                 RunningTasks.TryTake(out t);
 

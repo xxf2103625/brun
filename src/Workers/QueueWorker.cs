@@ -24,13 +24,14 @@ namespace Brun.Workers
         ILogger<QueueWorker> logger;
         private ConcurrentQueue<string> queue => queues[_option.DefaultBrunType];
         private ConcurrentDictionary<Type, ConcurrentQueue<string>> queues;
-        private IQueueBackRun _queueBackRun;
         private ConcurrentDictionary<Type, IQueueBackRun> _queueBackRuns;
-        //只需要限制实例冲突
-        //private readonly object backRun_LOCK = new object();
+        /// <summary>
+        /// QueueWorker
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="config"></param>
         public QueueWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
-            //queue = new ConcurrentQueue<string>();
             queues = new ConcurrentDictionary<Type, ConcurrentQueue<string>>();
             _queueBackRuns = new ConcurrentDictionary<Type, IQueueBackRun>();
             Init();
@@ -44,11 +45,11 @@ namespace Brun.Workers
             }
         }
         /// <summary>
-        /// 获取BackRun //TODO 测试多线程安全
+        /// 获取BackRun
         /// </summary>
         /// <param name="brunType"></param>
         /// <returns></returns>
-        protected IQueueBackRun GetQueueBackRun(Type brunType)
+        private IQueueBackRun GetQueueBackRun(Type brunType)
         {
             logger = _context.ServiceProvider?.GetService<ILogger<QueueWorker>>();
             if (_queueBackRuns.TryGetValue(brunType, out IQueueBackRun queueBackRun))
@@ -70,7 +71,7 @@ namespace Brun.Workers
         /// <param name="brunType"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected async Task Execute(Type brunType, string message)
+        private async Task Execute(Type brunType, string message)
         {
 
             Task start = Observe(brunType, WorkerEvents.StartRun);
@@ -110,46 +111,51 @@ namespace Brun.Workers
         /// 启动QueueWorker
         /// </summary>
         /// <returns></returns>
-        public Task Start()
+        public override async Task Start()
         {
-            Thread thread = new Thread(new ThreadStart(QueueListenning));
-            thread.Start();
-            return Task.CompletedTask;
-            //while (!this.tokenSource.Token.IsCancellationRequested)
+            if (_context.State == WorkerState.Started)
+            {
+                return;
+            }
+            Task start = Task.Factory.StartNew(() =>
+             {
+                 if (_context.State == WorkerState.Started)
+                     return;
+                 tokenSource = new CancellationTokenSource();
+                 this._context.State = WorkerState.Started;
+                 QueueListenning();
+                 this._context.State = WorkerState.Stoped;
+             }, creationOptions: TaskCreationOptions.LongRunning);
+            //lock (State_LOCK)
             //{
-            //    foreach (var item in queues)
-            //    {
-            //        if (item.Value.TryDequeue(out string msg))
-            //        {
-            //            await Run(item.Key, msg);
-            //            //RunningTasks.Add(TaskFactory.StartNew(async () =>
-            //            //{
-
-            //            //    Task task = Execute(item.Key, msg);
-            //            //    _ = task.ContinueWith(t => RunningTasks.TryTake(out t));
-            //            //    await task;
-            //            //    //return task;
-            //            //}));
-            //        }
-            //    }
-            //    //if (!queue.IsEmpty)
-            //    //{
-            //    //    if (queue.TryDequeue(out string msg))
-            //    //    {
-            //    //        Task task = Execute(msg);
-            //    //        RunningTasks.Add(task);
-            //    //        _ = task.ContinueWith(t =>
-            //    //          {
-            //    //              RunningTasks.TryTake(out t);
-            //    //          });
-            //    //    }
-            //    //}
-            //    //Thread.Sleep(5);
-            //    await Task.Delay(5);
+            //    this._context.State = WorkerState.Started;
             //}
-            ////return Task.CompletedTask;
+            //await start.ContinueWith(t =>
+            //{
+            //    lock (State_LOCK)
+            //    {
+            //        this._context.State = WorkerState.Stoped;
+            //    }
+            //});
         }
-        public void QueueListenning()
+        /// <summary>
+        /// 停止QueueWorker
+        /// </summary>
+        /// <returns></returns>
+        public override Task Stop()
+        {
+            if (_context.State != WorkerState.Started)
+                return Task.CompletedTask;
+            DateTime now = DateTime.Now;
+            while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
+            {
+                now = now.AddSeconds(0.1);
+                Thread.Sleep(TimeSpan.FromSeconds(0.1));
+            };
+            tokenSource.Cancel();
+            return Task.CompletedTask;
+        }
+        private void QueueListenning()
         {
             while (!tokenSource.IsCancellationRequested)
             {
@@ -168,11 +174,7 @@ namespace Brun.Workers
         /// <param name="message"></param>
         public void Enqueue(string message)
         {
-            if (message == null)
-            {
-                logger?.LogWarning("传入的消息体为null，已忽略");
-            }
-            queue.Enqueue(message);
+            Enqueue(_option.DefaultBrunType, message);
         }
         /// <summary>
         /// 指定QueueBackRun类型的消息后台任务
@@ -181,11 +183,7 @@ namespace Brun.Workers
         /// <param name="message"></param>
         public void Enqueue<TQueueBackRun>(string message)
         {
-            if (message == null)
-            {
-                logger?.LogWarning("传入的消息体为null，已忽略");
-            }
-            queues[typeof(TQueueBackRun)].Enqueue(message);
+            Enqueue(typeof(TQueueBackRun), message);
         }
         /// <summary>
         /// 指定QueueBackRun类型的消息后台任务
@@ -207,12 +205,8 @@ namespace Brun.Workers
         /// <param name="message"></param>
         public void Enqueue(string queueBackRunTypeFullName, string message)
         {
-            if (message == null)
-            {
-                logger?.LogWarning("传入的消息体为null，已忽略");
-            }
             var type = Type.GetType(queueBackRunTypeFullName);
-            queues[type].Enqueue(message);
+            Enqueue(type, message);
         }
     }
 }

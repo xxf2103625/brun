@@ -45,6 +45,7 @@ namespace Brun
                 option = WorkerServer.Instance.ServerConfig.DefaultOption
             };
             builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
+            builder.option.WorkerType = typeof(OnceWorker);
             return builder;
         }
         /// <summary>
@@ -273,7 +274,7 @@ namespace Brun
         }
         public IWorker Build()
         {
-            return Build(typeof(OnceWorker));
+            return Build(option.WorkerType);
         }
         public IWorker Build<TWorker>() where TWorker : AbstractWorker
         {

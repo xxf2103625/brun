@@ -84,8 +84,12 @@ namespace UnitTestBrun
         [TestCleanup]
         public async Task CleanupAsync()
         {
-            await host.StopAsync();
-            host = null;
+            if (host != null)
+            {
+                await host.StopAsync();
+                host = null;
+            }
+                
             ////tokenSource.Cancel();
             //if (host != null)
             //{

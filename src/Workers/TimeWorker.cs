@@ -79,7 +79,7 @@ namespace Brun.Workers
         /// <returns></returns>
         public async Task Start()
         {
-            _context.State = Enums.WorkerState.Excuting;//worker状态
+            _context.State = Enums.WorkerState.Started;//worker状态
             var log = _context.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
             //TODO 优化定时流程
             while (!tokenSource.Token.IsCancellationRequested)
@@ -117,7 +117,7 @@ namespace Brun.Workers
                 }
                 await Task.Delay(5);
             }
-            _context.State = Enums.WorkerState.Paused;//worker状态
+            _context.State = Enums.WorkerState.Stoped;//worker状态
         }
         /// <summary>
         /// 执行一次队列任务

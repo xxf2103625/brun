@@ -37,6 +37,15 @@ namespace Brun.Workers
         /// 统一配置实例内的Task
         /// </summary>
         protected TaskFactory taskFactory;
+        /// <summary>
+        /// 状态锁
+        /// </summary>
+        protected object State_LOCK = new object();
+        /// <summary>
+        /// 统一构造函数
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="config"></param>
         public AbstractWorker(WorkerOption option, WorkerConfig config)
         {
             _option = option;
@@ -48,10 +57,21 @@ namespace Brun.Workers
             RunningTasks = new BlockingCollection<Task>();
             _context.Tasks = RunningTasks;
         }
-        //TODO 运行中销毁整个实例
-        public virtual Task Destroy()
+        /// <summary>
+        /// 启动
+        /// </summary>
+        /// <returns></returns>
+        public virtual Task Start()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+        }
+        /// <summary>
+        /// 停止
+        /// </summary>
+        /// <returns></returns>
+        public virtual Task Stop()
+        {
+            return Task.CompletedTask;
         }
         /// <summary>
         /// 添加拦截器
@@ -84,13 +104,19 @@ namespace Brun.Workers
             else
                 return null;
         }
-        
-
         /// <summary>
         /// 正在运行的任务
         /// </summary>
         public BlockingCollection<Task> RunningTasks { get; private set; }
-
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <typeparam name="TWorker"></typeparam>
+        /// <returns></returns>
+        public TWorker As<TWorker>() where TWorker : AbstractWorker
+        {
+            return (TWorker)this;
+        }
         public IOnceWorker AsOnceWorker()
         {
             return (IOnceWorker)this;
@@ -102,6 +128,10 @@ namespace Brun.Workers
         public ITimeWorker AsTimeWOrker()
         {
             return (ITimeWorker)this;
+        }
+        public IPlanTimeWorker AsPlanTimeWorker()
+        {
+            return (IPlanTimeWorker)this;
         }
         //TODO task管理
         public TaskFactory TaskFactory => taskFactory;

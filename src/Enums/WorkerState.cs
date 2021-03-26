@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Brun.Enums
 {
-    //TODO Worker状态
+    /// <summary>
+    /// Worker状态
+    /// </summary>
     public enum WorkerState
     {
         /// <summary>
@@ -14,11 +16,10 @@ namespace Brun.Enums
         /// <summary>
         /// 运行中
         /// </summary>
-        Excuting,
-
+        Started,
         /// <summary>
-        /// 已暂停
+        /// 已停止
         /// </summary>
-        Paused,
+        Stoped,
     }
 }

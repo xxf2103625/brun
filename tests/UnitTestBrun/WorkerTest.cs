@@ -370,8 +370,8 @@ namespace UnitTestBrun
             int max = 1000;
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpleBackRun>().SetWorkerType(typeof(SynchroWorker))
-                    .BuildOnceWorker();
+                WorkerBuilder.Create<SimpleBackRun>()
+                    .Build<SynchroWorker>();
             });
             IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleBackRun)).First(); ;
             for (int i = 0; i < max; i++)

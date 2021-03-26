@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Brun.Workers
+namespace Brun
 {
     public interface IPlanTimeWorker : IWorker
     {

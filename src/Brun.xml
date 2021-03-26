@@ -137,19 +137,24 @@
             <param name="stoppingToken"></param>
             <returns></returns>
         </member>
+        <member name="T:Brun.Enums.WorkerState">
+            <summary>
+            Worker状态
+            </summary>
+        </member>
         <member name="F:Brun.Enums.WorkerState.Default">
             <summary>
             默认状态
             </summary>
         </member>
-        <member name="F:Brun.Enums.WorkerState.Excuting">
+        <member name="F:Brun.Enums.WorkerState.Started">
             <summary>
             运行中
             </summary>
         </member>
-        <member name="F:Brun.Enums.WorkerState.Paused">
+        <member name="F:Brun.Enums.WorkerState.Stoped">
             <summary>
-            已暂停
+            已停止
             </summary>
         </member>
         <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -169,7 +174,7 @@
         </member>
         <member name="T:Brun.IWorker">
             <summary>
-            工作中心，每个实例会常驻进程，除非Destroy
+            工作中心，每个实例会常驻进程
             </summary>
         </member>
         <member name="P:Brun.IWorker.Key">
@@ -192,9 +197,49 @@
             Worker上下文
             </summary>
         </member>
-        <member name="M:Brun.IWorker.Destroy">
+        <member name="M:Brun.IWorker.Start">
             <summary>
-            销毁
+            启动
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IWorker.Stop">
+            <summary>
+            停止
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.IWorker.TaskFactory">
+            <summary>
+            TaskFactory
+            </summary>
+        </member>
+        <member name="P:Brun.IWorker.RunningTasks">
+            <summary>
+            运行中的Task
+            </summary>
+        </member>
+        <member name="M:Brun.IWorker.AsOnceWorker">
+            <summary>
+            转换到IOnceWorker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IWorker.AsQueueWorker">
+            <summary>
+            类型转换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IWorker.AsTimeWOrker">
+            <summary>
+            类型转换
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IWorker.AsPlanTimeWorker">
+            <summary>
+            类型转换
             </summary>
             <returns></returns>
         </member>
@@ -1014,6 +1059,30 @@
             统一配置实例内的Task
             </summary>
         </member>
+        <member name="F:Brun.Workers.AbstractWorker.State_LOCK">
+            <summary>
+            状态锁
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)">
+            <summary>
+            统一构造函数
+            </summary>
+            <param name="option"></param>
+            <param name="config"></param>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.Start">
+            <summary>
+            启动
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.Stop">
+            <summary>
+            停止
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Observe(System.Type,Brun.Enums.WorkerEvents)">
             <summary>
             添加拦截器
@@ -1032,14 +1101,16 @@
             正在运行的任务
             </summary>
         </member>
+        <member name="M:Brun.Workers.AbstractWorker.As``1">
+            <summary>
+            类型转换
+            </summary>
+            <typeparam name="TWorker"></typeparam>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Dispose">
             <summary>
             回收单个Worker
-            </summary>
-        </member>
-        <member name="M:Brun.Workers.IPlanTimeWorker.Start">
-            <summary>
-            启动，已经单独开了线程
             </summary>
         </member>
         <member name="T:Brun.Workers.OnceWorker">
@@ -1107,9 +1178,16 @@
              TODO 让一个QueueWorker可以配置多个不同类型的QueueBackrun
             </summary>
         </member>
+        <member name="M:Brun.Workers.QueueWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)">
+            <summary>
+            QueueWorker
+            </summary>
+            <param name="option"></param>
+            <param name="config"></param>
+        </member>
         <member name="M:Brun.Workers.QueueWorker.GetQueueBackRun(System.Type)">
             <summary>
-            获取BackRun //TODO 测试多线程安全
+            获取BackRun
             </summary>
             <param name="brunType"></param>
             <returns></returns>
@@ -1125,6 +1203,12 @@
         <member name="M:Brun.Workers.QueueWorker.Start">
             <summary>
             启动QueueWorker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.QueueWorker.Stop">
+            <summary>
+            停止QueueWorker
             </summary>
             <returns></returns>
         </member>
@@ -1241,6 +1325,54 @@
             直接运行不等待
             </summary>
             <typeparam name="TBackRun">其它的Brun</typeparam>
+        </member>
+        <member name="M:Brun.IPlanTimeWorker.Start">
+            <summary>
+            启动，已经单独开了线程
+            </summary>
+        </member>
+        <member name="T:Brun.IQueueWorker">
+            <summary>
+            消息队列Worker
+            </summary>
+        </member>
+        <member name="M:Brun.IQueueWorker.Enqueue(System.String)">
+            <summary>
+            给默认的QueueBackRun发送消息
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.IQueueWorker.Enqueue``1(System.String)">
+            <summary>
+            给TQueueBackRun发送消息
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.IQueueWorker.Enqueue(System.Type,System.String)">
+            <summary>
+            给queueBackRunType发送消息
+            </summary>
+            <param name="queueBackRunType"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Brun.IQueueWorker.Enqueue(System.String,System.String)">
+            <summary>
+            给指定类型的QueueBackRun发送消息
+            </summary>
+            <param name="queueBackRunTypeFullName">含命名空间的类型全名</param>
+            <param name="message"></param>
+        </member>
+        <member name="T:Brun.ITimeWorker">
+            <summary>
+            时间周期执行的Worker
+            </summary>
+        </member>
+        <member name="M:Brun.ITimeWorker.Start">
+            <summary>
+            启动
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Brun.ITimeWorker.Pause">
             <summary>
