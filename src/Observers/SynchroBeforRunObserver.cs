@@ -9,7 +9,7 @@ namespace Brun.Observers
 {
     public class SynchroBeforRunObserver : WorkerObserver
     {
-        private object SynchroRun_LOCK = new object();
+        //private object SynchroRun_LOCK = new object();
         public SynchroBeforRunObserver() : base(Enums.WorkerEvents.StartRun, 5)
         {
 

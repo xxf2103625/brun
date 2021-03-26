@@ -12,12 +12,6 @@ namespace Brun
         public WorkerOption DefaultOption => new WorkerOption();
         public TimeWorkerOption DefaultTimeWorkerOption => new TimeWorkerOption();
         public PlanTimeWorkerOption DefaultPlanTimeWorkerOption => new PlanTimeWorkerOption();
-        public TimeSpan WaitDisposeOutTime { get; set; } = TimeSpan.FromSeconds(5);
-
-        public List<Type> WorkerTypes = new List<Type>()
-        {
-            typeof(OnceWorker),
-            typeof(SynchroWorker)
-        };
+        public TimeSpan ShutdownTimeOut { get; set; } = TimeSpan.FromSeconds(15);
     }
 }

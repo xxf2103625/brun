@@ -73,54 +73,93 @@ namespace Brun.Workers
         protected async Task Execute(Type brunType, string message)
         {
 
-            await Observe(brunType, WorkerEvents.StartRun);
-            try
+            Task start = Observe(brunType, WorkerEvents.StartRun);
+            await start.ContinueWith(async t =>
+             {
+                 try
+                 {
+                     await GetQueueBackRun(brunType).Run(message, tokenSource.Token);
+                 }
+                 catch (Exception ex)
+                 {
+                     _context.ExceptFromRun(ex);
+                     await Observe(brunType, WorkerEvents.Except);
+                 }
+                 finally
+                 {
+                     await Observe(brunType, WorkerEvents.EndRun);
+                 }
+             });
+        }
+        private void Run(Type brunType, string message)
+        {
+            Task task = taskFactory.StartNew(async () =>
+           {
+               await Execute(brunType, message);
+           });
+
+            RunningTasks.Add(task);
+
+            _ = task.ContinueWith(t =>
             {
-                await GetQueueBackRun(brunType).Run(message, tokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                _context.ExceptFromRun(ex);
-                await Observe(brunType, WorkerEvents.Except);
-            }
-            finally
-            {
-                await Observe(brunType, WorkerEvents.EndRun);
-            }
+                RunningTasks.TryTake(out t);
+
+            });
         }
         /// <summary>
         /// 启动QueueWorker
         /// </summary>
         /// <returns></returns>
-        public async Task Start()
+        public Task Start()
         {
-            while (!this.tokenSource.Token.IsCancellationRequested)
+            Thread thread = new Thread(new ThreadStart(QueueListenning));
+            thread.Start();
+            return Task.CompletedTask;
+            //while (!this.tokenSource.Token.IsCancellationRequested)
+            //{
+            //    foreach (var item in queues)
+            //    {
+            //        if (item.Value.TryDequeue(out string msg))
+            //        {
+            //            await Run(item.Key, msg);
+            //            //RunningTasks.Add(TaskFactory.StartNew(async () =>
+            //            //{
+
+            //            //    Task task = Execute(item.Key, msg);
+            //            //    _ = task.ContinueWith(t => RunningTasks.TryTake(out t));
+            //            //    await task;
+            //            //    //return task;
+            //            //}));
+            //        }
+            //    }
+            //    //if (!queue.IsEmpty)
+            //    //{
+            //    //    if (queue.TryDequeue(out string msg))
+            //    //    {
+            //    //        Task task = Execute(msg);
+            //    //        RunningTasks.Add(task);
+            //    //        _ = task.ContinueWith(t =>
+            //    //          {
+            //    //              RunningTasks.TryTake(out t);
+            //    //          });
+            //    //    }
+            //    //}
+            //    //Thread.Sleep(5);
+            //    await Task.Delay(5);
+            //}
+            ////return Task.CompletedTask;
+        }
+        public void QueueListenning()
+        {
+            while (!tokenSource.IsCancellationRequested)
             {
                 foreach (var item in queues)
                 {
                     if (item.Value.TryDequeue(out string msg))
                     {
-                        RunningTasks.Add(TaskFactory.StartNew(() =>
-                        {
-                            Task task = Execute(item.Key, msg);
-                            task.ContinueWith(t => RunningTasks.TryTake(out t));
-
-                        }));
+                        Run(item.Key, msg);
                     }
                 }
-                //if (!queue.IsEmpty)
-                //{
-                //    if (queue.TryDequeue(out string msg))
-                //    {
-                //        Task task = Execute(msg);
-                //        RunningTasks.Add(task);
-                //        _ = task.ContinueWith(t =>
-                //          {
-                //              RunningTasks.TryTake(out t);
-                //          });
-                //    }
-                //}
-                await Task.Delay(5);
             }
         }
         /// <summary>

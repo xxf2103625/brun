@@ -13,47 +13,39 @@ namespace UnitTestBrun
 {
     //TODO QueueWorker单元测试
     [TestClass]
-    public class QueueWorkerTest : BaseQueueHostTest
+    public class QueueWorkerTest : BaseHostTest
     {
         [TestMethod]
-        public async Task TestExcept()
+        public void TestExcept()
         {
             string key = nameof(TestExcept);
-            tokenSource = new CancellationTokenSource();
-            cancellationToken = tokenSource.Token;
-            host = Host.CreateDefaultBuilder()
-                .ConfigureServices((hostContext, services) =>
-                {
-                    
-                    IQueueWorker worker = WorkerBuilder
+            StartHost(services =>
+            {
+                string key = nameof(TestExcept);
+                IQueueWorker worker = WorkerBuilder
                         .CreateQueue<LogQueueBackRun>()
                         .AddQueue<ErrorQueueBackRun>()
                         .SetKey(key)
                         .Build()
                         .AsQueueWorker()
                         ;
-                    services.AddBrunService();
-                })
-                .Build();
-            await host.StartAsync(cancellationToken);
-
+                services.AddBrunService();
+            });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 100; i++)
             {
                 worker.Enqueue($"测试消息:{i}");
                 worker.Enqueue<ErrorQueueBackRun>($"内部异常{i}");
             }
-            await WaitForBackRun();
-
-            tokenSource.Cancel();
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(5);
-            }
-            if (host != null)
-            {
-                await host.StopAsync();
-            }
+            Assert.AreNotEqual(200, worker.Context.startNb);
+            Assert.AreNotEqual(100, worker.Context.exceptNb);
+            Assert.AreNotEqual(200, worker.Context.endNb);
+            Console.WriteLine("wait before start:{0},except:{1},end:{2}", worker.Context.startNb, worker.Context.exceptNb, worker.Context.endNb);
+            WaitForBackRun();
+            Assert.AreEqual(0, worker.RunningTasks.Count);
+            Assert.AreEqual(200, worker.Context.startNb);
+            Assert.AreEqual(100, worker.Context.exceptNb);
+            Assert.AreEqual(200, worker.Context.endNb);
         }
     }
 }

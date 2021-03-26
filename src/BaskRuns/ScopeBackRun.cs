@@ -23,7 +23,7 @@ namespace Brun.BaskRuns
         /// </summary>
         protected IServiceProvider ServiceProvider;
         /// <summary>
-        /// 每次运行共享的自定义数据
+        /// 每次运行共享的自定义数据，修改请自己加锁
         /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
         /// <summary>

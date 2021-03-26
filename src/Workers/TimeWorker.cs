@@ -126,20 +126,24 @@ namespace Brun.Workers
         protected async Task Execute()
         {
             Type brunType = _option.DefaultBrunType;
-            await Observe(brunType, Enums.WorkerEvents.StartRun);
-            try
-            {
-                await BackRun.Run(tokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                _context.ExceptFromRun(ex);
-                await Observe(brunType, Enums.WorkerEvents.Except);
-            }
-            finally
-            {
-                await Observe(brunType, Enums.WorkerEvents.EndRun);
-            }
+            Task start = Observe(brunType, Enums.WorkerEvents.StartRun);
+            await start.ContinueWith(async t =>
+              {
+                  try
+                  {
+                      await BackRun.Run(tokenSource.Token);
+                  }
+                  catch (Exception ex)
+                  {
+                      _context.ExceptFromRun(ex);
+                      await Observe(brunType, Enums.WorkerEvents.Except);
+                  }
+                  finally
+                  {
+                      await Observe(brunType, Enums.WorkerEvents.EndRun);
+                  }
+              });
+
         }
         //TODO TimeWorker暂停
         public Task Pause()

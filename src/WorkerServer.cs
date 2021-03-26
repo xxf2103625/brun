@@ -104,7 +104,8 @@ namespace Brun
             {
                 //开辟独立线程，不使用线程池
                 //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
-                Thread queue = new Thread(new ThreadStart(((QueueWorker)item).Start().Wait));
+                ((IQueueWorker)item).Start();
+                //Thread queue = new Thread(new ThreadStart(((QueueWorker)item).Start().Wait));
             }
             foreach (var item in worders.Where(m => m is ITimeWorker))
             {
@@ -143,7 +144,6 @@ namespace Brun
             {
                 item.Dispose();
             }
-
             logger?.LogDebug("WorkerServer is Stoped");
         }
         /// <summary>
@@ -164,6 +164,9 @@ namespace Brun
                 return _workerServer;
             }
         }
+        /// <summary>
+        /// 清理单例，单元测试用
+        /// </summary>
         public static void ClearInstance()
         {
             lock (serverCreate_LOCK)

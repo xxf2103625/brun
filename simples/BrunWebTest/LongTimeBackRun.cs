@@ -11,7 +11,7 @@ namespace BrunWebTest
     {
         public override async Task Run(CancellationToken stoppingToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
             Console.WriteLine("LongTimeBackRun is runed");
         }
     }

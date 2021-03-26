@@ -88,7 +88,6 @@ namespace Brun.Workers
         {
             return Run(typeof(TBackRun));
         }
-        private object Task_LOCK = new object();
         /// <summary>
         /// 运行指定类型的BanRun
         /// </summary>
@@ -102,10 +101,10 @@ namespace Brun.Workers
             //    Thread.Sleep(5);
             //}
 
-            Task task =await taskFactory.StartNew(async () =>
-            {
-                await RealRun(backRunType);
-            });
+            Task task = await taskFactory.StartNew(async () =>
+             {
+                 await RealRun(backRunType);
+             });
 
             RunningTasks.Add(task);
 
@@ -114,20 +113,6 @@ namespace Brun.Workers
                 RunningTasks.TryTake(out t);
 
             });
-            //RunningTasks.Add(TaskFactory.StartNew(() =>
-            //{
-            //    Task t = RealRun(backRunType);
-            //    t.ContinueWith(t =>
-            //    {
-            //        RunningTasks.TryTake(out t);
-            //    });
-            //    t.Start();
-            //}));
-
-            //RunningTasks.TryAdd(t);
-
-            //return t;
-            //return Task.CompletedTask;
         }
         /// <summary>
         /// 异步执行
@@ -161,27 +146,17 @@ namespace Brun.Workers
                      _context.ExceptFromRun(ex);
                      await Observe(brunType, WorkerEvents.Except);
                  }
+                 finally
+                 {
+                     await Observe(brunType, WorkerEvents.EndRun);
+                 }
              });
-            Task endTask = await eTask.ContinueWith(async t =>
-             {
-                 await Observe(brunType, WorkerEvents.EndRun);
-             });
-            await endTask;
-            //await (await Observe(brunType, WorkerEvents.StartRun).ContinueWith(async t =>
-            //{
-            //    try
-            //    {
-            //        await Execute(brunType, _context.Items);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _context.ExceptFromRun(ex);
-            //        await Observe(brunType, WorkerEvents.Except);
-            //    }
-            //})).ContinueWith(async t =>
-            //{
-            //    await Observe(brunType, WorkerEvents.EndRun);
-            //});
+            await eTask;
+            //Task endTask = await eTask.ContinueWith(async t =>
+            // {
+            //     await Observe(brunType, WorkerEvents.EndRun);
+            // });
+            //await endTask;
         }
         public ConcurrentDictionary<string, string> GetData()
         {

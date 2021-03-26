@@ -273,25 +273,28 @@ namespace Brun
         }
         public IWorker Build()
         {
+            return Build(typeof(OnceWorker));
+        }
+        public IWorker Build<TWorker>() where TWorker : AbstractWorker
+        {
+            Type workerType = typeof(TWorker);
+            return Build(workerType);
+        }
+        public IWorker Build(Type workerType)
+        {
             if (string.IsNullOrEmpty(option.Key))
                 option.Key = Guid.NewGuid().ToString();
             if (string.IsNullOrEmpty(option.Name))
                 option.Name = option.DefaultBrunType.Name;
             if (string.IsNullOrEmpty(option.Tag))
                 option.Tag = defaultTag;
+            option.WorkerType = workerType;
 
-            if (option.WorkerType == null)
-                option.WorkerType = typeof(OnceWorker);
-            else
+            if (!option.WorkerType.IsSubclassOf(typeof(AbstractWorker)))
             {
-                if (!option.WorkerType.IsSubclassOf(typeof(AbstractWorker)))
-                {
-                    throw new NotSupportedException($"not allow this workertype:{option.WorkerType.FullName}");
-                }
+                throw new NotSupportedException($"not allow this workertype:{option.WorkerType.FullName}");
             }
-
             AbstractWorker worker = (AbstractWorker)BrunTool.CreateInstance(option.WorkerType, args: new object[] { option, config });
-            //worker.SetTaskFactory(WorkerServer.Instance.TaskFactory);
             WorkerServer.Instance.Worders.Add(worker);
             return worker;
         }

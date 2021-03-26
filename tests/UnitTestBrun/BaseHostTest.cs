@@ -74,10 +74,9 @@ namespace UnitTestBrun
         /// <returns></returns>
         protected void WaitForBackRun()
         {
-            WorkerServer server = WorkerServer.Instance; //(WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
-            //await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
+            WorkerServer server = WorkerServer.Instance;
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.Context.endNb<m.Context.startNb))
+            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb))
             {
                 Thread.Sleep(5);
             }

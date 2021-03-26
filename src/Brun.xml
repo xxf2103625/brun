@@ -11,14 +11,14 @@
         </member>
         <member name="P:Brun.BackRun.Data">
             <summary>
-            每次运行共享的自定义数据
+            共享的自定义数据，修改时请自己加锁
             </summary>
         </member>
         <member name="M:Brun.BackRun.Run(System.Threading.CancellationToken)">
             <summary>
             定义长时间任务时，自己用stoppingToken控制任务尽快结束
             </summary>
-            <param name="stoppingToken">进程结束信号</param>
+            <param name="stoppingToken">结束信号</param>
             <returns></returns>
         </member>
         <member name="P:Brun.BaskRuns.BackRunServicePrivoder.ServiceProvider">
@@ -68,7 +68,7 @@
         </member>
         <member name="P:Brun.BaskRuns.ScopeBackRun.Data">
             <summary>
-            每次运行共享的自定义数据
+            每次运行共享的自定义数据，修改请自己加锁
             </summary>
         </member>
         <member name="M:Brun.BaskRuns.ScopeBackRun.RunInScope(System.Threading.CancellationToken)">
@@ -233,6 +233,11 @@
         <member name="P:Brun.Options.WorkerOption.DefaultBrunType">
             <summary>
             默认的BrunType
+            </summary>
+        </member>
+        <member name="P:Brun.Options.WorkerOption.Data">
+            <summary>
+            run内部还是需要自己加锁保证线程安全
             </summary>
         </member>
         <member name="T:Brun.Plan.CronParser">
@@ -974,6 +979,11 @@
             进程单例
             </summary>
         </member>
+        <member name="M:Brun.WorkerServer.ClearInstance">
+            <summary>
+            清理单例，单元测试用
+            </summary>
+        </member>
         <member name="T:Brun.Workers.AbstractWorker">
             <summary>
             工作中心基类，可以builder多个，不同实例里面的Context不同
@@ -1017,14 +1027,14 @@
             上下文
             </summary>
         </member>
-        <member name="M:Brun.Workers.AbstractWorker.Dispose">
-            <summary>
-            回收单个Worker
-            </summary>
-        </member>
         <member name="P:Brun.Workers.AbstractWorker.RunningTasks">
             <summary>
             正在运行的任务
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.Dispose">
+            <summary>
+            回收单个Worker
             </summary>
         </member>
         <member name="M:Brun.Workers.IPlanTimeWorker.Start">
@@ -1147,7 +1157,7 @@
         </member>
         <member name="T:Brun.Workers.SynchroWorker">
             <summary>
-            同步Worker，同一个Worker内，同一时间执行backrun会强制排队运行
+            同步Worker，同一个Worker内，backrun串行运行
             //TODO 优化同步Worker
             </summary>
         </member>

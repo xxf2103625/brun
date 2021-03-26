@@ -55,7 +55,7 @@ namespace UnitTestBrun
 
         }
         [TestMethod]
-        public async Task TestSimpleRunAsync()
+        public void TestSimpleRunAsync()
         {
             StartHost(m =>
             {
@@ -69,7 +69,6 @@ namespace UnitTestBrun
             work.RunDontWait();
             //不等待 //backrun内部用了await
             Assert.AreEqual("0", work.GetData("nb"));
-            await host.StartAsync();
         }
         [TestMethod]
         public async Task TestSimpleRunBeforeAsync()
@@ -209,6 +208,28 @@ namespace UnitTestBrun
             Assert.AreEqual("100", work.GetData("nb"));
         }
         [TestMethod]
+        public void TestErrorNb()
+        {
+            int max = 100;
+            StartHost(m =>
+            {
+                WorkerBuilder.Create<ErrorBackRun3>() //await
+                  .BuildOnceWorker();
+            });
+            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
+            for (int i = 0; i < max; i++)
+            {
+                work.RunDontWait();
+            }
+            Assert.AreNotEqual(max, work.Context.startNb);
+            Assert.AreNotEqual(max, work.Context.exceptNb);
+            Assert.AreNotEqual(max, work.Context.exceptNb);
+            WaitForBackRun();
+            Assert.AreEqual(max, work.Context.startNb);
+            Assert.AreEqual(max, work.Context.exceptNb);
+            Assert.AreEqual(max, work.Context.endNb);
+        }
+        [TestMethod]
         public async Task TaskTestErrorRunNotVoidAsync()
         {
             StartHost(m =>
@@ -224,8 +245,8 @@ namespace UnitTestBrun
             {
                 await work.Run();
             }
+            Assert.AreNotEqual(10, work.Context.exceptNb);
             WaitForBackRun();
-            //主线程不等待任务
             Assert.AreEqual("1", work.GetData("a"));
             Assert.AreEqual("2", work.GetData("b"));
             Assert.AreEqual(10, work.Context.exceptNb);
@@ -407,6 +428,7 @@ namespace UnitTestBrun
             {
                 await worker.Run();
             }
+            Assert.AreNotEqual("10", worker.GetData("nb"));
             WaitForBackRun();
             string nb = worker.GetData("nb");
             Assert.AreEqual("10", nb);
@@ -430,7 +452,7 @@ namespace UnitTestBrun
             work.RunDontWait<SimpNbDelayBefore>();
             work.RunDontWait<SimpNbDelayAfter>();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
-
+            Assert.AreNotEqual("300", work.GetData("nb"));
             WaitForBackRun();
             //完成之后
             Assert.AreEqual("300", work.GetData("nb"));

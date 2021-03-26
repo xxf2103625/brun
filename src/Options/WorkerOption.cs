@@ -18,8 +18,11 @@ namespace Brun.Options
         public IList<Type> BrunTypes { get; set; }
         public Type WorkerType { get; set; }
         public string Key { get; set; }
-        public string Name { get; internal set; }
-        public string Tag { get; internal set; }
+        public string Name { get; set; }
+        public string Tag { get; set; }
+        /// <summary>
+        /// run内部还是需要自己加锁保证线程安全
+        /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
     }
 }

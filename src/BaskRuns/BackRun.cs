@@ -15,13 +15,13 @@ namespace Brun
     public abstract class BackRun : BackRunServicePrivoder, IBackRun
     {
         /// <summary>
-        /// 每次运行共享的自定义数据
+        /// 共享的自定义数据，修改时请自己加锁
         /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
         /// <summary>
         /// 定义长时间任务时，自己用stoppingToken控制任务尽快结束
         /// </summary>
-        /// <param name="stoppingToken">进程结束信号</param>
+        /// <param name="stoppingToken">结束信号</param>
         /// <returns></returns>
         public abstract Task Run(CancellationToken stoppingToken);
 
