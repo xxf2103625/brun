@@ -28,7 +28,7 @@ namespace UnitTestBrun
         {
             WorkerServer.ClearInstance();
         }
-        protected void StartHostAsync(Action<IServiceCollection> configure)
+        protected void StartHost(Action<IServiceCollection> configure)
         {
             tokenSource = new CancellationTokenSource();
             cancellationToken = tokenSource.Token;

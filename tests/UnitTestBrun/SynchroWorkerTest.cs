@@ -16,14 +16,14 @@ namespace UnitTestBrun
         [TestMethod]
         public void Test()
         {
-            StartHostAsync(m =>
+            StartHost(m =>
             {
                 WorkerBuilder
                .Create<SimpleNumberRun>()//内部没有await
                .Build<SynchroWorker>();
             });
             SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SimpleNumberRun)).First();
-            work.RunDontWait();
+            work.Run();
 
             Console.WriteLine("TestSimpleRun：Run 之后的调用线程");
             

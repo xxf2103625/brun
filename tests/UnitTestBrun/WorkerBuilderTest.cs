@@ -19,7 +19,7 @@ namespace UnitTestBrun
             string key = Guid.NewGuid().ToString();
             string name = "run_1";
             string tag = "myTag";
-            StartHostAsync(m =>
+            StartHost(m =>
             {
                 WorkerBuilder.Create<SimpleBackRun>()
                .SetNameTagKey(name, tag, key)
@@ -33,7 +33,7 @@ namespace UnitTestBrun
         [TestMethod]
         public void TestEmptyCreateAsync()
         {
-            StartHostAsync(m =>
+            StartHost(m =>
            {
                WorkerBuilder.Create<SimpleBackRun>()
                .Build();

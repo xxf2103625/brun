@@ -68,21 +68,21 @@ namespace Brun.Workers
             _context.State = WorkerState.Started;
             return Task.CompletedTask;
         }
-        /// <summary>
-        /// 启动线程，开始执行Execute
-        /// </summary>
-        public void StartBrun(Type brunType)
-        {
-            BrunContext brunContext = NewBrunContext(brunType);
-            taskFactory.StartNew(() =>
-            {
-                _ = Execute(brunContext);
-            });
-        }
-        public BrunContext NewBrunContext(Type brunType)
-        {
-            return new BrunContext(brunType);
-        }
+        ///// <summary>
+        ///// 启动线程，开始执行Execute
+        ///// </summary>
+        //public void StartBrun(Type brunType)
+        //{
+        //    BrunContext brunContext = NewBrunContext(brunType);
+        //    taskFactory.StartNew(() =>
+        //    {
+        //        _ = Execute(brunContext);
+        //    });
+        //}
+        //public BrunContext NewBrunContext(Type brunType)
+        //{
+        //    return new BrunContext(brunType);
+        //}
         public async Task Execute(BrunContext runContext)
         {
             Task before = Observe(runContext.BrunType, WorkerEvents.StartRun);

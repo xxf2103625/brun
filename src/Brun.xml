@@ -137,6 +137,47 @@
             <param name="stoppingToken"></param>
             <returns></returns>
         </member>
+        <member name="T:Brun.Contexts.BrunContext">
+            <summary>
+            每个BackRun运行时的上下文
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Key">
+            <summary>
+            Worker唯一标识
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Name">
+            <summary>
+            Worker名称，默认类型名称
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Tag">
+            <summary>
+            自定义Tag
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Option">
+            <summary>
+            配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerContext.Exceptions">
+            <summary>
+            BackRun运行异常列表，默认最多储存10个
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerContext.ExceptFromRun(System.Exception)">
+            <summary>
+            添加run异常事件
+            </summary>
+            <param name="ex"></param>
+        </member>
+        <member name="P:Brun.WorkerContext.State">
+            <summary>
+            TODO 当前状态
+            </summary>
+        </member>
         <member name="T:Brun.Enums.WorkerState">
             <summary>
             Worker状态
@@ -868,9 +909,17 @@
         </member>
         <member name="M:Brun.WorkerBuilder.Create``1">
             <summary>
-            创建默认的OnceWorker
+            创建OnceWorker
             </summary>
             <typeparam name="TBackRun"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.WorkerBuilder.Create``1(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
+            <summary>
+            创建OnceWorker
+            </summary>
+            <typeparam name="TBackRun"></typeparam>
+            <param name="data"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.WorkerBuilder.Add``1">
@@ -950,42 +999,6 @@
             </summary>
             <param name="name"></param>
             <returns></returns>
-        </member>
-        <member name="P:Brun.WorkerContext.Key">
-            <summary>
-            Worker唯一标识
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerContext.Name">
-            <summary>
-            Worker名称，默认类型名称
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerContext.Tag">
-            <summary>
-            自定义Tag
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerContext.Option">
-            <summary>
-            配置
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerContext.Exceptions">
-            <summary>
-            BackRun运行异常列表，默认最多储存10个
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerContext.ExceptFromRun(System.Exception)">
-            <summary>
-            添加run异常事件
-            </summary>
-            <param name="ex"></param>
-        </member>
-        <member name="P:Brun.WorkerContext.State">
-            <summary>
-            TODO 当前状态
-            </summary>
         </member>
         <member name="T:Brun.WorkerServer">
             <summary>
@@ -1125,52 +1138,13 @@
         </member>
         <member name="F:Brun.Workers.OnceWorker.backRuns">
             <summary>
-            backRun实例
+            包含的Backrun
             </summary>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.Execute(System.Type,System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
+        <member name="M:Brun.Workers.OnceWorker.StartBrun(System.Type)">
             <summary>
-            BackRun最终执行
+            启动线程，开始执行Execute
             </summary>
-            <param name="brunType"></param>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.RunDontWait">
-            <summary>
-            直接运行不等待
-            </summary>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.RunDontWait``1">
-            <summary>
-            直接运行不等待
-            </summary>
-            <typeparam name="TBackRun">其它的BackRun</typeparam>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.Run">
-            <summary>
-            慎用，可能会等待后台任务
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.Run``1">
-            <summary>
-            慎用，可能会等待后台任务
-            </summary>
-            <typeparam name="TBackRun"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.Run(System.Type)">
-            <summary>
-            运行指定类型的BanRun
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.OnceWorker.RealRun(System.Type)">
-            <summary>
-            异步执行
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Brun.Workers.PlanTimeWorker">
             <summary>
@@ -1325,17 +1299,6 @@
             </summary>
             <param name="backRunType">backRun类型</param>
             <returns></returns>
-        </member>
-        <member name="M:Brun.IOnceWorker.RunDontWait">
-            <summary>
-            直接运行不等待
-            </summary>
-        </member>
-        <member name="M:Brun.IOnceWorker.RunDontWait``1">
-            <summary>
-            直接运行不等待
-            </summary>
-            <typeparam name="TBackRun">其它的Brun</typeparam>
         </member>
         <member name="M:Brun.IPlanTimeWorker.Start">
             <summary>

@@ -1,5 +1,6 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
@@ -199,6 +200,11 @@ namespace Brun.Workers
         {
             var type = Type.GetType(queueBackRunTypeFullName);
             Enqueue(type, message);
+        }
+
+        protected override Task Brun(BrunContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

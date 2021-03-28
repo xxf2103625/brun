@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Brun.BaskRuns;
 using Brun.Commons;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Options;
 using Brun.Plan;
@@ -142,6 +143,11 @@ namespace Brun.Workers
                 }
                 Thread.Sleep(50);
             }
+        }
+
+        protected override Task Brun(BrunContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

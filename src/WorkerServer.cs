@@ -99,7 +99,10 @@ namespace Brun
             _stoppingToken = stoppingToken;
             //taskFactory = new TaskFactory(_stoppingToken);
             ServiceConfigure(serviceProvider);
-
+            foreach (var item in worders.Where(m => m is IOnceWorker))
+            {
+                item.Start();
+            }
             foreach (var item in worders.Where(m => m is IQueueWorker))
             {
                 //开辟独立线程，不使用线程池

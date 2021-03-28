@@ -17,7 +17,7 @@ namespace UnitTestBrun.WorkerObservers
         public void Test()
         {
             string key = nameof(Test);
-            StartHostAsync(services =>
+            StartHost(services =>
             {
                 string key = nameof(Test);
                 WorkerBuilder.Create<LogBackRun>()
@@ -30,7 +30,7 @@ namespace UnitTestBrun.WorkerObservers
                 .Build();
             });
             IOnceWorker worker = WorkerServer.Instance.GetOnceWorker(key);
-            worker.RunDontWait();
+            worker.Run();
             WaitForBackRun();
             Assert.AreEqual("30", worker.Context.Items["Order"]);
         }

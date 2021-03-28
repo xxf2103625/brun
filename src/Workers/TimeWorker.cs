@@ -1,5 +1,6 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
+using Brun.Contexts;
 using Brun.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -156,6 +157,9 @@ namespace Brun.Workers
             throw new NotImplementedException();
         }
 
-
+        protected override Task Brun(BrunContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

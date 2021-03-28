@@ -19,7 +19,7 @@ namespace UnitTestBrun
         public void TestExcept()
         {
             string key = nameof(TestExcept);
-            StartHostAsync(services =>
+            StartHost(services =>
             {
                 string key = nameof(TestExcept);
                 IQueueWorker worker = WorkerBuilder
@@ -51,7 +51,7 @@ namespace UnitTestBrun
         public async Task TestStartAndStopAsync()
         {
             string key = nameof(TestStartAndStopAsync);
-            StartHostAsync(services =>
+            StartHost(services =>
             {
                 string key = nameof(TestStartAndStopAsync);
                      WorkerBuilder

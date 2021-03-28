@@ -17,7 +17,7 @@ namespace UnitTestBrun
         [TestMethod]
         public void TestDateTime()
         {
-            StartHostAsync(services =>
+            StartHost(services =>
             {
 
             });
@@ -31,7 +31,7 @@ namespace UnitTestBrun
         {
             int sleepTime = 2;
             string key = nameof(TestTimeWorker);
-            StartHostAsync(services =>
+            StartHost(services =>
             {
                 string key = nameof(TestTimeWorker);
                      WorkerBuilder

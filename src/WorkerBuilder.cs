@@ -31,12 +31,23 @@ namespace Brun
             //TODO 覆盖部分默认的Config
         }
         public ILogger<WorkerBuilder> log => WorkerServer.Instance?.ServiceProvider?.GetService<ILogger<WorkerBuilder>>();
+
         /// <summary>
-        /// 创建默认的OnceWorker
+        /// 创建OnceWorker
         /// </summary>
         /// <typeparam name="TBackRun"></typeparam>
         /// <returns></returns>
         public static WorkerBuilder Create<TBackRun>() where TBackRun : IBackRun, new()
+        {
+            return Create<TBackRun>(null);
+        }
+        /// <summary>
+        /// 创建OnceWorker
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static WorkerBuilder Create<TBackRun>(ConcurrentDictionary<string, string> data) where TBackRun : IBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder
             {
@@ -46,6 +57,7 @@ namespace Brun
             };
             builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
             builder.option.WorkerType = typeof(OnceWorker);
+            builder.option.Data = data;
             return builder;
         }
         /// <summary>

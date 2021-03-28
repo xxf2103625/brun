@@ -20,28 +20,18 @@ namespace Brun
         /// 运行默认的BackRun
         /// </summary>
         /// <returns></returns>
-        
-        Task Run();
+
+        void Run();
         /// <summary>
         /// 运行指定类型的BackRun
         /// </summary>
         /// <returns></returns>
-        Task Run<TBackRun>();
+        void Run<TBackRun>();
         /// <summary>
         /// 运行指定类型的BackRun
         /// </summary>
         /// <param name="backRunType">backRun类型</param>
         /// <returns></returns>
-        Task Run(Type backRunType);
-
-        /// <summary>
-        /// 直接运行不等待
-        /// </summary>
-        void RunDontWait();
-        /// <summary>
-        /// 直接运行不等待
-        /// </summary>
-        /// <typeparam name="TBackRun">其它的Brun</typeparam>
-        void RunDontWait<TBackRun>();
+        void Run(Type backRunType);
     }
 }

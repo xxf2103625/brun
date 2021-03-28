@@ -29,7 +29,7 @@ namespace Brun.Workers
         /// 运行指定类型的BanRun
         /// </summary>
         /// <returns></returns>
-        public override Task Run(Type backRunType)
+        public  Task Run(Type backRunType)
         {
             //TODO 直接控制线程池
             //TODO 控制并行数量
@@ -43,7 +43,7 @@ namespace Brun.Workers
             }
             _ = taskFactory.StartNew(() =>
             {
-                Task task = RealRun(backRunType);
+                Task task = Run(backRunType);
                 task.ContinueWith(t =>
                 {
                     maxThread++;

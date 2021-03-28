@@ -30,13 +30,13 @@ namespace BrunWebTest.Controllers
         public IActionResult Once()
         {
             //运行后台任务
-            _workerServer.GetOnceWorker(Program.BrunKey).RunDontWait();
+            _workerServer.GetOnceWorker(Program.BrunKey).Run();
             return View();
         }
         public IActionResult LongOnce()
         {
             //运行后台任务
-            (_workerServer.GetWokerByName(nameof(LongTimeBackRun)).First() as IOnceWorker).RunDontWait();
+            (_workerServer.GetWokerByName(nameof(LongTimeBackRun)).First() as IOnceWorker).Run();
             return View();
         }
         public IActionResult Queue(string msg)
@@ -52,7 +52,7 @@ namespace BrunWebTest.Controllers
         public IActionResult Scope()
         {
             //运行Scoped后台任务
-            _workerServer.GetOnceWorker(Program.ScopeKey).RunDontWait();
+            _workerServer.GetOnceWorker(Program.ScopeKey).Run();
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
