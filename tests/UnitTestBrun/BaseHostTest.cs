@@ -22,23 +22,13 @@ namespace UnitTestBrun
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
-        //TimeSpan waitTime = TimeSpan.FromSeconds(3);
         private object LOCK = new object();
         [TestInitialize]
         public void InitAsync()
         {
             WorkerServer.ClearInstance();
-            //tokenSource = new CancellationTokenSource();
-            //cancellationToken = tokenSource.Token;
-            //host = Host.CreateDefaultBuilder()
-            //    .ConfigureServices((hostContext, services) =>
-            //    {
-            //        services.AddBrunService();
-            //    })
-            //    .Build();
-            //await host.StartAsync(cancellationToken);
         }
-        protected void StartHost(Action<IServiceCollection> configure)
+        protected void StartHostAsync(Action<IServiceCollection> configure)
         {
             tokenSource = new CancellationTokenSource();
             cancellationToken = tokenSource.Token;
@@ -50,7 +40,6 @@ namespace UnitTestBrun
                 })
                 .Build();
             host.Start();
-            //await Task.Delay(TimeSpan.FromSeconds(0.1));//防止任务还没启动就结束
         }
         protected IWorker GetWorkerByKey(string key)
         {
@@ -71,32 +60,29 @@ namespace UnitTestBrun
         /// <summary>
         /// 等待所有任务完成
         /// </summary>
-        /// <returns></returns>
-        protected void WaitForBackRun()
+        /// <param name="runCount">等待任务数</param>
+        protected void WaitForBackRun(int runCount = 0)
         {
             WorkerServer server = WorkerServer.Instance;
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb))
+            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || server.GetAllWorker().Any(m => m.Context.endNb < runCount))
             {
                 Thread.Sleep(5);
             }
         }
         [TestCleanup]
-        public async Task CleanupAsync()
+        public async Task Cleanup()
         {
+            Console.WriteLine("---------------------------------------TestCleanup-----------------------------");
+            Console.WriteLine("host is null? {0}", host == null);
             if (host != null)
             {
-                await host.StopAsync();
-                host = null;
+                Task task = host.StopAsync(cancellationToken);
+                await task.ContinueWith(t =>
+                {
+                    Console.WriteLine("stop");
+                });
             }
-                
-            ////tokenSource.Cancel();
-            //if (host != null)
-            //{
-
-            //    //host = null;
-            //}
-            //return Task.CompletedTask;
         }
     }
 }

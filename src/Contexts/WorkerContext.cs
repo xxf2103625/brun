@@ -15,7 +15,7 @@ namespace Brun
         private WorkerOption _option;
         private WorkerConfig _config;
         //元数据，用于后期持久化
-        private IDictionary<string, object> meta;
+        //private IDictionary<string, object> meta;
         //BackRun自定义的数据
         private ConcurrentDictionary<string, string> items;
         //异常堆栈
@@ -26,7 +26,6 @@ namespace Brun
         public long endNb = 0;
         //BackRun运行异常计数
         public int exceptNb = 0;
-        private IList<Task> tasks;
 
         public WorkerContext(WorkerOption workerOption, WorkerConfig config)
         {
@@ -57,12 +56,14 @@ namespace Brun
         /// 自定义Tag
         /// </summary>
         public string Tag => _option.Tag;
+        /// <summary>
+        /// 配置
+        /// </summary>
         public WorkerOption Option => _option;
         /// <summary>
         /// BackRun运行异常列表，默认最多储存10个
         /// </summary>
         public IList<Exception> Exceptions => exceptions;
-        //public IServiceProvider ServiceProvider => serviceProvider;
         /// <summary>
         /// 添加run异常事件
         /// </summary>

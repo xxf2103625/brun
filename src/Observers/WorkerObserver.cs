@@ -11,6 +11,7 @@ namespace Brun.Observers
     /// </summary>
     public abstract class WorkerObserver
     {
+        protected object Observer_LOCK = new object();
         /// <summary>
         /// 构造函数，指定拦截的位置和顺序
         /// </summary>

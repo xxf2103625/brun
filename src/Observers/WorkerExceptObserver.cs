@@ -13,7 +13,7 @@ namespace Brun.Observers
     public class WorkerExceptObserver : WorkerObserver
     {
         private ILogger<WorkerExceptObserver> logger;
-        private static object nb_LOCK = new object();
+        //private static object nb_LOCK = new object();
         public WorkerExceptObserver() : base(WorkerEvents.Except, 10)
         {
 
@@ -22,10 +22,11 @@ namespace Brun.Observers
         public override Task Todo(WorkerContext _context, Type brunType)
         {
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerExceptObserver>>();
-            lock (nb_LOCK)
-            {
-                _context.exceptNb++;
-            }
+            System.Threading.Interlocked.Increment(ref _context.exceptNb);
+            //lock (Observer_LOCK)
+            //{
+            //    _context.exceptNb++;
+            //}
             logger.LogError(" backRun:{0} is except!count:{1},msg:{2},StackTrace:{3} {4}", brunType.Name, _context.exceptNb, _context.Exceptions.LastOrDefault()?.Message, _context.Exceptions.LastOrDefault()?.StackTrace, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return Task.CompletedTask;
         }

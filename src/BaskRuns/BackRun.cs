@@ -17,7 +17,7 @@ namespace Brun
         /// <summary>
         /// 共享的自定义数据，修改时请自己加锁
         /// </summary>
-        public ConcurrentDictionary<string, string> Data { get; set; }
+        public ConcurrentDictionary<string, string> Data { get; set; } = new ConcurrentDictionary<string, string>();
         /// <summary>
         /// 定义长时间任务时，自己用stoppingToken控制任务尽快结束
         /// </summary>

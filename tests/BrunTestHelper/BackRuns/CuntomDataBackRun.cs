@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +19,8 @@ namespace BrunTestHelper.BackRuns
                 Data["nb"] = (int.Parse(Data["nb"]) + 1).ToString();
                 Console.WriteLine($"nb:{Data["nb"]}");
             }
+            GetRequiredService<ILogger<CuntomDataBackRun>>().LogInformation("Thread.Id:" + Thread.CurrentThread.ManagedThreadId);
+            Thread.Sleep(TimeSpan.FromSeconds(1));
             return Task.CompletedTask;
         }
     }

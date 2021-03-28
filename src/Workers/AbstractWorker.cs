@@ -1,7 +1,9 @@
 ﻿using Brun.Commons;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -63,14 +65,64 @@ namespace Brun.Workers
         /// <returns></returns>
         public virtual Task Start()
         {
+            _context.State = WorkerState.Started;
             return Task.CompletedTask;
         }
+        /// <summary>
+        /// 启动线程，开始执行Execute
+        /// </summary>
+        public void StartBrun(Type brunType)
+        {
+            BrunContext brunContext = NewBrunContext(brunType);
+            taskFactory.StartNew(() =>
+            {
+                _ = Execute(brunContext);
+            });
+        }
+        public BrunContext NewBrunContext(Type brunType)
+        {
+            return new BrunContext(brunType);
+        }
+        public async Task Execute(BrunContext runContext)
+        {
+            Task before = Observe(runContext.BrunType, WorkerEvents.StartRun);
+            await before.ContinueWith(async t =>
+            {
+                try
+                {
+                    if (_context.State != WorkerState.Started)
+                    {
+                        Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, _context.startNb);
+                        return;
+                    }
+                    Task task = Brun(runContext);
+                    RunningTasks.TryAdd(task);
+                    _ = task.ContinueWith(t =>
+                      {
+                          RunningTasks.TryTake(out t);
+                      });
+                    await task;
+                }
+                catch (Exception ex)
+                {
+                    _context.ExceptFromRun(ex);
+                    await Observe(runContext.BrunType, WorkerEvents.Except);
+                }
+                finally
+                {
+                    await Observe(runContext.BrunType, WorkerEvents.EndRun);
+                }
+
+            }, continuationOptions: TaskContinuationOptions.ExecuteSynchronously);
+        }
+        protected abstract Task Brun(BrunContext context);
         /// <summary>
         /// 停止
         /// </summary>
         /// <returns></returns>
         public virtual Task Stop()
         {
+            _context.State = WorkerState.Stoped;
             return Task.CompletedTask;
         }
         /// <summary>
@@ -81,7 +133,7 @@ namespace Brun.Workers
         /// <returns></returns>
         protected async Task Observe(Type brunType, WorkerEvents workerEvents)
         {
-            foreach (var observer in _config.GetObservers(workerEvents).OrderBy(m => m.Order))
+            foreach (WorkerObserver observer in _config.GetObservers(workerEvents).OrderBy(m => m.Order))
             {
                 await observer.Todo(_context, brunType);
             }
@@ -108,6 +160,8 @@ namespace Brun.Workers
         /// 正在运行的任务
         /// </summary>
         public BlockingCollection<Task> RunningTasks { get; private set; }
+        protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
+        protected ILogger Logger => (ILogger)ServiceProvider.GetService(this.GetType());
         /// <summary>
         /// 类型转换
         /// </summary>

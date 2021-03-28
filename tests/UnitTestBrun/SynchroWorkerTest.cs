@@ -16,7 +16,7 @@ namespace UnitTestBrun
         [TestMethod]
         public void Test()
         {
-            StartHost(m =>
+            StartHostAsync(m =>
             {
                 WorkerBuilder
                .Create<SimpleNumberRun>()//内部没有await

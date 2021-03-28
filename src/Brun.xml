@@ -966,6 +966,11 @@
             自定义Tag
             </summary>
         </member>
+        <member name="P:Brun.WorkerContext.Option">
+            <summary>
+            配置
+            </summary>
+        </member>
         <member name="P:Brun.WorkerContext.Exceptions">
             <summary>
             BackRun运行异常列表，默认最多储存10个
@@ -1244,6 +1249,12 @@
             同步Worker，同一个Worker内，backrun串行运行
             //TODO 优化同步Worker
             </summary>
+        </member>
+        <member name="M:Brun.Workers.SynchroWorker.Run(System.Type)">
+            <summary>
+            运行指定类型的BanRun
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Brun.Workers.TimeWorker">
             <summary>

@@ -50,6 +50,7 @@ namespace Brun
         {
             //接收到进程停止信号
             _logger.LogInformation("BrunBackgroundService stopping...");
+            Console.WriteLine("BrunBackgroundService stopping...");
             // Stop called without start
             if (_executeTask == null)
             {
@@ -70,6 +71,7 @@ namespace Brun
         public void Dispose()
         {
             _logger.LogInformation("BrunBackgroundService disposing...");
+            Console.WriteLine("BrunBackgroundService disposing...");
             _stoppingCts?.Cancel();
         }
     }

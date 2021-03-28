@@ -14,11 +14,11 @@ namespace BrunTestHelper.BackRuns
         public static int SimNb = 0;
         public override Task Run(CancellationToken stoppingToken)
         {
+            //SimNb++;
             lock (SharedLock.Nb_LOCK)
             {
                 SimNb++;
             }
-            //await Task.Delay(TimeSpan.FromSeconds(0.1), stoppingToken);
             return Task.CompletedTask;
         }
     }

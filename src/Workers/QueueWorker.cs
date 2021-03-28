@@ -111,32 +111,24 @@ namespace Brun.Workers
         /// 启动QueueWorker
         /// </summary>
         /// <returns></returns>
-        public override async Task Start()
+        public override Task Start()
         {
             if (_context.State == WorkerState.Started)
             {
-                return;
+                return Task.CompletedTask;
             }
             Task start = Task.Factory.StartNew(() =>
              {
                  if (_context.State == WorkerState.Started)
                      return;
+                 if (tokenSource != null)
+                     tokenSource.Dispose();
                  tokenSource = new CancellationTokenSource();
                  this._context.State = WorkerState.Started;
                  QueueListenning();
                  this._context.State = WorkerState.Stoped;
              }, creationOptions: TaskCreationOptions.LongRunning);
-            //lock (State_LOCK)
-            //{
-            //    this._context.State = WorkerState.Started;
-            //}
-            //await start.ContinueWith(t =>
-            //{
-            //    lock (State_LOCK)
-            //    {
-            //        this._context.State = WorkerState.Stoped;
-            //    }
-            //});
+            return Task.CompletedTask;
         }
         /// <summary>
         /// 停止QueueWorker

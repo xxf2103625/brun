@@ -10,7 +10,7 @@ namespace Brun.Observers
 {
     public class WorkerEndRunObserver : WorkerObserver
     {
-        private static object nb_LOCK = new object();
+        //private static object nb_LOCK = new object();
         private ILogger<WorkerEndRunObserver> logger;
         public WorkerEndRunObserver() : base(Enums.WorkerEvents.EndRun, 10)
         {
@@ -20,10 +20,11 @@ namespace Brun.Observers
         public override Task Todo(WorkerContext _context, Type brunType)
         {
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerEndRunObserver>>();
-            lock (nb_LOCK)
-            {
-                _context.endNb++;
-            }
+            System.Threading.Interlocked.Increment(ref _context.endNb);
+            //lock (Observer_LOCK)
+            //{
+            //    _context.endNb++;
+            //}
             logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2} {3}", brunType.Name, _context.startNb, _context.endNb, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return Task.CompletedTask;
         }

@@ -19,7 +19,7 @@ namespace UnitTestBrun
         public void TestExcept()
         {
             string key = nameof(TestExcept);
-            StartHost(services =>
+            StartHostAsync(services =>
             {
                 string key = nameof(TestExcept);
                 IQueueWorker worker = WorkerBuilder
@@ -51,7 +51,7 @@ namespace UnitTestBrun
         public async Task TestStartAndStopAsync()
         {
             string key = nameof(TestStartAndStopAsync);
-            StartHost(services =>
+            StartHostAsync(services =>
             {
                 string key = nameof(TestStartAndStopAsync);
                      WorkerBuilder
@@ -81,7 +81,7 @@ namespace UnitTestBrun
             Assert.AreEqual(1, worker.Context.startNb);
             Assert.AreEqual(1, worker.Context.endNb);
 
-            worker.Start().Wait();
+            await worker.Start();
             WaitForBackRun();
             Assert.AreEqual(11, worker.Context.startNb);
             Assert.AreEqual(11, worker.Context.endNb);

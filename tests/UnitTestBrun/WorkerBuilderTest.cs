@@ -14,12 +14,12 @@ namespace UnitTestBrun
     public class WorkerBuilderTest : BaseHostTest
     {
         [TestMethod]
-        public async Task TestCreateAsync()
+        public void TestCreateAsync()
         {
             string key = Guid.NewGuid().ToString();
             string name = "run_1";
             string tag = "myTag";
-            StartHost(m =>
+            StartHostAsync(m =>
             {
                 WorkerBuilder.Create<SimpleBackRun>()
                .SetNameTagKey(name, tag, key)
@@ -31,9 +31,9 @@ namespace UnitTestBrun
             Assert.AreEqual(tag, work.Tag);
         }
         [TestMethod]
-        public async Task TestEmptyCreateAsync()
+        public void TestEmptyCreateAsync()
         {
-            StartHost(m =>
+            StartHostAsync(m =>
            {
                WorkerBuilder.Create<SimpleBackRun>()
                .Build();

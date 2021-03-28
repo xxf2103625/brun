@@ -14,23 +14,28 @@ namespace Brun.Observers
         {
 
         }
+        private static object Sync_LOCK = new object();
+        private int initNb = -1;
         public override Task Todo(WorkerContext _context, Type brunType)
         {
-            //while (_context.endNb < _context.startNb)
+            Console.WriteLine("SynchroBeforRunObserver,start:{0},end:{1}", _context.startNb, _context.endNb);
+            //TODO 移到Worker直接控制StartNew
+            //if (_context.startNb > _context.endNb)
             //{
-            //    Thread.Sleep(5);
+            //    lock (Sync_LOCK)
+            //    {
+            //        Console.WriteLine("SynchroBeforRunObserver before,start:{0},end:{1}", _context.startNb, _context.endNb);
+            //        if (_context.startNb > _context.endNb)
+            //        {
+            //            while (_context.startNb > _context.endNb)
+            //            {
+            //                Thread.Sleep(50);
+            //            }
+            //        }
+            //        Console.WriteLine("SynchroBeforRunObserver next,start:{0},end:{1}", _context.startNb, _context.endNb);
+            //    }
             //}
-            //TODO 优化同步逻辑
-            //while(_context.Tasks.Any(m=>m.Status== TaskStatus.Running))
-            //{
-            //    Thread.Sleep(5);
-            //}
-            Task.WaitAny(_context.Tasks.ToArray());
             return Task.CompletedTask;
-            //while (_context.Tasks.Any(m => m.Status == TaskStatus.Running))
-            //{
-            //    await Task.Delay(5);
-            //}
         }
     }
 }

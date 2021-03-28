@@ -17,6 +17,10 @@ namespace UnitTestBrun
         [TestMethod]
         public void TestDateTime()
         {
+            StartHostAsync(services =>
+            {
+
+            });
             DateTimeOffset offset1 = DateTime.Now;
             DateTimeOffset offset2 = DateTime.UtcNow;
             Console.WriteLine("off1:{0},off2:{1}", offset1.ToString(), offset2.ToString());
@@ -27,11 +31,11 @@ namespace UnitTestBrun
         {
             int sleepTime = 2;
             string key = nameof(TestTimeWorker);
-            StartHost(services =>
+            StartHostAsync(services =>
             {
                 string key = nameof(TestTimeWorker);
                      WorkerBuilder
-                        .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime),true)
+                        .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime),false)
                         .SetKey(key)
                         .Build()
                         .AsTimeWOrker()
@@ -43,10 +47,10 @@ namespace UnitTestBrun
             
             WaitForBackRun();
             Assert.AreEqual(0, woker.Context.exceptNb);
-            Assert.AreEqual(1, woker.Context.endNb);
+            Assert.AreEqual(0, woker.Context.endNb);
             Thread.Sleep(TimeSpan.FromSeconds(sleepTime));
             Assert.AreEqual(0, woker.Context.exceptNb);
-            Assert.AreEqual(2, woker.Context.endNb);
+            Assert.AreEqual(1, woker.Context.endNb);
 
         }
     }
