@@ -26,7 +26,7 @@ namespace UnitTestBrun
                         .CreateQueue<LogQueueBackRun>()
                         .AddQueue<ErrorQueueBackRun>()
                         .SetKey(key)
-                        .Build()
+                        .Build<QueueWorker>()
                         .AsQueueWorker()
                         ;
                 services.AddBrunService();
@@ -41,7 +41,7 @@ namespace UnitTestBrun
             Assert.AreNotEqual(100, worker.Context.exceptNb);
             Assert.AreNotEqual(200, worker.Context.endNb);
             Console.WriteLine("wait before start:{0},except:{1},end:{2}", worker.Context.startNb, worker.Context.exceptNb, worker.Context.endNb);
-            WaitForBackRun();
+            WaitForBackRun(200);
             Assert.AreEqual(0, worker.RunningTasks.Count);
             Assert.AreEqual(200, worker.Context.startNb);
             Assert.AreEqual(100, worker.Context.exceptNb);
@@ -58,8 +58,7 @@ namespace UnitTestBrun
                         .CreateQueue<LogQueueBackRun>()
                         .AddQueue<ErrorQueueBackRun>()
                         .SetKey(key)
-                        .Build()
-                        .AsQueueWorker()
+                        .Build<QueueWorker>()
                         ;
                 services.AddBrunService();
             });
@@ -82,7 +81,7 @@ namespace UnitTestBrun
             Assert.AreEqual(1, worker.Context.endNb);
 
             await worker.Start();
-            WaitForBackRun();
+            WaitForBackRun(11);
             Assert.AreEqual(11, worker.Context.startNb);
             Assert.AreEqual(11, worker.Context.endNb);
         }

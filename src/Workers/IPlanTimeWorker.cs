@@ -11,6 +11,6 @@ namespace Brun
         /// <summary>
         /// 启动，已经单独开了线程
         /// </summary>
-        void Start();
+        //void Start();
     }
 }

@@ -1164,31 +1164,17 @@
             <param name="option"></param>
             <param name="config"></param>
         </member>
+        <member name="M:Brun.Workers.QueueWorker.Start">
+            <summary>
+            启动监听线程
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Workers.QueueWorker.GetQueueBackRun(System.Type)">
             <summary>
             获取BackRun
             </summary>
             <param name="brunType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.QueueWorker.Execute(System.Type,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="brunType"></param>
-            <param name="message"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.QueueWorker.Start">
-            <summary>
-            启动QueueWorker
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.QueueWorker.Stop">
-            <summary>
-            停止QueueWorker
-            </summary>
             <returns></returns>
         </member>
         <member name="M:Brun.Workers.QueueWorker.Enqueue(System.String)">

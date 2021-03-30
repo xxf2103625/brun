@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Brun.Contexts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Brun.Observers
         }
         private static object Sync_LOCK = new object();
         private int initNb = -1;
-        public override Task Todo(WorkerContext _context, Type brunType)
+        public override Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             Console.WriteLine("SynchroBeforRunObserver,start:{0},end:{1}", _context.startNb, _context.endNb);
             //TODO 移到Worker直接控制StartNew

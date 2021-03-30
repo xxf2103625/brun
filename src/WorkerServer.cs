@@ -107,7 +107,7 @@ namespace Brun
             {
                 //开辟独立线程，不使用线程池
                 //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
-                ((IQueueWorker)item).Start();
+                item.Start();
                 //Thread queue = new Thread(new ThreadStart(((QueueWorker)item).Start().Wait));
             }
             foreach (var item in worders.Where(m => m is ITimeWorker))
@@ -118,7 +118,7 @@ namespace Brun
             }
             foreach (var item in worders.Where(m => m is IPlanTimeWorker))
             {
-                ((IPlanTimeWorker)item).Start();
+                item.Start();
             }
             logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());

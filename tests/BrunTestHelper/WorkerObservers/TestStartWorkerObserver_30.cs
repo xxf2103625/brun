@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace BrunTestHelper.WorkerObservers
         {
         }
 
-        public override async Task Todo(WorkerContext _context, Type brunType)
+        public override async Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             var log = _context.ServiceProvider.GetRequiredService<ILogger<TestStartWorkerObserver_30>>();
             log.LogInformation("TestStartWorkerObserver_30 Order:{0},Time:{1}.", this.Order, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));

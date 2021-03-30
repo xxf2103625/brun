@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ namespace BrunTestHelper.WorkerObservers
         public TestStartWorkerObserver_20() : base(WorkerEvents.StartRun, 20)
         {
         }
-        public override async Task Todo(WorkerContext _context, Type brunType)
+        public override async Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
             var log = _context.ServiceProvider.GetRequiredService<ILogger<TestStartWorkerObserver_20>>();

@@ -1,4 +1,5 @@
-﻿using Brun.Enums;
+﻿using Brun.Contexts;
+using Brun.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,6 +25,6 @@ namespace Brun.Observers
         }
         public WorkerEvents Evt { get; }
         public int Order { get; }
-        public abstract Task Todo(WorkerContext _context, Type brunType);
+        public abstract Task Todo(WorkerContext _context, BrunContext brunContext);
     }
 }

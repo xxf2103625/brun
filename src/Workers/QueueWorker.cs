@@ -22,7 +22,6 @@ namespace Brun.Workers
     /// </summary>
     public class QueueWorker : AbstractWorker, IQueueWorker
     {
-        ILogger<QueueWorker> logger;
         private ConcurrentQueue<string> queue => queues[_option.DefaultBrunType];
         private ConcurrentDictionary<Type, ConcurrentQueue<string>> queues;
         private ConcurrentDictionary<Type, IQueueBackRun> _queueBackRuns;
@@ -46,119 +45,55 @@ namespace Brun.Workers
             }
         }
         /// <summary>
+        /// 启动监听线程
+        /// </summary>
+        /// <returns></returns>
+        public override Task Start()
+        {
+            if (_context.State != WorkerState.Started)
+            {
+                _context.State = WorkerState.Started;
+                Task.Factory.StartNew(() =>
+                {
+                    while (!tokenSource.IsCancellationRequested && _context.State == WorkerState.Started)
+                    {
+                        foreach (var item in queues)
+                        {
+                            if (item.Value.TryDequeue(out string msg))
+                            {
+                                var context = new BrunContext(item.Key);
+                                context.StartNb = _context.startNb;
+                                context.Message = msg;
+                                _ = Execute(context);
+                            }
+                        }
+                        Thread.Sleep(5);
+                    }
+                }, creationOptions: TaskCreationOptions.LongRunning);
+                Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
+                return Task.CompletedTask;
+            }
+            Logger.LogWarning("the queueWorker is already started");
+            return Task.CompletedTask;
+        }
+        /// <summary>
         /// 获取BackRun
         /// </summary>
         /// <param name="brunType"></param>
         /// <returns></returns>
         private IQueueBackRun GetQueueBackRun(Type brunType)
         {
-            logger = _context.ServiceProvider?.GetService<ILogger<QueueWorker>>();
             if (_queueBackRuns.TryGetValue(brunType, out IQueueBackRun queueBackRun))
             {
                 return queueBackRun;
             }
             else
             {
-                logger.LogDebug("创建新的IQueueBackRun，type:{0}", brunType.Name);
+                Logger.LogDebug("创建新的IQueueBackRun，type:{0}", brunType.Name);
                 IQueueBackRun bRun = (IQueueBackRun)BrunTool.CreateInstance(brunType);
+                queues.TryAdd(typeof(IQueueBackRun), new ConcurrentQueue<string>());
                 _queueBackRuns.TryAdd(brunType, bRun);
                 return bRun;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="brunType"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        private async Task Execute(Type brunType, string message)
-        {
-
-            Task start = Observe(brunType, WorkerEvents.StartRun);
-            await start.ContinueWith(async t =>
-             {
-                 try
-                 {
-                     await GetQueueBackRun(brunType).Run(message, tokenSource.Token);
-                 }
-                 catch (Exception ex)
-                 {
-                     _context.ExceptFromRun(ex);
-                     await Observe(brunType, WorkerEvents.Except);
-                 }
-                 finally
-                 {
-                     await Observe(brunType, WorkerEvents.EndRun);
-                 }
-             });
-        }
-        private void Run(Type brunType, string message)
-        {
-            Task task = taskFactory.StartNew(async () =>
-           {
-               await Execute(brunType, message);
-           });
-
-            RunningTasks.Add(task);
-
-            _ = task.ContinueWith(t =>
-            {
-                RunningTasks.TryTake(out t);
-
-            });
-        }
-        /// <summary>
-        /// 启动QueueWorker
-        /// </summary>
-        /// <returns></returns>
-        public override Task Start()
-        {
-            if (_context.State == WorkerState.Started)
-            {
-                return Task.CompletedTask;
-            }
-            Task start = Task.Factory.StartNew(() =>
-             {
-                 if (_context.State == WorkerState.Started)
-                     return;
-                 if (tokenSource != null)
-                     tokenSource.Dispose();
-                 tokenSource = new CancellationTokenSource();
-                 this._context.State = WorkerState.Started;
-                 QueueListenning();
-                 this._context.State = WorkerState.Stoped;
-             }, creationOptions: TaskCreationOptions.LongRunning);
-            return Task.CompletedTask;
-        }
-        /// <summary>
-        /// 停止QueueWorker
-        /// </summary>
-        /// <returns></returns>
-        public override Task Stop()
-        {
-            if (_context.State != WorkerState.Started)
-                return Task.CompletedTask;
-            DateTime now = DateTime.Now;
-            while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
-            {
-                now = now.AddSeconds(0.1);
-                Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            };
-            tokenSource.Cancel();
-            return Task.CompletedTask;
-        }
-        private void QueueListenning()
-        {
-            while (!tokenSource.IsCancellationRequested)
-            {
-                foreach (var item in queues)
-                {
-                    if (item.Value.TryDequeue(out string msg))
-                    {
-                        Run(item.Key, msg);
-                    }
-                }
             }
         }
         /// <summary>
@@ -187,7 +122,7 @@ namespace Brun.Workers
         {
             if (message == null)
             {
-                logger?.LogWarning("传入的消息体为null，已忽略");
+                Logger?.LogWarning("传入的消息体为null，已忽略");
             }
             queues[queueBackRunType].Enqueue(message);
         }
@@ -204,7 +139,8 @@ namespace Brun.Workers
 
         protected override Task Brun(BrunContext context)
         {
-            throw new NotImplementedException();
+            IQueueBackRun queueBackRun = GetQueueBackRun(context.BrunType);
+            return queueBackRun.Run(context.Message, tokenSource.Token);
         }
     }
 }

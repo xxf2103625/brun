@@ -1,4 +1,5 @@
 ﻿using Brun.Commons;
+using Brun.Contexts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +18,7 @@ namespace Brun.Observers
 
         }
 
-        public override Task Todo(WorkerContext _context, Type brunType)
+        public override Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerStartRunObserver>>();
             System.Threading.Interlocked.Increment(ref _context.startNb);
@@ -25,7 +26,8 @@ namespace Brun.Observers
             //{
             //    _context.startNb++;
             //}
-            logger.LogDebug("backrun:{0} is start,startNb:{1} {2}", brunType.Name, _context.startNb, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
+            brunContext.StartNb = _context.startNb;
+            logger.LogDebug("backrun:{0} is start,startNb:{1} {2}", brunContext.BrunType.Name, _context.startNb, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
             return Task.CompletedTask;
         }
     }

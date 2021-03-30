@@ -17,7 +17,6 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpleNumberRun : BackRun
     {
-        private static object SimpleNumberRun_LOCK = new object();
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)

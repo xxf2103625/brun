@@ -17,6 +17,10 @@ namespace Brun.Contexts
             brunType = backRunType;
         }
         public Type BrunType => brunType;
+        public long StartNb { get; set; }
+        public int ExceptNb { get; set; }
+        public long EndNb { get; set; }
+        public string Message { get; set; }
         public void Dispose()
         {
             throw new NotImplementedException();

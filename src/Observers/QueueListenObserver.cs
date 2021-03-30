@@ -1,4 +1,5 @@
-﻿using Brun.Enums;
+﻿using Brun.Contexts;
+using Brun.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Brun.Observers
 
         }
 
-        public override Task Todo(WorkerContext _context, Type brunType)
+        public override Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             throw new NotImplementedException();
         }

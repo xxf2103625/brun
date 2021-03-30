@@ -547,12 +547,43 @@ namespace UnitTestBrun
             work.Run<SimpNbDelayBefore>();
             work.Run<SimpNbDelayAfter>();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
+            //任务还没跑完
+            Assert.AreNotEqual("300", work.GetData("nb"));
 
-            //第一个会在这个后面继续运行
             WaitForBackRun();
             Assert.AreEqual("300", work.GetData("nb"));
             Console.WriteLine("进程结束。。。。。。。。。。。。。。");
         }
+        [TestMethod]
+        public void TestSimpleRunStop()
+        {
+            StartHost(m =>
+            {
+                var data = new ConcurrentDictionary<string, string>();
+                data["nb"] = "0";
+                WorkerBuilder
+                    .Create<SimpleNumberRun>()//内部没有await
+                    .SetData(data)
+                    .BuildOnceWorker();
+            });
+            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            //work.Run();
+            //任务还没跑完
+            Assert.AreEqual("0", work.GetData("nb"));
 
+
+            work.Stop();
+            for (int i = 0; i < 10; i++)
+            {
+                work.Run();
+            }
+            WaitForBackRun();
+            Assert.AreEqual("0", work.GetData("nb"));
+
+            work.Start();
+            work.Run();
+            WaitForBackRun();
+            Assert.AreEqual("100", work.GetData("nb"));
+        }
     }
 }
