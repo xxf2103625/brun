@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brun.Observers
@@ -21,13 +22,8 @@ namespace Brun.Observers
         public override Task Todo(WorkerContext _context, BrunContext brunContext)
         {
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerEndRunObserver>>();
-            System.Threading.Interlocked.Increment(ref _context.endNb);
-            //lock (Observer_LOCK)
-            //{
-            //    _context.endNb++;
-            //}
-            brunContext.EndNb = _context.endNb;
-            logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2} {3}", brunContext.BrunType.Name, _context.startNb, _context.endNb, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            long end = Interlocked.Increment(ref _context.endNb);
+            logger.LogDebug("backrun:{0} is end,startNb:{1} endNb:{2} {3},thread id:{4}", brunContext.BrunType.Name, brunContext.StartNb, end, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Thread.CurrentThread.ManagedThreadId);
             return Task.CompletedTask;
         }
     }

@@ -24,10 +24,10 @@ namespace Brun.Workers
         /// <summary>
         /// 启动线程，开始执行Execute
         /// </summary>
-        public void StartBrun(Type brunType)
+        public Task StartBrun(Type brunType)
         {
             BrunContext brunContext = new BrunContext(brunType);
-            taskFactory.StartNew(() =>
+            return taskFactory.StartNew(() =>
             {
                 _ = Execute(brunContext);
             });

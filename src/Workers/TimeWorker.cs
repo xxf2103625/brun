@@ -1,6 +1,7 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
 using Brun.Contexts;
+using Brun.Enums;
 using Brun.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,23 +21,7 @@ namespace Brun.Workers
     /// </summary>
     public class TimeWorker : AbstractWorker, ITimeWorker
     {
-        /// <summary>
-        /// 开始时间
-        /// </summary>
-        private DateTimeOffset? beginTime;
-        /// <summary>
-        /// 周期
-        /// </summary>
-        private TimeSpan cycle;
-        /// <summary>
-        /// 执行次数，-1无限 
-        /// </summary>
-        private int runNb;
-        private DateTimeOffset? nextRunTime;
-        //只需要实例内的锁
-        private object next_LOCK = new object();
-        private object backRun_LOCK = new object();
-        private IBackRun _backRun;
+        private TimeWorkerOption timeOption => (TimeWorkerOption)_option;
         /// <summary>
         /// 
         /// </summary>
@@ -44,122 +29,68 @@ namespace Brun.Workers
         /// <param name="config"></param>
         public TimeWorker(TimeWorkerOption option, WorkerConfig config) : base(option, config)
         {
-            if (option.Cycle == TimeSpan.Zero)
-                throw new Exception("TimeWorker Cycle not set or can't be Zero");
-            cycle = option.Cycle;
-            if (option.RunWithStart)
+            Init();
+        }
+        private void Init()
+        {
+            foreach (var item in timeOption.CycleTimes)
             {
-                nextRunTime = DateTime.Now;
+                if (item.RunWithStart)
+                {
+                    item.NextTime = DateTime.Now;
+                }
+                else
+                {
+                    item.NextTime = DateTime.Now.Add(item.Cycle);
+                }
             }
         }
         /// <summary>
         /// 实例内保持唯一
         /// </summary>
-        protected IBackRun BackRun
+        protected IBackRun GetBackRun(Type brunType)
         {
-            get
+            SimpleCycleTime cycleTime = timeOption.CycleTimes.FirstOrDefault(m => m.BackRun.GetType() == brunType);
+            if (cycleTime == null)
             {
-                if (_backRun == null)
-                {
-                    lock (backRun_LOCK)
-                    {
-                        if (_backRun == null)
-                        {
-                            _backRun = (IBackRun)BrunTool.CreateInstance(_option.DefaultBrunType);
-                            _backRun.Data = _context.Items;
-                        }
-
-                    }
-                }
-                return _backRun;
+                Logger.LogWarning("the {0}'s {1} is not init.", GetType(), brunType.Name);
             }
+            return cycleTime.BackRun;
         }
         /// <summary>
         /// 启动Worker
         /// </summary>
         /// <returns></returns>
-        public async Task Start()
+        public override Task Start()
         {
-            _context.State = Enums.WorkerState.Started;//worker状态
-            var log = _context.ServiceProvider.GetRequiredService<ILogger<TimeWorker>>();
-            //TODO 优化定时流程
-            while (!tokenSource.Token.IsCancellationRequested)
+            if (_context.State != WorkerState.Started)
             {
-                if (nextRunTime == null || nextRunTime.Value <= DateTime.Now)
+                _context.State = WorkerState.Started;
+                Task.Factory.StartNew(() =>
                 {
-                    lock (next_LOCK)
+                    while (!tokenSource.Token.IsCancellationRequested && _context.State == WorkerState.Started)
                     {
-                        if (nextRunTime == null)
+                        foreach (var item in timeOption.CycleTimes)
                         {
-                            nextRunTime = DateTime.Now + cycle;
-                            continue;
+                            if (item.NextTime != null && item.NextTime.Value <= DateTime.Now)
+                            {
+                                BrunContext brunContext = new BrunContext(item.BackRun.GetType());
+                                _ = Execute(brunContext);
+                                item.NextTime = DateTime.Now.Add(item.Cycle);
+                            }
                         }
-                        else
-                        {
-                            if (nextRunTime.Value > DateTime.Now)
-                                continue;
-                        }
+                        Thread.Sleep(5);
                     }
-                }
-                if (nextRunTime.Value <= DateTime.Now)
-                {
-
-                    Task task = Execute();
-                    _ = RunningTasks.TryAdd(task);
-                    _ = task.ContinueWith(t =>
-                      {
-                          _ = RunningTasks.TryTake(out t);
-
-                      });
-                    lock (next_LOCK)
-                    {
-                        nextRunTime = DateTime.Now + cycle;
-                    }
-                }
-                await Task.Delay(5);
+                }, TaskCreationOptions.LongRunning);
+                Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
+                return Task.CompletedTask;
             }
-            _context.State = Enums.WorkerState.Stoped;//worker状态
+            Logger.LogWarning("the TimeWorker key:{0} is already started.", _context.Key);
+            return Task.CompletedTask;
         }
-        /// <summary>
-        /// 执行一次队列任务
-        /// </summary>
-        /// <returns></returns>
-        protected async Task Execute()
-        {
-            Type brunType = _option.DefaultBrunType;
-            Task start = Observe(brunType, Enums.WorkerEvents.StartRun);
-            await start.ContinueWith(async t =>
-              {
-                  try
-                  {
-                      await BackRun.Run(tokenSource.Token);
-                  }
-                  catch (Exception ex)
-                  {
-                      _context.ExceptFromRun(ex);
-                      await Observe(brunType, Enums.WorkerEvents.Except);
-                  }
-                  finally
-                  {
-                      await Observe(brunType, Enums.WorkerEvents.EndRun);
-                  }
-              });
-
-        }
-        //TODO TimeWorker暂停
-        public Task Pause()
-        {
-            throw new NotImplementedException();
-        }
-        //TODO TimeWorker恢复
-        public Task Resume()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Task Brun(BrunContext context)
         {
-            throw new NotImplementedException();
+            return GetBackRun(context.BrunType).Run(tokenSource.Token);
         }
     }
 }

@@ -943,26 +943,11 @@
             <typeparam name="TQueueBackRun"></typeparam>
             <returns></returns>
         </member>
-        <member name="M:Brun.WorkerBuilder.CreateTime``1">
-            <summary>
-            创建定时任务
-            </summary>
-            <typeparam name="TBackRun"></typeparam>
-            <returns></returns>
-        </member>
         <member name="M:Brun.WorkerBuilder.CreateTime``1(System.TimeSpan,System.Boolean)">
             <summary>
             创建定时任务
             </summary>
             <typeparam name="TBackRun"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.WorkerBuilder.SetCycle(System.TimeSpan,System.Boolean)">
-            <summary>
-            设置TimeWorker的定时执行周期
-            </summary>
-            <param name="cycle">运行周期</param>
-            <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
             <returns></returns>
         </member>
         <member name="M:Brun.WorkerBuilder.CreatePlanTime``1(System.String[])">
@@ -1018,11 +1003,6 @@
         <member name="P:Brun.WorkerServer.ServiceProvider">
             <summary>
             服务容器
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.StoppingToken">
-            <summary>
-            服务结束Token
             </summary>
         </member>
         <member name="P:Brun.WorkerServer.TaskFactory">
@@ -1101,11 +1081,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Brun.Workers.AbstractWorker.Observe(System.Type,Brun.Enums.WorkerEvents)">
+        <member name="M:Brun.Workers.AbstractWorker.Observe(Brun.Contexts.BrunContext,Brun.Enums.WorkerEvents)">
             <summary>
             添加拦截器
             </summary>
-            <param name="brunType"></param>
+            <param name="brunContext"></param>
             <param name="workerEvents"></param>
             <returns></returns>
         </member>
@@ -1154,7 +1134,6 @@
         <member name="T:Brun.Workers.QueueWorker">
             <summary>
             简单的内存Queue 自定义数据类型
-             TODO 让一个QueueWorker可以配置多个不同类型的QueueBackrun
             </summary>
         </member>
         <member name="M:Brun.Workers.QueueWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)">
@@ -1210,31 +1189,10 @@
             //TODO 优化同步Worker
             </summary>
         </member>
-        <member name="M:Brun.Workers.SynchroWorker.Run(System.Type)">
-            <summary>
-            运行指定类型的BanRun
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:Brun.Workers.TimeWorker">
             <summary>
             简单的时间循环任务，复杂的定时使用<see cref="T:Brun.Workers.PlanTimeWorker"/>
             //TODO 最简易循环执行任务，继续简化使用
-            </summary>
-        </member>
-        <member name="F:Brun.Workers.TimeWorker.beginTime">
-            <summary>
-            开始时间
-            </summary>
-        </member>
-        <member name="F:Brun.Workers.TimeWorker.cycle">
-            <summary>
-            周期
-            </summary>
-        </member>
-        <member name="F:Brun.Workers.TimeWorker.runNb">
-            <summary>
-            执行次数，-1无限 
             </summary>
         </member>
         <member name="M:Brun.Workers.TimeWorker.#ctor(Brun.Options.TimeWorkerOption,Brun.WorkerConfig)">
@@ -1244,7 +1202,7 @@
             <param name="option"></param>
             <param name="config"></param>
         </member>
-        <member name="P:Brun.Workers.TimeWorker.BackRun">
+        <member name="M:Brun.Workers.TimeWorker.GetBackRun(System.Type)">
             <summary>
             实例内保持唯一
             </summary>
@@ -1252,12 +1210,6 @@
         <member name="M:Brun.Workers.TimeWorker.Start">
             <summary>
             启动Worker
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Workers.TimeWorker.Execute">
-            <summary>
-            执行一次队列任务
             </summary>
             <returns></returns>
         </member>
@@ -1285,11 +1237,6 @@
             </summary>
             <param name="backRunType">backRun类型</param>
             <returns></returns>
-        </member>
-        <member name="M:Brun.IPlanTimeWorker.Start">
-            <summary>
-            启动，已经单独开了线程
-            </summary>
         </member>
         <member name="T:Brun.IQueueWorker">
             <summary>
@@ -1327,24 +1274,6 @@
             <summary>
             时间周期执行的Worker
             </summary>
-        </member>
-        <member name="M:Brun.ITimeWorker.Start">
-            <summary>
-            启动
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.ITimeWorker.Pause">
-            <summary>
-            暂停
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.ITimeWorker.Resume">
-            <summary>
-            恢复
-            </summary>
-            <returns></returns>
         </member>
     </members>
 </doc>

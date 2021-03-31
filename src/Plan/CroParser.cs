@@ -23,7 +23,7 @@ namespace Brun.Plan
         public ParseResult Parse(string croExpression)
         {
             result = new ParseResult();
-            _cros = croExpression.Split(" ");
+            _cros = croExpression.Split(' ');
             if (_cros.Length != 5 && _cros.Length != 6)
             {
                 AddError(0, "croExpress length must be 5 or 6.");
@@ -108,7 +108,7 @@ namespace Brun.Plan
             if (cloumn.Plan.IndexOf(",") > -1)
             {
                 //TODO 可能需要先按大小排序
-                string[] nbs = cloumn.Plan.Split(",");
+                string[] nbs = cloumn.Plan.Split(',');
                 for (int i = 0; i < nbs.Length; i++)
                 {
                     if (int.TryParse(nbs[i], out int nb))
@@ -139,7 +139,7 @@ namespace Brun.Plan
         {
             if (cloumn.Plan.IndexOf("-") > -1 && cloumn.Plan.IndexOf("/") == -1)
             {
-                string[] nbs = cloumn.Plan.Split("-");
+                string[] nbs = cloumn.Plan.Split('-');
                 if (nbs.Length != 2)
                 {
                     AddError(cloumn.CloumnType, "must be 2 length of int");
@@ -178,7 +178,7 @@ namespace Brun.Plan
             
             if (cloumn.Plan.IndexOf("/") > -1)
             {
-                string[] nbs = cloumn.Plan.Split("/");
+                string[] nbs = cloumn.Plan.Split('/');
                 if (nbs.Length != 2)
                 {
                     AddError(cloumn.CloumnType, "out of range for / length");
@@ -211,7 +211,7 @@ namespace Brun.Plan
                             // 10-20/5
                             if (nbs[0].IndexOf("-") > -1)
                             {
-                                string[] tos = nbs[0].Split("-");
+                                string[] tos = nbs[0].Split('-');
                                 if (tos.Length != 2)
                                 {
                                     AddError(cloumn.CloumnType, $"can not parse {nbs[0]}");

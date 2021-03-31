@@ -70,6 +70,14 @@ namespace UnitTestBrun
                 Thread.Sleep(5);
             }
         }
+        protected void WiatAfter(TimeSpan timeSpan)
+        {
+            DateTime next = DateTime.Now.Add(timeSpan);
+            while (DateTime.Now <= next)
+            {
+                Thread.Sleep(50);
+            }
+        }
         [TestCleanup]
         public async Task Cleanup()
         {

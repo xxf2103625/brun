@@ -21,7 +21,7 @@ namespace Brun.Plan.TimeComputers
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split(",");
+            string[] nbs = cloumn.Plan.Split(',');
             for (int i = 0; i < nbs.Length; i++)
             {
                 int hour = int.Parse(nbs[i]);
@@ -56,7 +56,7 @@ namespace Brun.Plan.TimeComputers
 
         protected override DateTimeOffset? Step(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split("/");
+            string[] nbs = cloumn.Plan.Split('/');
             int step = int.Parse(nbs[1]);
             if (int.TryParse(nbs[0], out int nb))
             {
@@ -70,7 +70,7 @@ namespace Brun.Plan.TimeComputers
                 }
                 else
                 {
-                    string[] tos = nbs[0].Split("-");
+                    string[] tos = nbs[0].Split('-');
                     int begin = int.Parse(tos[0]);
                     int end = int.Parse(tos[1]);
                     return StepNb(start, step, begin, end);
@@ -106,7 +106,7 @@ namespace Brun.Plan.TimeComputers
         }
         protected override DateTimeOffset? To(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split("-");
+            string[] nbs = cloumn.Plan.Split('-');
             int begin = int.Parse(nbs[0]);
             int end = int.Parse(nbs[1]);
             if (start.Hour >= begin && start.Hour <= end)

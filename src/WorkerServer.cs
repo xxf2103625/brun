@@ -22,7 +22,6 @@ namespace Brun
         private static object serverCreate_LOCK = new object();
         private IList<IWorker> worders = new List<IWorker>();
         private IServiceProvider _serviceProvider;
-        private CancellationToken _stoppingToken;
         ILoggerFactory loggerFactory;
         ILogger<WorkerServer> logger;
         private TaskFactory taskFactory;
@@ -42,10 +41,6 @@ namespace Brun
         /// 服务容器
         /// </summary>
         public IServiceProvider ServiceProvider => _serviceProvider;
-        /// <summary>
-        /// 服务结束Token
-        /// </summary>
-        public CancellationToken StoppingToken => _stoppingToken;
         /// <summary>
         /// 公共的Task管理
         /// </summary>
@@ -96,27 +91,8 @@ namespace Brun
         /// <param name="stoppingToken"></param>
         public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
-            _stoppingToken = stoppingToken;
-            //taskFactory = new TaskFactory(_stoppingToken);
             ServiceConfigure(serviceProvider);
-            foreach (var item in worders.Where(m => m is IOnceWorker))
-            {
-                item.Start();
-            }
-            foreach (var item in worders.Where(m => m is IQueueWorker))
-            {
-                //开辟独立线程，不使用线程池
-                //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
-                item.Start();
-                //Thread queue = new Thread(new ThreadStart(((QueueWorker)item).Start().Wait));
-            }
-            foreach (var item in worders.Where(m => m is ITimeWorker))
-            {
-                //开辟独立线程，不使用线程池
-                //TODO 优化触发条件为事件通知，独立一个线程专门管理触发通知就足够
-                Thread time = new Thread(new ThreadStart(((ITimeWorker)item).Start().Wait));
-            }
-            foreach (var item in worders.Where(m => m is IPlanTimeWorker))
+            foreach (var item in worders)
             {
                 item.Start();
             }
@@ -136,7 +112,7 @@ namespace Brun
         }
         private void WorkerConfigure()
         {
-
+            //TODO WorkerConfigure
         }
 
         public void Stop()

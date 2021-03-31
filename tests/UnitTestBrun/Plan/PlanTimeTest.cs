@@ -153,7 +153,7 @@ namespace UnitTestBrun.Plan
             PlanTime planTime = new PlanTime();
             planTime.Parse("0 0 0 L *");
             computer.SetPlanTime(planTime);
-            DateTimeOffset? next = DateTime.Now;
+            DateTimeOffset? next = DateTime.Parse("03/3/2021 00:00:00 +08:00");
             for (int i = 0; i < 12; i++)
             {
 

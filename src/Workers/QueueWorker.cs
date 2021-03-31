@@ -18,7 +18,6 @@ namespace Brun.Workers
 {
     /// <summary>
     /// 简单的内存Queue 自定义数据类型
-    ///  TODO 让一个QueueWorker可以配置多个不同类型的QueueBackrun
     /// </summary>
     public class QueueWorker : AbstractWorker, IQueueWorker
     {
@@ -62,7 +61,6 @@ namespace Brun.Workers
                             if (item.Value.TryDequeue(out string msg))
                             {
                                 var context = new BrunContext(item.Key);
-                                context.StartNb = _context.startNb;
                                 context.Message = msg;
                                 _ = Execute(context);
                             }
@@ -73,7 +71,7 @@ namespace Brun.Workers
                 Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
                 return Task.CompletedTask;
             }
-            Logger.LogWarning("the queueWorker is already started");
+            Logger.LogWarning("the QueueWorker key:{0} is already started.", _context.Key);
             return Task.CompletedTask;
         }
         /// <summary>

@@ -13,10 +13,6 @@ namespace Brun.Plan.TimeComputers
     public class MonthComputer : BasePlanTimeComputer
     {
         /// <summary>
-        /// 特殊的日期，29，30，31，月和年变动的时候可能需要回到dayComputer重新计算
-        /// </summary>
-        //private bool isSpecialDay = false;
-        /// <summary>
         /// 初始月，在这里变化后可能需要重新计算天
         /// </summary>
         private int initMonth;
@@ -54,7 +50,7 @@ namespace Brun.Plan.TimeComputers
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split(",");
+            string[] nbs = cloumn.Plan.Split(',');
             for (int i = 0; i < nbs.Length; i++)
             {
                 int month = int.Parse(nbs[i]);
@@ -89,7 +85,7 @@ namespace Brun.Plan.TimeComputers
 
         protected override DateTimeOffset? Step(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split("/");
+            string[] nbs = cloumn.Plan.Split('/');
             int step = int.Parse(nbs[1]);
             if (int.TryParse(nbs[0], out int nb))
             {
@@ -103,7 +99,7 @@ namespace Brun.Plan.TimeComputers
                 }
                 else
                 {
-                    string[] tos = nbs[0].Split("-");
+                    string[] tos = nbs[0].Split('-');
                     int begin = int.Parse(tos[0]);
                     int end = int.Parse(tos[1]);
                     return StepNb(start, step, begin, end);
@@ -139,7 +135,7 @@ namespace Brun.Plan.TimeComputers
         }
         protected override DateTimeOffset? To(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split("-");
+            string[] nbs = cloumn.Plan.Split('-');
             int begin = int.Parse(nbs[0]);
             int end = int.Parse(nbs[1]);
             if (start.Month >= begin && start.Month <= end)

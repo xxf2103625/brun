@@ -35,8 +35,8 @@ namespace Brun.Plan.TimeComputers
         }
         protected override DateTimeOffset? And(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split(",");
-            SortedSet<int> weeks = new();
+            string[] nbs = cloumn.Plan.Split(',');
+            SortedSet<int> weeks = new SortedSet<int>();
             for (int i = 0; i < nbs.Length; i++)
             {
                 weeks.Add(int.Parse(nbs[i]));
@@ -100,7 +100,7 @@ namespace Brun.Plan.TimeComputers
 
         protected override DateTimeOffset? To(DateTimeOffset start)
         {
-            string[] nbs = cloumn.Plan.Split("-");
+            string[] nbs = cloumn.Plan.Split('-');
             int minWeek = int.Parse(nbs[0]);
             int maxWeek = int.Parse(nbs[1]);
             if ((int)start.DayOfWeek < minWeek - 1)

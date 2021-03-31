@@ -114,23 +114,6 @@ namespace Brun
         /// </summary>
         /// <typeparam name="TBackRun"></typeparam>
         /// <returns></returns>
-        public static WorkerBuilder CreateTime<TBackRun>() where TBackRun : IBackRun, new()
-        {
-            WorkerBuilder builder = new WorkerBuilder()
-            {
-                //创建了新的对象
-                config = WorkerServer.Instance.ServerConfig.DefaultConfig,
-                option = WorkerServer.Instance.ServerConfig.DefaultTimeWorkerOption
-            };
-            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
-            builder.option.WorkerType = typeof(TimeWorker);
-            return builder;
-        }
-        /// <summary>
-        /// 创建定时任务
-        /// </summary>
-        /// <typeparam name="TBackRun"></typeparam>
-        /// <returns></returns>
         public static WorkerBuilder CreateTime<TBackRun>(TimeSpan cycle, bool runWithStart = false) where TBackRun : IBackRun, new()
         {
             WorkerBuilder builder = new WorkerBuilder()
@@ -139,33 +122,35 @@ namespace Brun
                 config = WorkerServer.Instance.ServerConfig.DefaultConfig,
                 option = WorkerServer.Instance.ServerConfig.DefaultTimeWorkerOption
             };
-            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
             builder.option.WorkerType = typeof(TimeWorker);
-            ((TimeWorkerOption)builder.option).RunWithStart = runWithStart;
-            ((TimeWorkerOption)builder.option).Cycle = cycle;
+            builder.option.BrunTypes = new List<Type>() { typeof(TBackRun) };
+            ((TimeWorkerOption)builder.option).CycleTimes = new List<SimpleCycleTime>()
+            {
+                new SimpleCycleTime(BrunTool.CreateInstance<TBackRun>(),cycle,runWithStart)
+            };
             return builder;
         }
-        /// <summary>
-        /// 设置TimeWorker的定时执行周期
-        /// </summary>
-        /// <param name="cycle">运行周期</param>
-        /// <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
-        /// <returns></returns>
-        [Obsolete("直接在CreateTime中传入参数")]
-        public WorkerBuilder SetCycle(TimeSpan cycle, bool runWithStart = false)
-        {
-            if (option is TimeWorkerOption option1)
-            {
-                option1.RunWithStart = runWithStart;
-                option1.Cycle = cycle;
-            }
-            else
-            {
-                throw new Exception("only TimeWorker can SetCycle");
-            }
+        ///// <summary>
+        ///// 设置TimeWorker的定时执行周期
+        ///// </summary>
+        ///// <param name="cycle">运行周期</param>
+        ///// <param name="runWithStart">程序运行/重启时是否立即执行一次</param>
+        ///// <returns></returns>
+        //[Obsolete("直接在CreateTime中传入参数")]
+        //public WorkerBuilder SetCycle(TimeSpan cycle, bool runWithStart = false)
+        //{
+        //    if (option is TimeWorkerOption option1)
+        //    {
+        //        option1.RunWithStart = runWithStart;
+        //        option1.Cycle = cycle;
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("only TimeWorker can SetCycle");
+        //    }
 
-            return this;
-        }
+        //    return this;
+        //}
         /// <summary>
         /// 创建PlanTimeWorker，用于复杂的定时计划任务
         /// </summary>

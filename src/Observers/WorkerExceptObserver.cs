@@ -28,7 +28,7 @@ namespace Brun.Observers
             //{
             //    _context.exceptNb++;
             //}
-            brunContext.ExceptNb = _context.exceptNb;
+            //brunContext.ExceptNb = _context.exceptNb;
             logger.LogError(" backRun:{0} is except!count:{1},msg:{2},StackTrace:{3} {4}", brunContext.BrunType.Name, _context.exceptNb, _context.Exceptions.LastOrDefault()?.Message, _context.Exceptions.LastOrDefault()?.StackTrace, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return Task.CompletedTask;
         }

@@ -69,39 +69,48 @@ namespace Brun.Workers
             Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
             return Task.CompletedTask;
         }
-        protected async Task Execute(BrunContext runContext)
+        /// <summary>
+        /// 统一流程控制
+        /// </summary>
+        /// <param name="runContext"></param>
+        /// <returns></returns>
+        protected Task Execute(BrunContext runContext)
         {
             Task before = Observe(runContext, WorkerEvents.StartRun);
-            await before.ContinueWith(async t =>
-            {
-                try
-                {
-                    if (_context.State != WorkerState.Started)
-                    {
-                        //TODO BrunContext的序号
-                        Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, runContext.StartNb);
-                        return;
-                    }
-                    Task task = Brun(runContext);
-                    RunningTasks.TryAdd(task);
-                    _ = task.ContinueWith(t =>
+            _ = before.ContinueWith(async t =>
+              {
+                  try
+                  {
+                      if (_context.State != WorkerState.Started)
                       {
-                          RunningTasks.TryTake(out t);
-                      });
-                    await task;
-                }
-                catch (Exception ex)
-                {
-                    _context.ExceptFromRun(ex);
-                    await Observe(runContext, WorkerEvents.Except);
-                }
-                finally
-                {
-                    await Observe(runContext, WorkerEvents.EndRun);
-                }
-
-            }, continuationOptions: TaskContinuationOptions.ExecuteSynchronously);
+                          Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, runContext.StartNb);
+                          return;
+                      }
+                      Task task = Brun(runContext);
+                      RunningTasks.TryAdd(task);
+                      _ = task.ContinueWith(tbrun =>
+                        {
+                            RunningTasks.TryTake(out tbrun);
+                        });
+                      await task;
+                  }
+                  catch (Exception ex)
+                  {
+                      _context.ExceptFromRun(ex);
+                      await Observe(runContext, WorkerEvents.Except);
+                  }
+                  finally
+                  {
+                      await Observe(runContext, WorkerEvents.EndRun);
+                  }
+              }, TaskContinuationOptions.ExecuteSynchronously);
+            return Task.CompletedTask;
         }
+        /// <summary>
+        /// 执行BackRun.Run
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
         /// <summary>
         /// 停止
@@ -176,10 +185,9 @@ namespace Brun.Workers
         {
             return (IPlanTimeWorker)this;
         }
-        //TODO task管理
         public TaskFactory TaskFactory => taskFactory;
         /// <summary>
-        /// 回收单个Worker
+        /// 释放单个Worker
         /// </summary>
         public void Dispose()
         {

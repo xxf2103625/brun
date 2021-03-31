@@ -11,5 +11,9 @@ namespace Brun.Commons
         {
             return Activator.CreateInstance(type, args: args);
         }
+        public static TType CreateInstance<TType>(params object[] args)
+        {
+            return (TType)Activator.CreateInstance(typeof(TType), args);
+        }
     }
 }

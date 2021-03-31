@@ -34,21 +34,20 @@ namespace UnitTestBrun
             StartHost(services =>
             {
                 string key = nameof(TestTimeWorker);
-                     WorkerBuilder
-                        .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime),false)
-                        .SetKey(key)
-                        .Build()
-                        .AsTimeWOrker()
-                        ;
+                WorkerBuilder
+                   .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime), false)
+                   .SetKey(key)
+                   .Build()
+                   ;
                 services.AddBrunService();
             });
             IWorker woker = WorkerServer.Instance.GetWorker(key);
-            Assert.AreEqual(0, woker.Context.endNb);
-            
-            WaitForBackRun();
+            Assert.AreEqual(0, woker.Context.startNb);
             Assert.AreEqual(0, woker.Context.exceptNb);
             Assert.AreEqual(0, woker.Context.endNb);
-            Thread.Sleep(TimeSpan.FromSeconds(sleepTime));
+            Console.WriteLine("Main Thread id:{0}", Thread.CurrentThread.ManagedThreadId);
+            WiatAfter(TimeSpan.FromSeconds(2.5));
+            Assert.AreEqual(1, woker.Context.startNb);
             Assert.AreEqual(0, woker.Context.exceptNb);
             Assert.AreEqual(1, woker.Context.endNb);
 

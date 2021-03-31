@@ -12,7 +12,7 @@ namespace BrunTestHelper.BackRuns
     {
         public override Task Run(CancellationToken stoppingToken)
         {
-            Console.WriteLine("LogBackRun just console");
+            Console.WriteLine("LogBackRun just console, Thread Id:{0}",Thread.CurrentThread.ManagedThreadId);
             return Task.CompletedTask;
         }
     }
