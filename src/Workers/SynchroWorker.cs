@@ -1,4 +1,5 @@
 ﻿using Brun.Commons;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
@@ -14,13 +15,19 @@ namespace Brun.Workers
 {
     /// <summary>
     /// 同步Worker，同一个Worker内，backrun串行运行
-    /// //TODO 优化同步Worker
     /// </summary>
     public class SynchroWorker : OnceWorker
     {
         public SynchroWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
-            config.AddWorkerObserver(new SynchroBeforRunObserver());
+        }
+
+        public override Task StartBrun(Type brunType)
+        {
+            BrunContext brunContext = new BrunContext(brunType);
+
+            return Execute(brunContext);
         }
     }
+
 }

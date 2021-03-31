@@ -68,10 +68,10 @@ namespace BrunWebTest
                     //;
 
                     //配置复杂时间计划任务
-                    //WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * * *", "5 * * * *", "* * * * *")
-                    //.AddPlanTime<ErrorTestRun>("* * * * *")
-                    //.SetKey(PlanKey)
-                    //.Build();
+                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * * *", "5 * * * *", "* * * * *")
+                    .AddPlanTime<ErrorTestRun>("* * * * *")
+                    .SetKey(PlanKey)
+                    .Build();
 
                     //启动后台服务
                     services.AddBrunService();

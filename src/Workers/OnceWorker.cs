@@ -24,7 +24,7 @@ namespace Brun.Workers
         /// <summary>
         /// 启动线程，开始执行Execute
         /// </summary>
-        public Task StartBrun(Type brunType)
+        public virtual Task StartBrun(Type brunType)
         {
             BrunContext brunContext = new BrunContext(brunType);
             return taskFactory.StartNew(() =>

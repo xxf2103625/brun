@@ -33,5 +33,24 @@ namespace UnitTestBrun
             Console.WriteLine("TestSimpleRun：WaitForBackRun 之后的调用线程");
             Assert.AreEqual("100", work.GetData("nb"));
         }
+        [TestMethod]
+        public void TestLog()
+        {
+            StartHost(m =>
+            {
+                WorkerBuilder
+               .Create<LogBackRun>()
+               .Build<SynchroWorker>();
+            });
+            SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(LogBackRun)).First();
+            for (int i = 0; i < 100; i++)
+            {
+                work.Run();
+            }
+            Console.WriteLine("TestSimpleRun：WaitForBackRun 之前的调用线程");
+            WaitForBackRun();
+            Console.WriteLine("TestSimpleRun：WaitForBackRun 之后的调用线程");
+            //Assert.AreEqual("100", work.GetData("nb"));
+        }
     }
 }

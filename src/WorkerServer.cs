@@ -24,7 +24,6 @@ namespace Brun
         private IServiceProvider _serviceProvider;
         ILoggerFactory loggerFactory;
         ILogger<WorkerServer> logger;
-        private TaskFactory taskFactory;
         private WorkerServer()
         {
 
@@ -41,10 +40,6 @@ namespace Brun
         /// 服务容器
         /// </summary>
         public IServiceProvider ServiceProvider => _serviceProvider;
-        /// <summary>
-        /// 公共的Task管理
-        /// </summary>
-        public TaskFactory TaskFactory => taskFactory;
         public IWorker GetWorker(string key)
         {
             IWorker worker = worders.FirstOrDefault(m => m.Key == key);
@@ -144,7 +139,7 @@ namespace Brun
             }
         }
         /// <summary>
-        /// 清理单例，单元测试用
+        /// 清理单例，单元测试专用
         /// </summary>
         public static void ClearInstance()
         {

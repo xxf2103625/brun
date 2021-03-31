@@ -1005,11 +1005,6 @@
             服务容器
             </summary>
         </member>
-        <member name="P:Brun.WorkerServer.TaskFactory">
-            <summary>
-            公共的Task管理
-            </summary>
-        </member>
         <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
             启动Brun
@@ -1024,7 +1019,7 @@
         </member>
         <member name="M:Brun.WorkerServer.ClearInstance">
             <summary>
-            清理单例，单元测试用
+            清理单例，单元测试专用
             </summary>
         </member>
         <member name="T:Brun.Workers.AbstractWorker">
@@ -1075,6 +1070,20 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Brun.Workers.AbstractWorker.Execute(Brun.Contexts.BrunContext)">
+            <summary>
+            统一流程控制
+            </summary>
+            <param name="runContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.AbstractWorker.Brun(Brun.Contexts.BrunContext)">
+            <summary>
+            执行BackRun.Run
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Stop">
             <summary>
             停止
@@ -1108,7 +1117,7 @@
         </member>
         <member name="M:Brun.Workers.AbstractWorker.Dispose">
             <summary>
-            回收单个Worker
+            释放单个Worker
             </summary>
         </member>
         <member name="T:Brun.Workers.OnceWorker">
@@ -1187,6 +1196,11 @@
             <summary>
             同步Worker，同一个Worker内，backrun串行运行
             //TODO 优化同步Worker
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.SynchroWorker.StartBrun(System.Type)">
+            <summary>
+            启动线程，开始执行Execute
             </summary>
         </member>
         <member name="T:Brun.Workers.TimeWorker">
