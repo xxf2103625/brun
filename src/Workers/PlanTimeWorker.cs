@@ -23,6 +23,9 @@ namespace Brun.Workers
         private List<IBackRun> backRuns = new List<IBackRun>();
         private object backRunCreate_LOCK = new object();
         private ILogger logger => (ILogger<PlanTimeWorker>)WorkerServer.Instance.ServiceProvider.GetService(typeof(ILogger<PlanTimeWorker>));
+        //TODO 初始化所有类型
+        public override IEnumerable<Type> BrunTypes => backRuns.Select(m => m.GetType());
+
         public PlanTimeWorker(PlanTimeWorkerOption option, WorkerConfig config) : base(option, config)
         {
             Init();

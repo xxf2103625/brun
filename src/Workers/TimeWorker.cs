@@ -22,6 +22,9 @@ namespace Brun.Workers
     public class TimeWorker : AbstractWorker, ITimeWorker
     {
         private TimeWorkerOption timeOption => (TimeWorkerOption)_option;
+
+        public override IEnumerable<Type> BrunTypes => timeOption.CycleTimes.Select(m => m.BackRun.GetType());
+
         /// <summary>
         /// 
         /// </summary>

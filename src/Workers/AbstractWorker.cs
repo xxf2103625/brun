@@ -112,6 +112,7 @@ namespace Brun.Workers
         /// <param name="context"></param>
         /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
+        public abstract IEnumerable<Type> BrunTypes { get; }
         /// <summary>
         /// 停止
         /// </summary>

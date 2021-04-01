@@ -1,34 +1,48 @@
-﻿@{
-    ViewData["Title"] = "后台任务概况";
+﻿@model Brun.Models.BrunInfo
+@{
+    ViewData["Title"] = "后台任务实时监控";
 }
 
 <div class="text-center">
-    <h3 class="display-4">后台任务实时概况</h3>
-    <p>Learn about <a target="_blank" href="http://www.dotnet6.net">文档地址</a>.</p>
+    <h3 class="display-4">后台任务实时监控</h3>
+    <p>Learn about <a target="_blank" href="https://gitee.com/2103625/brun">git仓储</a>.</p>
+</div>
+<div>
+    <ul>
+        <li>后台任务开始时间:@(Model.StartTime.Value.ToString("yyyy-MM-dd HH:mm:ss"))</li>
+        <li>Worker总数:@(Model.Workers.Count)</li>
+    </ul>
 </div>
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th>Worker类型</th>
+            <th>BackRun类型</th>
             <th>Key</th>
             <th>Name</th>
-
-            <th>Worker类型</th>
-            <th>Brun类型</th>
+            <th>Tag</th>
             <th>进行中Task数量</th>
             <th>开始|异常|结束 数量</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Workers)
         {
             <tr>
+                <td>@item.TypeName</td>
+                <td>
+                    <ul>
+                        @foreach (var brun in item.BrunTypes)
+                        {
+                            <li>@brun</li>
+                        }
+                    </ul>
+                </td>
                 <td>@item.Key</td>
                 <td>@item.Name</td>
-
-                <td>@item.Context.Option.WorkerType.Name</td>
-                <td>@item.Context.Option.DefaultBrunType.Name</td>
-                <td>@item.RunningTasks.Count</td>
-                <td>@item.Context.startNb | @item.Context.exceptNb | @item.Context.endNb</td>
+                <td>@item.Tag</td>
+                <td>@item.RunningNb</td>
+                <td>@item.StartNb | @item.ExceptNb | @item.EndNb</td>
             </tr>
         }
     </tbody>

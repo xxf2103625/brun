@@ -36,36 +36,34 @@ namespace BrunWebTest
                     services.AddScoped<ITestScopeService, TestScopeService>();
 
                     ////配置单次任务
-                    //WorkerBuilder.Create<TestHttpWorker>()
-                    //.SetKey(BrunKey)
-                    //.Build();
+                    WorkerBuilder.Create<TestHttpWorker>()
+                    .SetKey(BrunKey)
+                    .Build();
 
                     WorkerBuilder
                     .Create<LongTimeBackRun>()
-                    .Add<LongTimeBackRun>()//同一个OnceWorker中配置多个BackRun，使用：worker.RunDontWait<TBackRun>()
+                    .Add<LogBackRun>()//同一个OnceWorker中配置多个BackRun，使用：worker.RunDontWait<TBackRun>()
                     .SetName(nameof(LongTimeBackRun))
                     .Build();
 
                     ////配置Scope任务
-                    //WorkerBuilder.Create<TestScopeBackRun>()
-                    //.SetKey(ScopeKey)
-                    //.Build();
+                    WorkerBuilder.Create<TestScopeBackRun>()
+                    .SetKey(ScopeKey)
+                    .Build();
 
 
                     ////配置队列任务
-                    //WorkerBuilder.CreateQueue<TestQueueWorker>()
-                    //.AddQueue<TestQueueErrorWorker>()//配置多个QueueBackRrun，使用:worker.Enqueue<TQueueBackRun>(msg)
-                    //.SetKey(QueueKey)
-                    //.Build();
+                    WorkerBuilder.CreateQueue<TestQueueWorker>()
+                    .AddQueue<TestQueueErrorWorker>()//配置多个QueueBackRrun，使用:worker.Enqueue<TQueueBackRun>(msg)
+                    .SetKey(QueueKey)
+                    .Build();
 
 
                     ////配置定时任务
-                    ////WorkerBuilder.CreateTime<ErrorTestRun>()
-                    //WorkerBuilder.CreateTime<LongTimeBackRun>(TimeSpan.FromSeconds(5), true)
-                    ////.SetCycle()
-                    //.SetKey(TimeKey)
-                    //.Build()
-                    //;
+                    WorkerBuilder.CreateTime<LongTimeBackRun>(TimeSpan.FromSeconds(5), true)
+                    .SetKey(TimeKey)
+                    .Build()
+                    ;
 
                     //配置复杂时间计划任务
                     WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * * *", "5 * * * *", "* * * * *")

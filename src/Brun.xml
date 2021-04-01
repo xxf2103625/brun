@@ -200,17 +200,17 @@
         </member>
         <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            以服务形式启动Brun.在Program  .ConfigureServices 中使用.
+            以服务形式启动Brun.在ConfigureServices中调用.
             </summary>
             <param name="services"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
             <summary>
-            以服务形式启动Brun.在Program  .ConfigureServices 中使用.
+            以服务形式启动Brun.在ConfigureServices中调用.
             </summary>
             <param name="services"></param>
-            <param name="configure">和在host中注入服务没有任何区别，可能你需要在代码位置上明确这些服务只给Brun使用</param>
+            <param name="configure">和在ConfigureServices中注入服务没有任何区别，可能你需要在代码位置上明确这些服务只给Brun使用</param>
             <returns></returns>
         </member>
         <member name="T:Brun.IWorker">
@@ -1195,12 +1195,6 @@
         <member name="T:Brun.Workers.SynchroWorker">
             <summary>
             同步Worker，同一个Worker内，backrun串行运行
-            //TODO 优化同步Worker
-            </summary>
-        </member>
-        <member name="M:Brun.Workers.SynchroWorker.StartBrun(System.Type)">
-            <summary>
-            启动线程，开始执行Execute
             </summary>
         </member>
         <member name="T:Brun.Workers.TimeWorker">

@@ -66,5 +66,6 @@ namespace Brun
         /// </summary>
         /// <returns></returns>
         IPlanTimeWorker AsPlanTimeWorker();
+        IEnumerable<Type> BrunTypes { get; }
     }
 }

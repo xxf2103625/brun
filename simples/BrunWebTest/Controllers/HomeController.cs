@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Services;
 using BrunWebTest.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,16 +16,18 @@ namespace BrunWebTest.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         Brun.IWorkerServer _workerServer;
-        public HomeController(ILogger<HomeController> logger)
+        BrunMonitor _brunMonitor;
+        public HomeController(ILogger<HomeController> logger,BrunMonitor brunMonitor)
         {
             _logger = logger;
             _workerServer = WorkerServer.Instance;//或者构造函数中用 IWorkerServer 取
+            _brunMonitor = brunMonitor;
         }
 
         public IActionResult Index()
         {
-            IList<IWorker> workers = WorkerServer.Instance.GetAllWorker();
-            return View(workers);
+            var model = _brunMonitor.GetBrunInfo();
+            return View(model);
         }
 
         public IActionResult Once()

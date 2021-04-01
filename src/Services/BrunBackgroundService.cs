@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Brun
+namespace Brun.Services
 {
     public class BrunBackgroundService : IHostedService, IDisposable
     {
@@ -14,14 +12,10 @@ namespace Brun
         private CancellationTokenSource _stoppingCts;
         private Task _executeTask;
         readonly IServiceProvider _serviceProvider;
-        readonly IHostLifetime _hostLifetime;
-        readonly IHostApplicationLifetime _hostApplicationLifetime;
-        public BrunBackgroundService(ILogger<BrunBackgroundService> logger, IServiceProvider serviceProvider, IHostLifetime hostLifetime, IHostApplicationLifetime hostApplicationLifetime)
+        public BrunBackgroundService(ILogger<BrunBackgroundService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _hostLifetime = hostLifetime;
-            _hostApplicationLifetime = hostApplicationLifetime;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -50,13 +44,11 @@ namespace Brun
         {
             //接收到进程停止信号
             _logger.LogInformation("BrunBackgroundService stopping...");
-            Console.WriteLine("BrunBackgroundService stopping...");
             // Stop called without start
             if (_executeTask == null)
             {
                 return;
             }
-
             try
             {
                 // Signal cancellation to the executing method
@@ -71,7 +63,6 @@ namespace Brun
         public void Dispose()
         {
             _logger.LogInformation("BrunBackgroundService disposing...");
-            Console.WriteLine("BrunBackgroundService disposing...");
             _stoppingCts?.Cancel();
         }
     }

@@ -21,6 +21,7 @@ namespace Brun
         private static WorkerServer _workerServer;
         private static object serverCreate_LOCK = new object();
         private IList<IWorker> worders = new List<IWorker>();
+        private DateTime? startTime = null;
         private IServiceProvider _serviceProvider;
         ILoggerFactory loggerFactory;
         ILogger<WorkerServer> logger;
@@ -45,7 +46,7 @@ namespace Brun
             IWorker worker = worders.FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("找不到活动的Worker，key:{0}", key);
+                logger.LogError("can not find active Worker，key:{0}", key);
             }
             return worker;
         }
@@ -66,7 +67,7 @@ namespace Brun
             IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("找不到活动的OnceWorker，key:{0}", key);
+                logger.LogError("can not find active OnceWorker，key:{0}", key);
             }
             return (IOnceWorker)worker;
         }
@@ -75,7 +76,7 @@ namespace Brun
             IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(QueueWorker)).FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("找不到活动的QueueWorker，key:{0}", key);
+                logger.LogError("can not find active QueueWorker，key:{0}", key);
             }
             return (IQueueWorker)worker;
         }
@@ -87,6 +88,7 @@ namespace Brun
         public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             ServiceConfigure(serviceProvider);
+            startTime = DateTime.Now;
             foreach (var item in worders)
             {
                 item.Start();
@@ -120,6 +122,7 @@ namespace Brun
             }
             logger?.LogDebug("WorkerServer is Stoped");
         }
+        public DateTime? StartTime => startTime;
         /// <summary>
         /// 进程单例
         /// </summary>

@@ -4,6 +4,7 @@ using Brun.Contexts;
 using Brun.Options;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Brun.Workers
@@ -17,6 +18,9 @@ namespace Brun.Workers
         /// 包含的Backrun
         /// </summary>
         private ConcurrentDictionary<Type, IBackRun> backRuns;
+
+        public override IEnumerable<Type> BrunTypes => backRuns.Keys;
+
         public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
             backRuns = new ConcurrentDictionary<Type, IBackRun>();

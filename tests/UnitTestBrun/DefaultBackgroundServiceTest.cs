@@ -1,4 +1,5 @@
 using Brun;
+using Brun.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,7 @@ namespace UnitTestBrun
                         })
                 .StartAsync();
             await host.GetTestClient().GetAsync("/");
+            await host.StopAsync();
         }
     }
 }
