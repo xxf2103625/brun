@@ -18,6 +18,22 @@ namespace BrunTestHelper.BackRuns
             lock (SharedLock.Nb_LOCK)
             {
                 SimNb++;
+                Console.WriteLine($"SimNb:{SimNb}");
+            }
+            return Task.CompletedTask;
+        }
+    }
+    public class SimpleLongBackRun : BackRun
+    {
+        public static int SimNb = 0;
+        public override Task Run(CancellationToken stoppingToken)
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(0.1));
+            //SimNb++;
+            lock (SharedLock.Nb_LOCK)
+            {
+                SimNb++;
+                Console.WriteLine($"SimNb:{SimNb}");
             }
             return Task.CompletedTask;
         }

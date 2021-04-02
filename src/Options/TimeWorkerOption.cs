@@ -13,14 +13,6 @@ namespace Brun.Options
     public class TimeWorkerOption : WorkerOption
     {
         public List<SimpleCycleTime> CycleTimes { get; set; }
-        /// <summary>
-        /// 定时执行周期
-        /// </summary>
-        public TimeSpan Cycle { get; set; }
-        /// <summary>
-        /// 程序启动/重启时执行一次
-        /// </summary>
-        public bool RunWithStart { get; set; }
     }
     public class SimpleCycleTime
     {

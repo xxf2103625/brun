@@ -21,8 +21,6 @@ namespace Brun.Workers
     /// </summary>
     public class QueueWorker : AbstractWorker, IQueueWorker
     {
-        private ConcurrentQueue<string> queue => queues[_option.DefaultBrunType];
-
         public override IEnumerable<Type> BrunTypes => _queueBackRuns.Keys;
 
         private ConcurrentDictionary<Type, ConcurrentQueue<string>> queues;

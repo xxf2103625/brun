@@ -396,16 +396,40 @@ namespace UnitTestBrun
             {
                 WorkerBuilder.Create<SimpleBackRun>()
                     .Build<SynchroWorker>();
-                    //.Build();
+                //.Build();
             });
             IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleBackRun)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
             }
+            Console.WriteLine("主线程 WaitForBackRun 之前");
             Assert.AreNotEqual(max, SimpleBackRun.SimNb);
             WaitForBackRun(max);
+            Console.WriteLine("主线程 WaitForBackRun 之后");
             Assert.AreEqual(max, SimpleBackRun.SimNb);
+        }
+        [TestMethod]
+        public void SynchroWorkerTestLong()
+        {
+            SimpleLongBackRun.SimNb = 0;
+            int max = 10;
+            StartHost(m =>
+            {
+                WorkerBuilder.Create<SimpleLongBackRun>()
+                    .Build<SynchroWorker>();
+                //.Build();
+            });
+            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleLongBackRun)).First();
+            for (int i = 0; i < max; i++)
+            {
+                worker.Run();
+            }
+            Console.WriteLine("主线程 WaitForBackRun 之前");
+            Assert.AreNotEqual(max, SimpleLongBackRun.SimNb);
+            WaitForBackRun(max);
+            Console.WriteLine("主线程 WaitForBackRun 之后");
+            Assert.AreEqual(max, SimpleLongBackRun.SimNb);
         }
         [TestMethod]
         public void SynchroWorkerTestVoid()

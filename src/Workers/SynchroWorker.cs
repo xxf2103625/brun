@@ -21,12 +21,19 @@ namespace Brun.Workers
         public SynchroWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
         }
-
+        private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         public override Task StartBrun(Type brunType)
         {
             BrunContext brunContext = new BrunContext(brunType);
-
-            return Execute(brunContext);
+            return taskFactory.StartNew(() =>
+            {
+                semaphoreSlim.Wait();
+                Task executeTask = Execute(brunContext);
+                executeTask.ContinueWith(t =>
+                {
+                    semaphoreSlim.Release();
+                });
+            });
         }
     }
 

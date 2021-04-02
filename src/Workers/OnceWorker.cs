@@ -23,7 +23,19 @@ namespace Brun.Workers
 
         public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
         {
+            Init();
+        }
+        private void Init()
+        {
             backRuns = new ConcurrentDictionary<Type, IBackRun>();
+            if (_option.BrunTypes == null)
+                _option.BrunTypes = new List<Type>();
+            foreach (var item in _option.BrunTypes)
+            {
+                IBackRun backRun = (IBackRun)BrunTool.CreateInstance(item);
+                backRun.Data = _context.Items;
+                backRuns.TryAdd(item, backRun);
+            }
         }
         /// <summary>
         /// 启动线程，开始执行Execute

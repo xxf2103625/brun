@@ -16,7 +16,7 @@ namespace Brun
         public static IServiceCollection AddBrunService(this IServiceCollection services)
         {
             services.AddSingleton<IWorkerServer, WorkerServer>(m => WorkerServer.Instance);
-            services.AddSingleton<BrunMonitor>();
+            services.AddSingleton<BrunService>();
             services.AddHostedService<BrunBackgroundService>();
             return services;
         }

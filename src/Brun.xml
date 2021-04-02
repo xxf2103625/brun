@@ -175,7 +175,7 @@
         </member>
         <member name="P:Brun.WorkerContext.State">
             <summary>
-            TODO 当前状态
+            Worker状态
             </summary>
         </member>
         <member name="T:Brun.Enums.WorkerState">
@@ -284,6 +284,56 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:Brun.Models.WorkerInfo.TypeName">
+            <summary>
+            Worker类型名称
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.Key">
+            <summary>
+            Worker唯一标识Key
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.Name">
+            <summary>
+            Worker名称
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.Tag">
+            <summary>
+            Worker Tag
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.BrunTypes">
+            <summary>
+            包含的BackRun类型
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.StartNb">
+            <summary>
+            开始Task的数量
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.ExceptNb">
+            <summary>
+            异常Task数量
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.EndNb">
+            <summary>
+            完成Task数量
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.RunningNb">
+            <summary>
+            正在运行的Task数量
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.State">
+            <summary>
+            Worker状态
+            </summary>
+        </member>
         <member name="T:Brun.Observers.WorkerObserver">
             <summary>
             backrun运行拦截器
@@ -299,16 +349,6 @@
         <member name="T:Brun.Options.TimeWorkerOption">
             <summary>
             TimeWorker选项
-            </summary>
-        </member>
-        <member name="P:Brun.Options.TimeWorkerOption.Cycle">
-            <summary>
-            定时执行周期
-            </summary>
-        </member>
-        <member name="P:Brun.Options.TimeWorkerOption.RunWithStart">
-            <summary>
-            程序启动/重启时执行一次
             </summary>
         </member>
         <member name="T:Brun.Options.WorkerOption">

@@ -22,8 +22,8 @@ namespace Brun.Workers
         private Dictionary<PlanTimeComputer, List<Type>> plans = new Dictionary<PlanTimeComputer, List<Type>>();
         private List<IBackRun> backRuns = new List<IBackRun>();
         private object backRunCreate_LOCK = new object();
-        private ILogger logger => (ILogger<PlanTimeWorker>)WorkerServer.Instance.ServiceProvider.GetService(typeof(ILogger<PlanTimeWorker>));
-        //TODO 初始化所有类型
+        //private ILogger Logger => (ILogger<PlanTimeWorker>)WorkerServer.Instance.ServiceProvider.GetService(typeof(ILogger<PlanTimeWorker>));
+        //初始化所有类型
         public override IEnumerable<Type> BrunTypes => backRuns.Select(m => m.GetType());
 
         public PlanTimeWorker(PlanTimeWorkerOption option, WorkerConfig config) : base(option, config)
@@ -33,8 +33,12 @@ namespace Brun.Workers
         private void Init()
         {
             PlanTimeWorkerOption option = (PlanTimeWorkerOption)_option;
-            foreach (var item in option.planTimeRuns)
+            foreach (KeyValuePair<Type, List<string>> item in option.planTimeRuns)
             {
+                if (!backRuns.Any(m => m.GetType() == item.Key))
+                {
+                    backRuns.Add((IBackRun)BrunTool.CreateInstance(item.Key));
+                }
                 if (item.Value != null && item.Value.Count > 0)
                 {
                     for (int i = 0; i < item.Value.Count; i++)
@@ -46,7 +50,7 @@ namespace Brun.Workers
                         }
                         else
                         {
-                            logger.LogWarning("planTime parse error:{0}", string.Join(",", planTime.Errors.Select(m => $"index {m.Key} msg {m.Value}")));
+                            Logger.LogWarning("planTime parse error:{0}", string.Join(",", planTime.Errors.Select(m => $"index {m.Key} msg {m.Value}")));
                         }
                     }
                 }
@@ -74,7 +78,7 @@ namespace Brun.Workers
                 var plan = plans.First(m => m.Key.PlanTime.Expression == planTime.Expression);
                 if (plan.Value.Contains(brunType))
                 {
-                    logger.LogWarning("the plantime {0} is allready has type {1}.", plan.Key, brunType.Name);
+                    Logger.LogWarning("the plantime {0} is allready has type {1}.", plan.Key, brunType.Name);
                 }
                 else
                 {
@@ -91,7 +95,7 @@ namespace Brun.Workers
         {
             if (_context.State == WorkerState.Started)
             {
-                logger.LogWarning("the {0} key:{1} is already started.", GetType().Name, Key);
+                Logger.LogWarning("the {0} key:{1} is already started.", GetType().Name, Key);
                 return Task.CompletedTask;
             }
             _context.State = WorkerState.Started;

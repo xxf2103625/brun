@@ -30,7 +30,7 @@ namespace Brun
         {
             //TODO 覆盖部分默认的Config
         }
-        public ILogger<WorkerBuilder> log => WorkerServer.Instance?.ServiceProvider?.GetService<ILogger<WorkerBuilder>>();
+        public ILogger<WorkerBuilder> Log => WorkerServer.Instance?.ServiceProvider?.GetService<ILogger<WorkerBuilder>>();
 
         /// <summary>
         /// 创建OnceWorker
@@ -70,7 +70,7 @@ namespace Brun
             Type bType = typeof(TBackRun);
             if (option.BrunTypes.Any(m => m == bType))
             {
-                log?.LogWarning("同一个Worker中不能配置2个相同类型的BackRun,type:{0}", typeof(TBackRun).FullName);
+                Log?.LogWarning("同一个Worker中不能配置2个相同类型的BackRun,type:{0}", typeof(TBackRun).FullName);
                 return this;
             }
             option.BrunTypes.Add(bType);
@@ -103,7 +103,7 @@ namespace Brun
         {
             if (option.BrunTypes.Any(m => m == typeof(TQueueBackRun)))
             {
-                log?.LogWarning("同一个Worker中不能配置2个相同类型的QueueBackRun,type:{0}", typeof(TQueueBackRun).FullName);
+                Log?.LogWarning("同一个Worker中不能配置2个相同类型的QueueBackRun,type:{0}", typeof(TQueueBackRun).FullName);
                 return this;
             }
             this.option.BrunTypes.Add(typeof(TQueueBackRun));

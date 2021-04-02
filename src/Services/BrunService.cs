@@ -6,10 +6,13 @@ using System.Text;
 
 namespace Brun.Services
 {
-    public class BrunMonitor
+    /// <summary>
+    /// TODO 封装Brun常用操作，避免直接使用WorkerServer,为拆分Client做准备
+    /// </summary>
+    public class BrunService
     {
         private IWorkerServer _workerServer;
-        public BrunMonitor(IWorkerServer workerServer)
+        public BrunService(IWorkerServer workerServer)
         {
             _workerServer = workerServer;
         }
@@ -21,8 +24,7 @@ namespace Brun.Services
         {
             BrunInfo brunInfo = new BrunInfo();
             brunInfo.StartTime = _workerServer.StartTime;
-
-            var infos = _workerServer.Worders.Select(m => new WorkerInfo
+            IEnumerable<WorkerInfo> infos = _workerServer.Worders.Select(m => new WorkerInfo
             {
                 TypeName = m.GetType().Name,
                 Key = m.Context.Key,
@@ -30,6 +32,7 @@ namespace Brun.Services
                 Tag = m.Context.Tag,
                 BrunTypes = m.BrunTypes.Select(w => w.Name),
                 RunningNb = m.RunningTasks.Count,
+                State = m.Context.State,
                 StartNb = m.Context.startNb,
                 ExceptNb = m.Context.exceptNb,
                 EndNb = m.Context.endNb,

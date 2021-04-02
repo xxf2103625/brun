@@ -1,15 +1,11 @@
 ﻿using Brun.BaskRuns;
-using Brun.Commons;
 using Brun.Contexts;
 using Brun.Enums;
 using Brun.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,9 +17,8 @@ namespace Brun.Workers
     /// </summary>
     public class TimeWorker : AbstractWorker, ITimeWorker
     {
-        private TimeWorkerOption timeOption => (TimeWorkerOption)_option;
-
-        public override IEnumerable<Type> BrunTypes => timeOption.CycleTimes.Select(m => m.BackRun.GetType());
+        private TimeWorkerOption TimeOption => (TimeWorkerOption)_option;
+        public override IEnumerable<Type> BrunTypes => TimeOption.CycleTimes.Select(m => m.BackRun.GetType());
 
         /// <summary>
         /// 
@@ -36,7 +31,7 @@ namespace Brun.Workers
         }
         private void Init()
         {
-            foreach (var item in timeOption.CycleTimes)
+            foreach (var item in TimeOption.CycleTimes)
             {
                 if (item.RunWithStart)
                 {
@@ -53,7 +48,7 @@ namespace Brun.Workers
         /// </summary>
         protected IBackRun GetBackRun(Type brunType)
         {
-            SimpleCycleTime cycleTime = timeOption.CycleTimes.FirstOrDefault(m => m.BackRun.GetType() == brunType);
+            SimpleCycleTime cycleTime = TimeOption.CycleTimes.FirstOrDefault(m => m.BackRun.GetType() == brunType);
             if (cycleTime == null)
             {
                 Logger.LogWarning("the {0}'s {1} is not init.", GetType(), brunType.Name);
@@ -73,7 +68,7 @@ namespace Brun.Workers
                 {
                     while (!tokenSource.Token.IsCancellationRequested && _context.State == WorkerState.Started)
                     {
-                        foreach (var item in timeOption.CycleTimes)
+                        foreach (var item in TimeOption.CycleTimes)
                         {
                             if (item.NextTime != null && item.NextTime.Value <= DateTime.Now)
                             {

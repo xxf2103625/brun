@@ -77,7 +77,7 @@ namespace Brun
             exceptions.Add(ex);
         }
         /// <summary>
-        /// TODO 当前状态
+        /// Worker状态
         /// </summary>
         public WorkerState State { get; set; }
         public ConcurrentDictionary<string, string> Items => items;

@@ -60,14 +60,14 @@ namespace BrunWebTest
 
 
                     ////配置定时任务
-                    WorkerBuilder.CreateTime<LongTimeBackRun>(TimeSpan.FromSeconds(5), true)
+                    WorkerBuilder.CreateTime<LongTimeBackRun>(TimeSpan.FromMinutes(5), false)
                     .SetKey(TimeKey)
                     .Build()
                     ;
 
                     //配置复杂时间计划任务
-                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * * *", "5 * * * *", "* * * * *")
-                    .AddPlanTime<ErrorTestRun>("* * * * *")
+                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * 5 *", "3,33,53 * * 5 *", "5 * * 5 *", "* * * 5 *")
+                    .AddPlanTime<ErrorTestRun>("* * * 5 *")
                     .SetKey(PlanKey)
                     .Build();
 

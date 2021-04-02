@@ -16,8 +16,8 @@ namespace BrunWebTest.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         Brun.IWorkerServer _workerServer;
-        BrunMonitor _brunMonitor;
-        public HomeController(ILogger<HomeController> logger,BrunMonitor brunMonitor)
+        BrunService _brunMonitor;
+        public HomeController(ILogger<HomeController> logger,BrunService brunMonitor)
         {
             _logger = logger;
             _workerServer = WorkerServer.Instance;//或者构造函数中用 IWorkerServer 取

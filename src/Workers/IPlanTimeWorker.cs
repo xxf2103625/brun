@@ -8,9 +8,6 @@ namespace Brun
 {
     public interface IPlanTimeWorker : IWorker
     {
-        /// <summary>
-        /// 启动，已经单独开了线程
-        /// </summary>
-        //void Start();
+
     }
 }
