@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>2103625@qq.com</Authors>
     <Description>background task</Description>
     <Copyright>2103625@qq.com</Copyright>

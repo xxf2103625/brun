@@ -14,6 +14,7 @@ namespace BrunTestHelper.BackRuns
         public override Task Run(CancellationToken stoppingToken)
         {
             //await Task.Delay(TimeSpan.FromSeconds(0.2), stoppingToken);
+            //Thread.Sleep(TimeSpan.FromSeconds(0.2));
             lock (SharedLock.Nb_LOCK)
             {
                 if (Data.TryGetValue("a", out string s))
@@ -97,6 +98,7 @@ namespace BrunTestHelper.BackRuns
     {
         public override Task Run(CancellationToken stoppingToken)
         {
+            Thread.Sleep(TimeSpan.FromSeconds(0.1));
             lock (SharedLock.Nb_LOCK)
             {
                 if (Data.TryGetValue("a", out string s))

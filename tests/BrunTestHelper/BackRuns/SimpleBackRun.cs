@@ -14,6 +14,7 @@ namespace BrunTestHelper.BackRuns
         public static int SimNb = 0;
         public override Task Run(CancellationToken stoppingToken)
         {
+            Thread.Sleep(TimeSpan.FromSeconds(0.1));
             //SimNb++;
             lock (SharedLock.Nb_LOCK)
             {
@@ -42,6 +43,7 @@ namespace BrunTestHelper.BackRuns
     {
         public override async Task Run(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
             var log = GetRequiredService<ILogger<SimpeManyBackRun>>();
             for (int i = 0; i < 10; i++)
             {

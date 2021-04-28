@@ -24,6 +24,13 @@ namespace BrunWebTest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://localhost:8000", "http://94.74.104.178:8000").AllowAnyHeader().AllowAnyMethod();
+                });
+            });
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation()
                 ;
@@ -32,6 +39,7 @@ namespace BrunWebTest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -44,6 +52,8 @@ namespace BrunWebTest
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -51,7 +61,11 @@ namespace BrunWebTest
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+                endpoints.MapControllerRoute(
+                name: "api",
+                pattern: "api/{controller=Home}/{action=Index}/{id?}");
+            }
+            );
         }
     }
 }

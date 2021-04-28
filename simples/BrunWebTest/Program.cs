@@ -27,7 +27,9 @@ namespace BrunWebTest
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .UseUrls("http://*:5000")
+                    .UseStartup<Startup>();
                 })
                 .ConfigureServices(services =>
                 {
@@ -35,7 +37,7 @@ namespace BrunWebTest
                     services.AddHttpClient();
                     services.AddScoped<ITestScopeService, TestScopeService>();
 
-                    ////配置单次任务
+                    //////配置单次任务
                     WorkerBuilder.Create<TestHttpWorker>()
                     .SetKey(BrunKey)
                     .Build();
@@ -66,7 +68,7 @@ namespace BrunWebTest
                     ;
 
                     //配置复杂时间计划任务
-                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * 5 *", "3,33,53 * * 5 *", "5 * * 5 *", "* * * 5 *")
+                    WorkerBuilder.CreatePlanTime<LogTimeRun>("0/5 * * * *", "3,33,53 * * 5 *", "5 * * 5 *", "* * * 5 *")
                     .AddPlanTime<ErrorTestRun>("* * * 5 *")
                     .SetKey(PlanKey)
                     .Build();

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Brun.Workers;
+using Brun.Services;
 
 namespace Brun
 {
@@ -52,7 +53,8 @@ namespace Brun
         }
         public IList<IWorker> GetAllWorker()
         {
-            return worders;
+          
+            return worders.Where(m => m.Key != SystemBackRun.Worker_KEY).ToList();
         }
         public IEnumerable<IWorker> GetWokerByName(string name)
         {
@@ -120,6 +122,7 @@ namespace Brun
             {
                 item.Dispose();
             }
+            this.worders.Clear();
             logger?.LogDebug("WorkerServer is Stoped");
         }
         public DateTime? StartTime => startTime;

@@ -43,7 +43,7 @@ namespace Brun.Workers
         /// </summary>
         protected object State_LOCK = new object();
         /// <summary>
-        /// 统一构造函数
+        /// 统一构造函数 TODO 是否移除config？
         /// </summary>
         /// <param name="option"></param>
         /// <param name="config"></param>
@@ -62,48 +62,43 @@ namespace Brun.Workers
         /// 启动
         /// </summary>
         /// <returns></returns>
-        public virtual Task Start()
+        public virtual void Start()
         {
             _context.State = WorkerState.Started;
             Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
-            return Task.CompletedTask;
         }
         /// <summary>
         /// 统一流程控制
         /// </summary>
         /// <param name="runContext"></param>
         /// <returns></returns>
-        protected Task Execute(BrunContext runContext)
+        protected async Task Execute(BrunContext runContext)
         {
-            Task before = Observe(runContext, WorkerEvents.StartRun);
-            _ = before.ContinueWith(async t =>
-              {
-                  try
-                  {
-                      if (_context.State != WorkerState.Started)
-                      {
-                          Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, runContext.StartNb);
-                          return;
-                      }
-                      Task task = Brun(runContext);
-                      RunningTasks.TryAdd(task);
-                      _ = task.ContinueWith(tbrun =>
-                        {
-                            RunningTasks.TryTake(out tbrun);
-                        });
-                      await task;
-                  }
-                  catch (Exception ex)
-                  {
-                      _context.ExceptFromRun(ex);
-                      await Observe(runContext, WorkerEvents.Except);
-                  }
-                  finally
-                  {
-                      await Observe(runContext, WorkerEvents.EndRun);
-                  }
-              }, TaskContinuationOptions.ExecuteSynchronously);
-            return Task.CompletedTask;
+            await Observe(runContext, WorkerEvents.StartRun);
+            try
+            {
+                if (_context.State != WorkerState.Started)
+                {
+                    Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, runContext.StartNb);
+                    return;
+                }
+                Task brun = Task.Run(async () => await Brun(runContext));
+                RunningTasks.TryAdd(brun);
+                _ = brun.ContinueWith(t =>
+                 {
+                     RunningTasks.TryTake(out t);
+                 });
+                await brun;
+            }
+            catch (Exception ex)
+            {
+                _context.ExceptFromRun(ex);
+                await Observe(runContext, WorkerEvents.Except);
+            }
+            finally
+            {
+                await Observe(runContext, WorkerEvents.EndRun);
+            }
         }
         /// <summary>
         /// 执行BackRun.Run
@@ -116,11 +111,10 @@ namespace Brun.Workers
         /// 停止
         /// </summary>
         /// <returns></returns>
-        public virtual Task Stop()
+        public virtual void Stop()
         {
             _context.State = WorkerState.Stoped;
             Logger.LogInformation("the {0} key:{1} is stoped", GetType().Name, _context.Key);
-            return Task.CompletedTask;
         }
         /// <summary>
         /// 添加拦截器
@@ -189,7 +183,7 @@ namespace Brun.Workers
         /// <summary>
         /// 释放单个Worker
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             DateTime now = DateTime.Now;
             while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
@@ -199,6 +193,7 @@ namespace Brun.Workers
             };
             tokenSource.Cancel();
             this.Context.Dispose();
+            //WorkerServer.Instance.Worders.Remove(this);
         }
     }
 }

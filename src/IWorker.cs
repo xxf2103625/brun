@@ -32,12 +32,12 @@ namespace Brun
         /// 启动
         /// </summary>
         /// <returns></returns>
-        Task Start();
+        void Start();
         /// <summary>
         /// 停止
         /// </summary>
         /// <returns></returns>
-        Task Stop();
+        void Stop();
         /// <summary>
         /// TaskFactory
         /// </summary>

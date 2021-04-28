@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Brun.Workers
 {
     /// <summary>
-    /// 在计划时间内执行的Worker
+    /// 在计划时间执行的Worker
     /// </summary>
     public class PlanTimeWorker : AbstractWorker, IPlanTimeWorker
     {
@@ -37,7 +37,9 @@ namespace Brun.Workers
             {
                 if (!backRuns.Any(m => m.GetType() == item.Key))
                 {
-                    backRuns.Add((IBackRun)BrunTool.CreateInstance(item.Key));
+                    var brun = (IBackRun)BrunTool.CreateInstance(item.Key);
+                    brun.Data = _context.Items;
+                    backRuns.Add(brun);
                 }
                 if (item.Value != null && item.Value.Count > 0)
                 {
@@ -91,45 +93,54 @@ namespace Brun.Workers
                 plans[plan] = new List<Type>() { brunType };
             }
         }
-        public override Task Start()
+        public override void Start()
         {
             if (_context.State == WorkerState.Started)
             {
                 Logger.LogWarning("the {0} key:{1} is already started.", GetType().Name, Key);
-                return Task.CompletedTask;
+                //return Task.CompletedTask;
             }
             _context.State = WorkerState.Started;
+            //TODO 减少不必要的多线程开销
             Task.Factory.StartNew(() =>
-            {
-                while (!tokenSource.IsCancellationRequested && _context.State == WorkerState.Started)
-                {
-                    DateTime now = DateTime.Now;
-                    foreach (KeyValuePair<PlanTimeComputer, List<Type>> item in plans)
-                    {
-                        if (item.Value != null && item.Value.Count > 0 && item.Key.NextTime != null && now > item.Key.NextTime.Value)
-                        {
-                            DateTimeOffset? next = item.Key.GetNextTime(now);
-                            if (next != null)
-                            {
-                                item.Key.SetNextTime(next.Value);
-                            }
-                            item.Key.SetLastTime(now);
+             {
+                 while (!tokenSource.IsCancellationRequested && _context.State == WorkerState.Started)
+                 {
+                     DateTime now = DateTime.Now;
+                     foreach (KeyValuePair<PlanTimeComputer, List<Type>> item in plans)
+                     {
+                         if (item.Value != null && item.Value.Count > 0 && item.Key.NextTime != null && now > item.Key.NextTime.Value)
+                         {
+                             DateTimeOffset? next = item.Key.GetNextTime(now);
+                             if (next != null)
+                             {
+                                 item.Key.SetNextTime(next.Value);
+                             }
+                             item.Key.SetLastTime(now);
 
-                            foreach (Type bType in item.Value)
-                            {
-                                BrunContext brunContext = new BrunContext(bType);
-                                _ = Execute(brunContext);
-                            }
-                        }
-                    }
-                    Thread.Sleep(5);
-                }
-            });
-            return Task.CompletedTask;
+                             foreach (Type bType in item.Value)
+                             {
+                                 BrunContext brunContext = new BrunContext(bType);
+                                 Task.Run(async () =>
+                                 {
+                                     await Execute(brunContext);
+                                 });
+                             }
+                         }
+                     }
+                     Thread.Sleep(5);
+                 }
+             }, creationOptions: TaskCreationOptions.LongRunning);
         }
         protected override async Task Brun(BrunContext context)
         {
             await GetBackRun(context).Run(tokenSource.Token);
+        }
+        public override void Dispose()
+        {
+            //首先停止监听，避免每秒执行时卡主进程
+            Stop();
+            base.Dispose();
         }
         private IBackRun GetBackRun(BrunContext brunContext)
         {

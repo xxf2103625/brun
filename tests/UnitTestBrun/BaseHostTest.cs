@@ -63,12 +63,14 @@ namespace UnitTestBrun
         /// <param name="runCount">等待任务数</param>
         protected void WaitForBackRun(int runCount = 0)
         {
+            Console.WriteLine("WaitForBackRun 开始");
             WorkerServer server = WorkerServer.Instance;
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || server.GetAllWorker().Any(m => m.Context.endNb < runCount))
+            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || (server.GetAllWorker().Sum(m => m.Context.endNb) < runCount&&runCount!=0))
             {
                 Thread.Sleep(5);
             }
+            Console.WriteLine("WaitForBackRun 结束");
         }
         protected void WiatAfter(TimeSpan timeSpan)
         {

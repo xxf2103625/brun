@@ -26,5 +26,6 @@ namespace Brun.Observers
         public WorkerEvents Evt { get; }
         public int Order { get; }
         public abstract Task Todo(WorkerContext _context, BrunContext brunContext);
+
     }
 }

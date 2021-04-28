@@ -12,10 +12,10 @@ namespace BrunWebTest
 {
     public class LogTimeRun : BackRun
     {
-        public override Task Run(CancellationToken stoppingToken)
+        public override async Task Run(CancellationToken stoppingToken)
         {
             GetRequiredService<ILogger<LogTimeRun>>().LogInformation("{0} this is logTimeRun", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
-            return Task.CompletedTask;
+            await Task.Delay(TimeSpan.FromSeconds(2));
         }
     }
     public class ErrorTestRun : BackRun

@@ -22,18 +22,12 @@ namespace Brun.Workers
         {
         }
         private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
-        public override Task StartBrun(Type brunType)
+        public override async Task StartBrun(Type brunType)
         {
             BrunContext brunContext = new BrunContext(brunType);
-            return taskFactory.StartNew(() =>
-            {
-                semaphoreSlim.Wait();
-                Task executeTask = Execute(brunContext);
-                executeTask.ContinueWith(t =>
-                {
-                    semaphoreSlim.Release();
-                });
-            });
+            semaphoreSlim.Wait();
+            await Execute(brunContext);
+            semaphoreSlim.Release();
         }
     }
 

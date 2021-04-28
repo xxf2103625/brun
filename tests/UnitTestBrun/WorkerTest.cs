@@ -192,7 +192,7 @@ namespace UnitTestBrun
                 data["nb"] = "0";
                 WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
                    .SetData(data)
-                   //另一种方式 等待任务
+                   //自定义等待任务结束时间
                    .SetConfig(config =>
                    {
                        config.TimeWaitForBrun = TimeSpan.FromSeconds(5);
@@ -227,20 +227,26 @@ namespace UnitTestBrun
         public void TestErrorNb()
         {
             int max = 100;
+            string key = Guid.NewGuid().ToString();
             StartHost(m =>
             {
                 WorkerBuilder.Create<ErrorBackRun3>() //await
-                  .BuildOnceWorker();
+                    .SetKey(key)
+                  .Build();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
+            IOnceWorker work = GetWorkerByKey(key).AsOnceWorker(); //GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
+
             for (int i = 0; i < max; i++)
             {
                 work.Run();
             }
+            Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
+            //TODO 批量单元测试时 >0
             Assert.AreNotEqual(max, work.Context.startNb);
-            Assert.AreNotEqual(max, work.Context.exceptNb);
-            Assert.AreNotEqual(max, work.Context.exceptNb);
-            WaitForBackRun();
+            Assert.AreEqual(0, work.Context.exceptNb);
+            Assert.AreEqual(0, work.Context.exceptNb);
+            WaitForBackRun(100);
+            Console.WriteLine($"after start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
             Assert.AreEqual(max, work.Context.startNb);
             Assert.AreEqual(max, work.Context.exceptNb);
             Assert.AreEqual(max, work.Context.endNb);
@@ -261,9 +267,12 @@ namespace UnitTestBrun
             {
                 work.Run();
             }
+            Assert.AreEqual(0, work.Context.startNb);
             Assert.AreEqual(0, work.Context.exceptNb);
             Assert.AreEqual(0, work.Context.endNb);
+            Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
             WaitForBackRun();
+            Console.WriteLine($"after start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
             Assert.AreEqual("1", work.GetData("a"));
             Assert.AreEqual("2", work.GetData("b"));
             Assert.AreEqual(10, work.Context.exceptNb);
@@ -284,10 +293,12 @@ namespace UnitTestBrun
             {
                 work.Run();
             }
-            //Assert.AreNotEqual(10, work.Context.startNb);
-            //Assert.AreNotEqual(10, work.Context.endNb);
+            //Assert.AreEqual(0, work.Context.startNb);
+            Assert.AreEqual(0, work.Context.endNb);
+            Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb}");
             //等待
             WaitForBackRun();
+            Console.WriteLine($"after start:{work.Context.startNb},end:{work.Context.endNb}");
             Console.WriteLine(string.Join(",", work.GetData().Select(m => $"{m.Key}:{m.Value}")));
             Assert.AreEqual("1", work.GetData("a"));
             Assert.AreEqual("2", work.GetData("b"));
@@ -366,6 +377,7 @@ namespace UnitTestBrun
             {
                 work.Run();
             }
+            Assert.AreEqual(0, work.Context.exceptNb);
             WaitForBackRun();
             //任务等待主线程
             Assert.AreEqual("1", work.GetData("a"));
@@ -404,7 +416,7 @@ namespace UnitTestBrun
                 worker.Run();
             }
             Console.WriteLine("主线程 WaitForBackRun 之前");
-            Assert.AreNotEqual(max, SimpleBackRun.SimNb);
+            Assert.AreEqual(0, SimpleBackRun.SimNb);
             WaitForBackRun(max);
             Console.WriteLine("主线程 WaitForBackRun 之后");
             Assert.AreEqual(max, SimpleBackRun.SimNb);
@@ -426,7 +438,7 @@ namespace UnitTestBrun
                 worker.Run();
             }
             Console.WriteLine("主线程 WaitForBackRun 之前");
-            Assert.AreNotEqual(max, SimpleLongBackRun.SimNb);
+            Assert.AreEqual(0, SimpleLongBackRun.SimNb);
             WaitForBackRun(max);
             Console.WriteLine("主线程 WaitForBackRun 之后");
             Assert.AreEqual(max, SimpleLongBackRun.SimNb);
@@ -446,7 +458,7 @@ namespace UnitTestBrun
             {
                 worker.Run();
             }
-            Assert.AreNotEqual(max, SimpleBackRun.SimNb);
+            Assert.AreEqual(0, SimpleBackRun.SimNb);
             WaitForBackRun(max);
             Assert.AreEqual(max, SimpleBackRun.SimNb);
         }
@@ -479,7 +491,11 @@ namespace UnitTestBrun
             {
                 worker.Run();
             }
+            Console.WriteLine($"before start:{worker.Context.startNb},end:{worker.Context.endNb}");
+            Assert.AreEqual(0, worker.Context.startNb);
+            Assert.AreEqual(0, worker.Context.endNb);
             WaitForBackRun();
+            Console.WriteLine($"after start:{worker.Context.startNb},end:{worker.Context.endNb}");
             Assert.AreEqual(3, worker.Context.endNb);
         }
         [TestMethod]

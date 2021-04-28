@@ -24,7 +24,7 @@ namespace Brun.Observers
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerStartRunObserver>>();
             long start= Interlocked.Increment(ref _context.startNb);
             brunContext.StartNb = start;
-            logger.LogDebug("backrun:{0} is start,startNb:{1} {2},thread id:{3}", brunContext.BrunType.Name, start, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"),Thread.CurrentThread.ManagedThreadId);
+            logger.LogTrace("backrun:{0} is start,startNb:{1} {2},thread id:{3}", brunContext.BrunType.Name, start, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"),Thread.CurrentThread.ManagedThreadId);
             return Task.CompletedTask;
         }
     }

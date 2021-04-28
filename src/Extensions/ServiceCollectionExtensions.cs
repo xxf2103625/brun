@@ -15,7 +15,17 @@ namespace Brun
         /// <returns></returns>
         public static IServiceCollection AddBrunService(this IServiceCollection services)
         {
+            //TODO 迁移到扩展库
+            if (WorkerServer.Instance.ServerConfig.UseSystemBrun)
+            {
+                WorkerBuilder.CreatePlanTime<SystemBackRun>("0 * * * * ")//每分钟
+                       .SetKey(SystemBackRun.Worker_KEY)
+                       .SetName("Brun系统监控")
+                       .Build()
+                       ;
+            }
             services.AddSingleton<IWorkerServer, WorkerServer>(m => WorkerServer.Instance);
+
             services.AddSingleton<BrunService>();
             services.AddHostedService<BrunBackgroundService>();
             return services;

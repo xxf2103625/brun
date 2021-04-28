@@ -48,11 +48,12 @@ namespace Brun.Workers
         /// 启动监听线程
         /// </summary>
         /// <returns></returns>
-        public override Task Start()
+        public override void Start()
         {
             if (_context.State != WorkerState.Started)
             {
                 _context.State = WorkerState.Started;
+                //TODO 减少不必要的多线程开销
                 Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.IsCancellationRequested && _context.State == WorkerState.Started)
@@ -63,17 +64,18 @@ namespace Brun.Workers
                             {
                                 var context = new BrunContext(item.Key);
                                 context.Message = msg;
-                                _ = Execute(context);
+                                Task.Run(async () =>
+                                {
+                                    await Execute(context);
+                                });
                             }
                         }
                         Thread.Sleep(5);
                     }
                 }, creationOptions: TaskCreationOptions.LongRunning);
                 Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
-                return Task.CompletedTask;
             }
             Logger.LogWarning("the QueueWorker key:{0} is already started.", _context.Key);
-            return Task.CompletedTask;
         }
         /// <summary>
         /// 获取BackRun
@@ -140,6 +142,12 @@ namespace Brun.Workers
         {
             IQueueBackRun queueBackRun = GetQueueBackRun(context.BrunType);
             return queueBackRun.Run(context.Message, tokenSource.Token);
+        }
+        public override void Dispose()
+        {
+            //先停止worker，避免一直监听
+            this.Stop();
+            base.Dispose();
         }
     }
 }

@@ -39,7 +39,7 @@ namespace UnitTestBrun
                    .SetKey(key)
                    .Build()
                    ;
-                services.AddBrunService();
+                //services.AddBrunService();
             });
             IWorker woker = WorkerServer.Instance.GetWorker(key);
             Assert.AreEqual(0, woker.Context.startNb);

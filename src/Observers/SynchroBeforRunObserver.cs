@@ -1,4 +1,6 @@
 ﻿using Brun.Contexts;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,8 @@ namespace Brun.Observers
         }
         public override Task Todo(WorkerContext _context, BrunContext brunContext)
         {
-            Console.WriteLine("SynchroBeforRunObserver,start:{0},end:{1}", brunContext.StartNb, _context.endNb);
+            var logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerStartRunObserver>>();
+            logger.LogTrace("SynchroBeforRunObserver,start:{0},end:{1}", brunContext.StartNb, _context.endNb);
             if (brunContext.StartNb > _context.endNb)
             {
                 Thread.Sleep(5);

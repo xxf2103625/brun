@@ -292,6 +292,10 @@ namespace Brun
             {
                 throw new NotSupportedException($"not allow this workertype:{option.WorkerType.FullName}");
             }
+            if (WorkerServer.Instance.Worders.Any(m => m.Key == option.Key))
+            {
+                throw new NotSupportedException($"this worker key is alreay used, key:{option.Key}");
+            }
             AbstractWorker worker = (AbstractWorker)BrunTool.CreateInstance(option.WorkerType, args: new object[] { option, config });
             WorkerServer.Instance.Worders.Add(worker);
             return worker;

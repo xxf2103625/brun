@@ -137,6 +137,119 @@
             <param name="stoppingToken"></param>
             <returns></returns>
         </member>
+        <member name="T:Brun.Commons.MachineUtil">
+            <summary>
+            获取服务器信息
+            </summary>
+        </member>
+        <member name="M:Brun.Commons.MachineUtil.GetMachineUseInfo">
+            <summary>
+            获取资源使用信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.MachineUtil.GetMachineBaseInfo(System.Double)">
+            <summary>
+            获取基本参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.MachineUtil.IsUnix">
+            <summary>
+            是否Linux
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.MachineUtil.GetCPURate">
+            <summary>
+            获取CPU使用率
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.MachineUtil.GetRamInfo">
+            <summary>
+            获取内存信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Commons.ShellUtil">
+            <summary>
+            系统Shell命令
+            </summary>
+        </member>
+        <member name="M:Brun.Commons.ShellUtil.Bash(System.String)">
+            <summary>
+            Bash命令
+            </summary>
+            <param name="command"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.ShellUtil.Cmd(System.String,System.String)">
+            <summary>
+            cmd命令
+            </summary>
+            <param name="fileName"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.HostName">
+            <summary>
+            服务器名称
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.SystemOs">
+            <summary>
+            操作系统名称
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.OsArchitecture">
+            <summary>
+            操作系统架构
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.DotnetDescription">
+            <summary>
+            dotnet版本信息
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.ProcessorCount">
+            <summary>
+            CPU核心数
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineInfo.TotalRam">
+            <summary>
+            总内存mb
+            </summary>
+        </member>
+        <member name="T:Brun.Commons.MachineRunTimeInfo">
+            <summary>
+            服务器实时消息
+            </summary>
+        </member>
+        <member name="M:Brun.Commons.MachineRunTimeInfo.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            服务器实时消息
+            </summary>
+            <param name="cpuRate">Cpu使用率</param>
+            <param name="ramUse">使用内存</param>
+            <param name="processRamUse">进程使用内存</param>
+        </member>
+        <member name="P:Brun.Commons.MachineRunTimeInfo.CpuRate">
+            <summary>
+            CPU使用率
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineRunTimeInfo.RamUse">
+            <summary>
+            使用内存
+            </summary>
+        </member>
+        <member name="P:Brun.Commons.MachineRunTimeInfo.ProcessRamUse">
+            <summary>
+            进程使用内存
+            </summary>
+        </member>
         <member name="T:Brun.Contexts.BrunContext">
             <summary>
             每个BackRun运行时的上下文
@@ -283,6 +396,61 @@
             类型转换
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.HostName">
+            <summary>
+            服务器名称
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.SystemOs">
+            <summary>
+            操作系统名称
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.OsArchitecture">
+            <summary>
+            操作系统架构
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.DotnetDescription">
+            <summary>
+            dotnet版本信息
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.ProcessorCount">
+            <summary>
+            CPU核心数
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemInfo.TotalRam">
+            <summary>
+            总内存 单位GB
+            </summary>
+        </member>
+        <member name="T:Brun.Models.SystemRunInfo">
+            <summary>
+            系统资源实时信息
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemRunInfo.Time">
+            <summary>
+            时间点，精确到秒
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemRunInfo.CpuRage">
+            <summary>
+            Cpu使用率
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemRunInfo.RamUse">
+            <summary>
+            内存使用，单位mb
+            </summary>
+        </member>
+        <member name="P:Brun.Models.SystemRunInfo.ProcessRamUse">
+            <summary>
+            当前进程内存使用，单位mb
+            </summary>
         </member>
         <member name="P:Brun.Models.WorkerInfo.TypeName">
             <summary>
@@ -935,6 +1103,75 @@
             L 只能在日期域中出现，最后一天，5L：当月最后一天再倒数5天
             </summary>
         </member>
+        <member name="T:Brun.Services.BrunService">
+            <summary>
+            TODO 封装Brun常用操作，避免直接使用WorkerServer,为拆分Client做准备
+            </summary>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetBrunInfo">
+            <summary>
+            Brun概况
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetWorkerInfoByKey(System.String)">
+            <summary>
+            按key查询
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetWorkerInfoByName(System.String)">
+            <summary>
+            按name查询
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetWorkerInfoByTag(System.String)">
+            <summary>
+            按Tag查询
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.StartWorker(System.String)">
+            <summary>
+            启动
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.StopWorker(System.String)">
+            <summary>
+            停止
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.DisposWorker(System.String)">
+            <summary>
+            注销
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetSystemInfo">
+            <summary>
+            获取系统信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.BrunService.GetSystemRunInfos">
+            <summary>
+             获取系统监控信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Brun.Services.BrunService.WorkerInfoCast">
+            <summary>
+            隐藏IWorker，返回WorkerInfo
+            </summary>
+        </member>
         <member name="T:Brun.WorkerBuilder">
             <summary>
             Woker建造器,在WorkerServer启动之前先配置好worker
@@ -1099,7 +1336,7 @@
         </member>
         <member name="M:Brun.Workers.AbstractWorker.#ctor(Brun.Options.WorkerOption,Brun.WorkerConfig)">
             <summary>
-            统一构造函数
+            统一构造函数 TODO 是否移除config？
             </summary>
             <param name="option"></param>
             <param name="config"></param>
@@ -1172,12 +1409,12 @@
         </member>
         <member name="M:Brun.Workers.OnceWorker.StartBrun(System.Type)">
             <summary>
-            启动线程，开始执行Execute
+            开始执行Execute
             </summary>
         </member>
         <member name="T:Brun.Workers.PlanTimeWorker">
             <summary>
-            在计划时间内执行的Worker
+            在计划时间执行的Worker
             </summary>
         </member>
         <member name="T:Brun.Workers.QueueWorker">

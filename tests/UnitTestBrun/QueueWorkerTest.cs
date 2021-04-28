@@ -15,6 +15,7 @@ namespace UnitTestBrun
     [TestClass]
     public class QueueWorkerTest : BaseHostTest
     {
+        //TODO 死循环
         [TestMethod]
         public void TestExcept()
         {
@@ -29,7 +30,7 @@ namespace UnitTestBrun
                         .Build<QueueWorker>()
                         .AsQueueWorker()
                         ;
-                services.AddBrunService();
+                //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
             for (int i = 0; i < 100; i++)
@@ -48,7 +49,7 @@ namespace UnitTestBrun
             Assert.AreEqual(200, worker.Context.endNb);
         }
         [TestMethod]
-        public async Task TestStartAndStopAsync()
+        public void TestStartAndStopAsync()
         {
             string key = nameof(TestStartAndStopAsync);
             StartHost(services =>
@@ -60,7 +61,7 @@ namespace UnitTestBrun
                         .SetKey(key)
                         .Build<QueueWorker>()
                         ;
-                services.AddBrunService();
+                //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
             for (int i = 0; i < 1; i++)
@@ -70,7 +71,7 @@ namespace UnitTestBrun
             WaitForBackRun();
             Assert.AreEqual(1, worker.Context.endNb);
 
-            await worker.Stop();
+            worker.Stop();
 
             for (int i = 1; i < 11; i++)
             {
@@ -80,7 +81,7 @@ namespace UnitTestBrun
             Assert.AreEqual(1, worker.Context.startNb);
             Assert.AreEqual(1, worker.Context.endNb);
 
-            await worker.Start();
+            worker.Start();
             WaitForBackRun(11);
             Assert.AreEqual(11, worker.Context.startNb);
             Assert.AreEqual(11, worker.Context.endNb);

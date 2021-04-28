@@ -22,10 +22,23 @@ namespace UnitTestBrun
             model.CodeTest = 200;
             model.Msg = "测试";
             model.Data = 0;
-            var modelStr = System.Text.Json.JsonSerializer.Serialize(model,jsonOpt2);
+            var modelStr = JsonSerializer.Serialize(model, jsonOpt2);
             //string str = "{\"Code\":200,\"Msg\":\"\u6D4B\u8BD5\",\"Data\":0}";
             string str2 = "{\"code\":200,\"msg\":\"\u6D4B\u8BD5\",\"data\":0}";
-            var m = System.Text.Json.JsonSerializer.Deserialize<DomainApiResult>(str2, jsonOpt2);
+            var m = JsonSerializer.Deserialize<DomainApiResult>(str2, jsonOpt2);
+        }
+        [TestMethod]
+        public void RandomString()
+        {
+            string allStr = "abcdefghijklmnopqrstuvwxyz23456789";
+            char[] arr = allStr.ToCharArray();
+            Random random = new Random();
+            string r = string.Empty;
+            for (int i = 0; i < 16; i++)
+            {
+                r +=arr[random.Next(arr.Length)];
+            }
+            Console.WriteLine(r);
         }
     }
     /// <summary>

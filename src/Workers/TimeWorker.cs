@@ -59,11 +59,12 @@ namespace Brun.Workers
         /// 启动Worker
         /// </summary>
         /// <returns></returns>
-        public override Task Start()
+        public override void Start()
         {
             if (_context.State != WorkerState.Started)
             {
                 _context.State = WorkerState.Started;
+                //TODO 减少不必要的多线程开销
                 Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested && _context.State == WorkerState.Started)
@@ -73,7 +74,10 @@ namespace Brun.Workers
                             if (item.NextTime != null && item.NextTime.Value <= DateTime.Now)
                             {
                                 BrunContext brunContext = new BrunContext(item.BackRun.GetType());
-                                _ = Execute(brunContext);
+                                Task.Run(async () =>
+                                {
+                                    await Execute(brunContext);
+                                });
                                 item.NextTime = DateTime.Now.Add(item.Cycle);
                             }
                         }
@@ -81,10 +85,8 @@ namespace Brun.Workers
                     }
                 }, TaskCreationOptions.LongRunning);
                 Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
-                return Task.CompletedTask;
             }
             Logger.LogWarning("the TimeWorker key:{0} is already started.", _context.Key);
-            return Task.CompletedTask;
         }
         protected override Task Brun(BrunContext context)
         {

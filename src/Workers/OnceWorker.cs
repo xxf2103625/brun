@@ -38,15 +38,12 @@ namespace Brun.Workers
             }
         }
         /// <summary>
-        /// 启动线程，开始执行Execute
+        /// 开始执行Execute
         /// </summary>
-        public virtual Task StartBrun(Type brunType)
+        public virtual async Task StartBrun(Type brunType)
         {
             BrunContext brunContext = new BrunContext(brunType);
-            return taskFactory.StartNew(() =>
-            {
-                _ = Execute(brunContext);
-            });
+            await Execute(brunContext);
         }
         protected override async Task Brun(BrunContext context)
         {
@@ -77,7 +74,10 @@ namespace Brun.Workers
 
         public void Run(Type backRunType)
         {
-            StartBrun(backRunType);
+            Task.Run(async() =>
+            {
+               await StartBrun(backRunType);
+            });
         }
         public T GetData<T>(string key)
         {
