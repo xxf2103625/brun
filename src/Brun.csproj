@@ -9,8 +9,8 @@
     <PackageTags>netcore 后台任务 background task</PackageTags>
     <RepositoryUrl>https://gitee.com/2103625/brun.git</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageReleaseNotes>PlanTimeWorker,支持配置复杂时间计划的后台任务</PackageReleaseNotes>
-    <Version>1.0.5</Version>
+    <PackageReleaseNotes>移除不必要的多线程开销</PackageReleaseNotes>
+    <Version>1.1.2</Version>
     <Configurations>Release;Debug</Configurations>
   </PropertyGroup>
 
