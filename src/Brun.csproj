@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Authors>2103625@qq.com</Authors>
-    <Description>background task</Description>
+    <Description>dotnet background task</Description>
     <Copyright>2103625@qq.com</Copyright>
-    <PackageProjectUrl>http://www.dotnet6.net</PackageProjectUrl>
+    <PackageProjectUrl>https://gitee.com/2103625/brun.git</PackageProjectUrl>
     <PackageTags>netcore 后台任务 background task</PackageTags>
     <RepositoryUrl>https://gitee.com/2103625/brun.git</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -24,13 +24,6 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
-
-  <ItemGroup>
-    <None Include="..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
 
 
   <ItemGroup>
