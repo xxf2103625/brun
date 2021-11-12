@@ -25,7 +25,6 @@ namespace Brun
                        ;
             }
             services.AddSingleton<IWorkerServer, WorkerServer>(m => WorkerServer.Instance);
-
             services.AddSingleton<BrunService>();
             services.AddHostedService<BrunBackgroundService>();
             return services;
