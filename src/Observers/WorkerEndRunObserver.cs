@@ -23,7 +23,7 @@ namespace Brun.Observers
         {
             logger = _context.ServiceProvider.GetRequiredService<ILogger<WorkerEndRunObserver>>();
             long end = Interlocked.Increment(ref _context.endNb);
-            logger.LogTrace("backrun:{0} is end,startNb:{1} endNb:{2} {3},thread id:{4}", brunContext.BrunType.Name, brunContext.StartNb, end, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Thread.CurrentThread.ManagedThreadId);
+            logger.LogTrace("backrun:{0} is end,startNb:{1} endNb:{2} {3},thread id:{4}", brunContext.BackRun.GetType().Name, brunContext.StartNb, end, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Thread.CurrentThread.ManagedThreadId);
             return Task.CompletedTask;
         }
     }

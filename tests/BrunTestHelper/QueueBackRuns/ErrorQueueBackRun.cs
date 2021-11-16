@@ -11,6 +11,10 @@ namespace BrunTestHelper.QueueBackRuns
 {
     public class LogQueueBackRun : QueueBackRun
     {
+        public LogQueueBackRun(QueueBackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(string message, CancellationToken stoppingToken)
         {
             var log = GetService<ILogger<LogQueueBackRun>>();
@@ -22,6 +26,10 @@ namespace BrunTestHelper.QueueBackRuns
     }
     public class ErrorQueueBackRun : QueueBackRun
     {
+        public ErrorQueueBackRun(QueueBackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(string message, CancellationToken stoppingToken)
         {
             throw new NotImplementedException("未实现");

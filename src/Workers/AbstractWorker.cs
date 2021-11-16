@@ -1,4 +1,5 @@
-﻿using Brun.Contexts;
+﻿using Brun.BaskRuns;
+using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
@@ -14,14 +15,21 @@ using System.Threading.Tasks;
 namespace Brun.Workers
 {
     /// <summary>
-    /// 工作中心基类，可以builder多个，不同实例里面的Context不同
+    /// 工作中心基类，可以创建多个，不同实例里面的Context不同
     /// </summary>
     public abstract class AbstractWorker : IWorker
     {
+        public string Key => _config.Key;
+        public string Name => _config.Name;
+        public string Tag => _config.Tag;
         /// <summary>
-        /// 选项
+        /// 包含的Backrun
         /// </summary>
-        protected WorkerOption _option;
+        protected ConcurrentDictionary<string, IBackRun> _backRuns;
+        ///// <summary>
+        ///// 选项
+        ///// </summary>
+        //protected WorkerOption _option;
         /// <summary>
         /// 配置
         /// </summary>
@@ -42,16 +50,19 @@ namespace Brun.Workers
         /// 状态锁
         /// </summary>
         protected object State_LOCK = new object();
+        protected ILogger _logger;
         /// <summary>
         /// 统一构造函数 TODO 是否移除config？
         /// </summary>
-        /// <param name="option"></param>
         /// <param name="config"></param>
-        public AbstractWorker(WorkerOption option, WorkerConfig config)
+        public AbstractWorker(WorkerConfig config)
         {
-            _option = option;
+            _logger = ((ILoggerFactory)(WorkerServer.Instance.ServiceProvider.GetService(typeof(ILoggerFactory)))).CreateLogger(this.GetType());
+
+            //_option = option;
             _config = config;
-            _context = new WorkerContext(option, config);
+            _context = new WorkerContext(config);
+            _backRuns = new ConcurrentDictionary<string, IBackRun>();
             tokenSource = new CancellationTokenSource();
             taskFactory = new TaskFactory(tokenSource.Token);
             //TODO 控制同时运行并发量
@@ -65,7 +76,7 @@ namespace Brun.Workers
         public virtual void Start()
         {
             _context.State = WorkerState.Started;
-            Logger.LogInformation("the {0} key:{1} is started", GetType().Name, _context.Key);
+            _logger.LogInformation("the {0} key:'{1}' is started", GetType().Name, _context.Key);
         }
         /// <summary>
         /// 统一流程控制
@@ -79,7 +90,7 @@ namespace Brun.Workers
             {
                 if (_context.State != WorkerState.Started)
                 {
-                    Logger.LogWarning("the worker is not started while {0} is {1} time run", runContext.BrunType.Name, runContext.StartNb);
+                    _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key, runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
                     return;
                 }
                 Task brun = Task.Run(async () => await Brun(runContext));
@@ -106,7 +117,6 @@ namespace Brun.Workers
         /// <param name="context"></param>
         /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
-        public abstract IEnumerable<Type> BrunTypes { get; }
         /// <summary>
         /// 停止
         /// </summary>
@@ -114,7 +124,7 @@ namespace Brun.Workers
         public virtual void Stop()
         {
             _context.State = WorkerState.Stoped;
-            Logger.LogInformation("the {0} key:{1} is stoped", GetType().Name, _context.Key);
+            _logger.LogInformation("the {0} key:{1} is stoped", GetType().Name, _context.Key);
         }
         /// <summary>
         /// 添加拦截器
@@ -133,12 +143,6 @@ namespace Brun.Workers
         /// 上下文
         /// </summary>
         public WorkerContext Context => _context;
-        public string Key => _option.Key;
-
-        public string Name => _option.Name;
-
-        public string Tag => _option.Tag;
-        public Type WorkerType => _option.WorkerType;
 
         public string GetData(string key)
         {
@@ -153,32 +157,6 @@ namespace Brun.Workers
         public BlockingCollection<Task> RunningTasks { get; private set; }
         protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
         protected ILoggerFactory LoggerFactory => (ILoggerFactory)ServiceProvider.GetService(typeof(ILoggerFactory));
-        protected ILogger Logger => LoggerFactory.CreateLogger(this.GetType());
-        /// <summary>
-        /// 类型转换
-        /// </summary>
-        /// <typeparam name="TWorker"></typeparam>
-        /// <returns></returns>
-        public TWorker As<TWorker>() where TWorker : AbstractWorker
-        {
-            return (TWorker)this;
-        }
-        public IOnceWorker AsOnceWorker()
-        {
-            return (IOnceWorker)this;
-        }
-        public IQueueWorker AsQueueWorker()
-        {
-            return (IQueueWorker)this;
-        }
-        public ITimeWorker AsTimeWOrker()
-        {
-            return (ITimeWorker)this;
-        }
-        public IPlanTimeWorker AsPlanTimeWorker()
-        {
-            return (IPlanTimeWorker)this;
-        }
         public TaskFactory TaskFactory => taskFactory;
         /// <summary>
         /// 释放单个Worker

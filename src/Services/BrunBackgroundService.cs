@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -35,7 +36,13 @@ namespace Brun.Services
 
         private Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            WorkerServer.Instance.SetServiceProvider(_serviceProvider);
+            WorkerServer.Instance.SetLogFactory(_serviceProvider.GetRequiredService<ILoggerFactory>());
             _logger.LogInformation("BrunBackgroundService startting...");
+            if (WorkerServer.Instance.Configure != null)
+            {
+                WorkerServer.Instance.Configure.Invoke(WorkerServer.Instance);
+            }
             WorkerServer.Instance.Start(_serviceProvider, stoppingToken);
             return Task.CompletedTask;
         }

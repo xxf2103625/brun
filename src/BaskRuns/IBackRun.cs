@@ -12,7 +12,10 @@ namespace Brun.BaskRuns
     /// </summary>
     public interface IBackRun
     {
-        ConcurrentDictionary<string, string> Data { get; set; }
+        ConcurrentDictionary<string, string> Data { get; }
+        WorkerContext WorkerContext { get; }
+
         Task Run(CancellationToken stoppingToken);
+        void SetWorkerContext(WorkerContext workerContext);
     }
 }

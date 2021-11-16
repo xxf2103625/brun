@@ -7,12 +7,21 @@ using System.Text;
 
 namespace Brun
 {
+    /// <summary>
+    /// Worker配置项
+    /// </summary>
     public class WorkerConfig
     {
         private List<WorkerObserver> observers = new List<WorkerObserver>();
         public WorkerConfig()
         {
             Init();
+        }
+        public WorkerConfig(string key,string name,string tag)
+        {
+            this.Key = key;
+            this.Name = name;
+            this.Tag = tag;
         }
         public void Init()
         {
@@ -23,6 +32,9 @@ namespace Brun
                 new WorkerExceptObserver(),
             });
         }
+        public string Key { get; set; }
+        public string Name { get; set; }
+        public string Tag { get; set; }
         public int WorkerContextMaxExcept { get; set; } = 10;
         public void AddWorkerObserver(WorkerObserver workerObserver)
         {

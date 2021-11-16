@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Brun.Options
 {
-    public class PlanTimeWorkerOption : WorkerOption
+    [Obsolete("移除", false)]
+    public class PlanWorkerOption : WorkerOption
     {
         public Dictionary<Type, List<string>> planTimeRuns;
         public override Type DefaultBrunType => planTimeRuns.First().Key;

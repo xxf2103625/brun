@@ -9,6 +9,7 @@ namespace Brun.Options
     /// <summary>
     /// 用于构造Worker
     /// </summary>
+    [Obsolete("移除",false)]
     public class WorkerOption
     {
         /// <summary>

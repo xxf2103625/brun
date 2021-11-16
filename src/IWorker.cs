@@ -38,34 +38,37 @@ namespace Brun
         /// </summary>
         /// <returns></returns>
         void Stop();
-        /// <summary>
-        /// TaskFactory
-        /// </summary>
-        TaskFactory TaskFactory { get; }
-        /// <summary>
-        /// 运行中的Task
-        /// </summary>
-        BlockingCollection<Task> RunningTasks { get; }
-        /// <summary>
-        /// 转换到IOnceWorker
-        /// </summary>
-        /// <returns></returns>
-        IOnceWorker AsOnceWorker();
-        /// <summary>
-        /// 类型转换
-        /// </summary>
-        /// <returns></returns>
-        IQueueWorker AsQueueWorker();
-        /// <summary>
-        /// 类型转换
-        /// </summary>
-        /// <returns></returns>
-        ITimeWorker AsTimeWOrker();
-        /// <summary>
-        /// 类型转换
-        /// </summary>
-        /// <returns></returns>
-        IPlanTimeWorker AsPlanTimeWorker();
-        IEnumerable<Type> BrunTypes { get; }
+
+
+
+        ///// <summary>
+        ///// TaskFactory
+        ///// </summary>
+        ////TaskFactory TaskFactory { get; }
+        ///// <summary>
+        ///// 运行中的Task
+        ///// </summary>
+        ////BlockingCollection<Task> RunningTasks { get; }
+        ///// <summary>
+        ///// 转换到IOnceWorker
+        ///// </summary>
+        ///// <returns></returns>
+        ////IOnceWorker AsOnceWorker();
+        ///// <summary>
+        ///// 类型转换
+        ///// </summary>
+        ///// <returns></returns>
+        ////IQueueWorker AsQueueWorker();
+        ///// <summary>
+        ///// 类型转换
+        ///// </summary>
+        ///// <returns></returns>
+        ////ITimeWorker AsTimeWOrker();
+        ///// <summary>
+        ///// 类型转换
+        ///// </summary>
+        ///// <returns></returns>
+        ////IPlanTimeWorker AsPlanTimeWorker();
+        ////IEnumerable<Type> BrunTypes { get; }
     }
 }

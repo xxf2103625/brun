@@ -1,7 +1,9 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
 using Brun.Contexts;
+using Brun.Exceptions;
 using Brun.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,57 +16,54 @@ namespace Brun.Workers
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
-        /// <summary>
-        /// 包含的Backrun
-        /// </summary>
-        private ConcurrentDictionary<Type, IBackRun> backRuns;
-
-        public override IEnumerable<Type> BrunTypes => backRuns.Keys;
-
-        public OnceWorker(WorkerOption option, WorkerConfig config) : base(option, config)
+        
+        private Type defuatBackRun = null;
+        public OnceWorker(WorkerConfig config) : base(config)
         {
             Init();
         }
+
         private void Init()
         {
-            backRuns = new ConcurrentDictionary<Type, IBackRun>();
-            if (_option.BrunTypes == null)
-                _option.BrunTypes = new List<Type>();
-            foreach (var item in _option.BrunTypes)
-            {
-                IBackRun backRun = (IBackRun)BrunTool.CreateInstance(item);
-                backRun.Data = _context.Items;
-                backRuns.TryAdd(item, backRun);
-            }
+            _logger.LogInformation($"OnceWorker with key '{this.Key}' is init.");
         }
         /// <summary>
         /// 开始执行Execute
         /// </summary>
         public virtual async Task StartBrun(Type brunType)
         {
-            BrunContext brunContext = new BrunContext(brunType);
-            await Execute(brunContext);
-        }
-        protected override async Task Brun(BrunContext context)
-        {
-            if (backRuns.TryGetValue(context.BrunType, out IBackRun backRun))
+            if(_backRuns.TryGetValue(brunType.FullName, out IBackRun backRun))
             {
-                await backRun.Run(tokenSource.Token);
+                await Execute(new BrunContext(backRun));
             }
             else
             {
-                backRuns[context.BrunType] = (IBackRun)BrunTool.CreateInstance(context.BrunType);
-                backRuns[context.BrunType].Data = _context.Items;
-                await backRuns[context.BrunType].Run(tokenSource.Token);
+                _backRuns[brunType.FullName] = (IBackRun)BrunTool.CreateInstance(brunType);
+                _backRuns[brunType.FullName].SetWorkerContext(_context);
+                await Execute(new BrunContext(_backRuns[brunType.FullName]));
             }
+        }
+        protected override async Task Brun(BrunContext context)
+        {
+            await context.BackRun.Run(tokenSource.Token);
         }
         public ConcurrentDictionary<string, string> GetData()
         {
             return _context.Items;
         }
+        /// <summary>
+        /// 运行默认第一个添加的BackRun
+        /// </summary>
         public void Run()
         {
-            Run(_option.DefaultBrunType);
+            if (defuatBackRun != null)
+            {
+                Run(defuatBackRun);
+            }
+            else
+            {
+                _logger.LogError("the OnceWorker with key:'{0}' don't have defaultBackRun.", this.Key);
+            }
         }
 
         public void Run<TBackRun>()
@@ -74,9 +73,9 @@ namespace Brun.Workers
 
         public void Run(Type backRunType)
         {
-            Task.Run(async() =>
+            Task.Run(async () =>
             {
-               await StartBrun(backRunType);
+                await StartBrun(backRunType);
             });
         }
         public T GetData<T>(string key)
@@ -87,6 +86,78 @@ namespace Brun.Workers
             //if (r == null)
             //    return default;
             //return (T)r;
+        }
+        /// <summary>
+        /// 设置共享数据(会覆盖)
+        /// </summary>
+        /// <param name="sharedData"></param>
+        /// <returns></returns>
+        public OnceWorker SetData(ConcurrentDictionary<string, string> sharedData)
+        {
+            this._context.Items = sharedData;
+            return this;
+        }
+        /// <summary>
+        /// 添加共享数据(已有不会覆盖)
+        /// </summary>
+        /// <param name="sharedData"></param>
+        /// <returns></returns>
+        public OnceWorker AddData(ConcurrentDictionary<string, string> sharedData)
+        {
+            if (this.Context.Items == null)
+            {
+                this.Context.Items = sharedData;
+            }
+            else
+            {
+                _logger.LogWarning($"the OnceWorker with key:'{this.Key}' allready has shared data,you can try SetData().");
+            }
+            return this;
+        }
+        /// <summary>
+        /// 添加Brun实现类
+        /// </summary>
+        /// <param name="backRunType"></param>
+        /// <returns></returns>
+        /// <exception cref="BrunTypeErrorException"></exception>
+        public OnceWorker AddBrun(Type backRunType)
+        {
+            //_logger.LogDebug($"the OnceWorker with key:'{this.Key}' is adding '{backRunType.FullName}'");
+            if (!backRunType.IsSubclassOf(typeof(BackRun)))
+            {
+                throw new BrunTypeErrorException($"{backRunType.FullName} can not add to OnceWorker.");
+            }
+            if (_backRuns.ContainsKey(backRunType.FullName))
+            {
+                //已包含,返回已有对象
+                _logger.LogWarning($"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
+                return this;
+            }
+            else
+            {
+                if (_backRuns.TryAdd(backRunType.FullName, (IBackRun)BrunTool.CreateInstance(backRunType)))
+                {
+                    if (_backRuns.Count == 1)
+                    {
+                        this.defuatBackRun = backRunType;
+                    }
+                    _logger.LogInformation("the OnceWorker with key:'{0}' added BackRun:'{1}'.", this.Key, backRunType.FullName);
+                    return this;
+                }
+                else
+                {
+                    throw new BrunTypeErrorException(string.Format("can not add {0} to OnceWorker.", backRunType.FullName));
+                }
+            }
+        }
+        /// <summary>
+        /// 添加Brun实现类
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <returns></returns>
+        public OnceWorker AddBrun<TBackRun>() where TBackRun : BackRun, new()
+        {
+            return this.AddBrun(typeof(TBackRun));
         }
     }
 }

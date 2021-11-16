@@ -18,15 +18,14 @@ namespace Brun.Workers
     /// </summary>
     public class SynchroWorker : OnceWorker
     {
-        public SynchroWorker(WorkerOption option, WorkerConfig config) : base(option, config)
+        public SynchroWorker(WorkerConfig config) : base(config)
         {
         }
         private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         public override async Task StartBrun(Type brunType)
         {
-            BrunContext brunContext = new BrunContext(brunType);
             semaphoreSlim.Wait();
-            await Execute(brunContext);
+            await base.StartBrun(brunType);
             semaphoreSlim.Release();
         }
     }

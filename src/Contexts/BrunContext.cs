@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Brun.BaskRuns;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,14 @@ namespace Brun.Contexts
     /// </summary>
     public class BrunContext : IDisposable
     {
-        Type brunType;
-        public BrunContext(Type backRunType)
+        private IBackRun _backRun;
+        public BrunContext(IBackRun backRun)
         {
-            brunType = backRunType;
+            this._backRun = backRun;
         }
-        public Type BrunType => brunType;
+        [Obsolete("重构移除", false)]
+        public Type BrunType => _backRun.GetType();
+        public IBackRun BackRun => _backRun;
         public long StartNb { get; set; }
         public int ExceptNb { get; set; }
         public long EndNb { get; set; }

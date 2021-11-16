@@ -17,6 +17,7 @@ namespace Brun.Plan
         private List<TimeCloumn> times;
         //原始表达式
         private string expression;
+        private DateTimeOffset begin;
         //解析器
         private IPlanTimeParser parser;
         /// <summary>
@@ -26,16 +27,25 @@ namespace Brun.Plan
         public PlanTime(IPlanTimeParser planTimeParser = null)
         {
             if (planTimeParser == null)
-                parser = new CroParser();
+                parser = WorkerServer.Instance.PlanTimeParser;
         }
         /// <summary>
         /// 内部已经调用Parse方法
         /// </summary>
         /// <param name="strExpression"></param>
+        /// <param name="beginTime"></param>
         /// <param name="planTimeParser"></param>
-        public PlanTime(string strExpression, IPlanTimeParser planTimeParser = null) : this(planTimeParser)
+        public PlanTime(string strExpression, DateTimeOffset? beginTime = null, IPlanTimeParser planTimeParser = null) : this(planTimeParser)
         {
             this.expression = strExpression;
+            if (beginTime == null)
+            {
+                begin = DateTimeOffset.Now;
+            }
+            else
+            {
+                begin = beginTime.Value;
+            }
             Parse(strExpression);
         }
         public PlanTime(IEnumerable<TimeCloumn> timeCloumns)
@@ -62,32 +72,10 @@ namespace Brun.Plan
             }
         }
         /// <summary>
-        /// 以当前时间计算下次触发时间,精确到秒
-        /// </summary>
-        /// <returns></returns>
-        public DateTimeOffset? GetNextTime()
-        {
-            return GetNextTime(DateTime.Now);
-        }
-        /// <summary>
-        /// 以startTime开始计算下次触发时间，精确到秒
-        /// </summary>
-        /// <param name="startTime"></param>
-        /// <returns></returns>
-        public DateTimeOffset? GetNextTime(DateTimeOffset startTime)
-        {
-            if (!this.IsSuccess)
-            {
-                throw new Exception("plan time is not parsed or is error for parse");
-            }
-            //拆分到独立类处理
-            PlanTimeComputer computer = new PlanTimeComputer(this);
-            return computer.GetNextTime(startTime);
-        }
-        /// <summary>
         /// 表达式字符串
         /// </summary>
         public string Expression => expression;
+        public DateTimeOffset Begin => begin;
         /// <summary>
         /// 是否已解析
         /// </summary>

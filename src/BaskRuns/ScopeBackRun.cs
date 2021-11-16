@@ -26,6 +26,9 @@ namespace Brun.BaskRuns
         /// 每次运行共享的自定义数据，修改请自己加锁
         /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
+
+        public WorkerContext WorkerContext => throw new NotImplementedException();
+
         /// <summary>
         /// 每次会创建一个Scope，ServiceProvider变为Scope内的ServiceProvider，可以理解成类似mvc每个请求的生命周期
         /// </summary>
@@ -62,6 +65,11 @@ namespace Brun.BaskRuns
         protected TService GetService<TService>()
         {
             return ServiceProvider.GetService<TService>();
+        }
+
+        public void SetWorkerContext(WorkerContext workerContext)
+        {
+            throw new NotImplementedException();
         }
     }
 }

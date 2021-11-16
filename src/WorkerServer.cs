@@ -30,6 +30,7 @@ namespace Brun
         {
 
         }
+        public Action<WorkerServer> Configure { get; set; }
         /// <summary>
         /// server配置，用于设置系统默认配置
         /// </summary>
@@ -42,18 +43,30 @@ namespace Brun
         /// 服务容器
         /// </summary>
         public IServiceProvider ServiceProvider => _serviceProvider;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ILoggerFactory LoggerFactory => loggerFactory;
+        public void SetLogFactory(ILoggerFactory loggerFactory)
+        {
+            this.loggerFactory = loggerFactory;
+        }
+        public void SetServiceProvider(IServiceProvider serviceProvider)
+        {
+            this._serviceProvider = serviceProvider;
+        }
         public IWorker GetWorker(string key)
         {
             IWorker worker = worders.FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("can not find active Worker，key:{0}", key);
+                logger.LogError("can not find active Worker，key:'{0}'", key);
             }
             return worker;
         }
         public IList<IWorker> GetAllWorker()
         {
-          
+
             return worders.Where(m => m.Key != SystemBackRun.Worker_KEY).ToList();
         }
         public IEnumerable<IWorker> GetWokerByName(string name)
@@ -66,19 +79,19 @@ namespace Brun
         }
         public IOnceWorker GetOnceWorker(string key)
         {
-            IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);
+            IWorker worker = worders.Where(m => m.GetType() == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("can not find active OnceWorker，key:{0}", key);
+                logger.LogError("can not find active OnceWorker，key:'{0}'", key);
             }
             return (IOnceWorker)worker;
         }
         public IQueueWorker GetQueueWorker(string key)
         {
-            IWorker worker = worders.Where(m => m.Context.Option.WorkerType == typeof(QueueWorker)).FirstOrDefault(m => m.Key == key);
+            IWorker worker = worders.FirstOrDefault(m => m.Key == key);
             if (worker == null)
             {
-                logger.LogError("can not find active QueueWorker，key:{0}", key);
+                logger.LogError("can not find active QueueWorker，key:'{0}'", key);
             }
             return (IQueueWorker)worker;
         }
@@ -90,12 +103,12 @@ namespace Brun
         public void Start(IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             ServiceConfigure(serviceProvider);
+            logger.LogInformation("WorkerServer is Started");
             startTime = DateTime.Now;
             foreach (var item in worders)
             {
                 item.Start();
             }
-            logger.LogInformation("WorkerServer is Started");
             stoppingToken.Register(() => Stop());
         }
         private void ServiceConfigure(IServiceProvider serviceProvider)
@@ -104,9 +117,9 @@ namespace Brun
             {
                 throw new ArgumentNullException(nameof(IServiceProvider), "serviceProvider can not be null");
             }
-            _serviceProvider = serviceProvider;
+            //_serviceProvider = serviceProvider;
             WorkerConfigure();
-            loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+            //loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             logger = loggerFactory.CreateLogger<WorkerServer>();
         }
         private void WorkerConfigure()
@@ -126,6 +139,7 @@ namespace Brun
             logger?.LogDebug("WorkerServer is Stoped");
         }
         public DateTime? StartTime => startTime;
+        public Plan.IPlanTimeParser PlanTimeParser { get; set; } = new Plan.CroParser();
         /// <summary>
         /// 进程单例
         /// </summary>

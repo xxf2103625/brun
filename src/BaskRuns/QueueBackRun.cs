@@ -11,8 +11,17 @@ namespace Brun
     /// <summary>
     /// 队列任务基类
     /// </summary>
-    public abstract class QueueBackRun : BackRunServicePrivoder, IQueueBackRun
+    public abstract class QueueBackRun : BackRun
     {
+        QueueBackRunOption _option;
+        public QueueBackRun(QueueBackRunOption option)
+        {
+            _option = option;
+        }
+        public override Task Run(CancellationToken stoppingToken)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 业务逻辑
         /// </summary>
@@ -20,6 +29,8 @@ namespace Brun
         /// <param name="stoppingToken"></param>
         /// <returns></returns>
         public abstract Task Run(string message, CancellationToken stoppingToken);
+        public override string Id => _option.Id;
+        public QueueBackRunOption Option => _option;
     }
 
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Brun
 {
-    public interface IOnceWorker : IWorker
+    public interface IOnceWorker
     {
         /// <summary>
         /// 自定义数据

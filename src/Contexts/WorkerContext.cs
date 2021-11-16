@@ -12,7 +12,7 @@ namespace Brun
     public sealed class WorkerContext : IDisposable
     {
         //private ILogger<WorkerContext> _logger;
-        private WorkerOption _option;
+        //private WorkerOption _option;
         private WorkerConfig _config;
         //元数据，用于后期持久化
         //private IDictionary<string, object> meta;
@@ -27,39 +27,39 @@ namespace Brun
         //BackRun运行异常计数
         public int exceptNb = 0;
 
-        public WorkerContext(WorkerOption workerOption, WorkerConfig config)
+        public WorkerContext(WorkerConfig config)
         {
-            _option = workerOption;
+            //_option = workerOption;
             _config = config;
             Init();
         }
         private void Init()
         {
-            if (_option.Data == null)
-            {
-                items = new ConcurrentDictionary<string, string>();
-            }
-            else
-            {
-                items = _option.Data;
-            }
+            //if (_option.Data == null)
+            //{
+            //    items = new ConcurrentDictionary<string, string>();
+            //}
+            //else
+            //{
+            //    items = _option.Data;
+            //}
         }
         /// <summary>
         /// Worker唯一标识
         /// </summary>
-        public string Key => _option.Key;
+        public string Key => _config.Key;
         /// <summary>
         /// Worker名称，默认类型名称
         /// </summary>
-        public string Name => _option.Name;
+        public string Name => _config.Name;
         /// <summary>
         /// 自定义Tag
         /// </summary>
-        public string Tag => _option.Tag;
-        /// <summary>
-        /// 配置
-        /// </summary>
-        public WorkerOption Option => _option;
+        public string Tag => _config.Tag;
+        ///// <summary>
+        ///// 配置
+        ///// </summary>
+        //public WorkerOption Option => _option;
         /// <summary>
         /// BackRun运行异常列表，默认最多储存10个
         /// </summary>
@@ -80,7 +80,10 @@ namespace Brun
         /// Worker状态
         /// </summary>
         public WorkerState State { get; set; }
-        public ConcurrentDictionary<string, string> Items => items;
+        /// <summary>
+        /// OnceWorker共享数据
+        /// </summary>
+        public ConcurrentDictionary<string, string> Items { get => items; set { items = value; } }
         public IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
         public BlockingCollection<Task> Tasks { get; set; }
         public void Dispose()
