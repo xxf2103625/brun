@@ -27,6 +27,14 @@ namespace Brun.Workers
         }
         private void Init()
         {
+            if (string.IsNullOrEmpty(this._config.Key))
+            {
+                this._config.Key = Guid.NewGuid().ToString();
+            }
+            if (string.IsNullOrEmpty(this._config.Name))
+            {
+                this._config.Name = nameof(QueueWorker);
+            }
         }
         /// <summary>
         /// 启动监听线程

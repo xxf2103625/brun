@@ -49,15 +49,6 @@ namespace Brun.Services
             return _workerServer.GetWokerByName(name).Select(WorkerInfoCast);
         }
         /// <summary>
-        /// 按Tag查询
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <returns></returns>
-        public IEnumerable<WorkerInfo> GetWorkerInfoByTag(string tag)
-        {
-            return _workerServer.GetWokerByTag(tag).Select(WorkerInfoCast);
-        }
-        /// <summary>
         /// 启动
         /// </summary>
         /// <param name="key"></param>
@@ -133,7 +124,6 @@ namespace Brun.Services
                    TypeName = m.GetType().Name,
                    Key = m.Context.Key,
                    Name = m.Context.Name,
-                   Tag = m.Context.Tag,
                    //BrunTypes = m.BrunTypes.Select(w => w.Name),
                    //RunningNb = m.RunningTasks.Count,
                    State = m.Context.State,

@@ -21,7 +21,6 @@ namespace Brun.Workers
     {
         public string Key => _config.Key;
         public string Name => _config.Name;
-        public string Tag => _config.Tag;
         /// <summary>
         /// 包含的Backrun
         /// </summary>
@@ -57,7 +56,10 @@ namespace Brun.Workers
         /// <param name="config"></param>
         public AbstractWorker(WorkerConfig config)
         {
-            _logger = ((ILoggerFactory)(WorkerServer.Instance.ServiceProvider.GetService(typeof(ILoggerFactory)))).CreateLogger(this.GetType());
+            if (WorkerServer.Instance.ServiceProvider!= null)
+            {
+                _logger = ((ILoggerFactory)(WorkerServer.Instance.ServiceProvider.GetService(typeof(ILoggerFactory)))).CreateLogger(this.GetType());
+            }
 
             //_option = option;
             _config = config;
@@ -67,7 +69,7 @@ namespace Brun.Workers
             taskFactory = new TaskFactory(tokenSource.Token);
             //TODO 控制同时运行并发量
             RunningTasks = new BlockingCollection<Task>();
-            _context.Tasks = RunningTasks;
+            _context.RunningTasks = RunningTasks;
         }
         /// <summary>
         /// 启动
@@ -146,6 +148,11 @@ namespace Brun.Workers
 
         public string GetData(string key)
         {
+            if (_context.Items == null)
+            {
+                _logger.LogError("the {0} by key:'{1}' has not config Data.", this.GetType(), key);
+                return null;
+            }
             if (_context.Items.ContainsKey(key))
                 return _context.Items[key];
             else

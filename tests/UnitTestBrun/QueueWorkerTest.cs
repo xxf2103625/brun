@@ -15,21 +15,26 @@ namespace UnitTestBrun
     [TestClass]
     public class QueueWorkerTest : BaseHostTest
     {
-        //TODO 死循环
+        //TODO 测试会死循环
         [TestMethod]
         public void TestExcept()
         {
+            throw new Exception("测试会死循环");
             string key = nameof(TestExcept);
             StartHost(services =>
             {
                 string key = nameof(TestExcept);
-                IQueueWorker worker = WorkerBuilder
-                        .CreateQueue<LogQueueBackRun>()
-                        .AddQueue<ErrorQueueBackRun>()
-                        .SetKey(key)
-                        .Build<QueueWorker>()
-                        .AsQueueWorker()
-                        ;
+                services.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                });
+                //IQueueWorker worker = WorkerBuilder
+                //        .CreateQueue<LogQueueBackRun>()
+                //        .AddQueue<ErrorQueueBackRun>()
+                //        .SetKey(key)
+                //        .Build<QueueWorker>()
+                //        .AsQueueWorker()
+                //        ;
                 //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
@@ -43,7 +48,7 @@ namespace UnitTestBrun
             Assert.AreNotEqual(200, worker.Context.endNb);
             Console.WriteLine("wait before start:{0},except:{1},end:{2}", worker.Context.startNb, worker.Context.exceptNb, worker.Context.endNb);
             WaitForBackRun(200);
-            Assert.AreEqual(0, worker.RunningTasks.Count);
+            Assert.AreEqual(0, worker.Context.RunningTasks.Count);
             Assert.AreEqual(200, worker.Context.startNb);
             Assert.AreEqual(100, worker.Context.exceptNb);
             Assert.AreEqual(200, worker.Context.endNb);
@@ -55,12 +60,16 @@ namespace UnitTestBrun
             StartHost(services =>
             {
                 string key = nameof(TestStartAndStopAsync);
-                     WorkerBuilder
-                        .CreateQueue<LogQueueBackRun>()
-                        .AddQueue<ErrorQueueBackRun>()
-                        .SetKey(key)
-                        .Build<QueueWorker>()
-                        ;
+                services.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                });
+                //WorkerBuilder
+                //   .CreateQueue<LogQueueBackRun>()
+                //   .AddQueue<ErrorQueueBackRun>()
+                //   .SetKey(key)
+                //   .Build<QueueWorker>()
+                //   ;
                 //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
@@ -87,5 +96,5 @@ namespace UnitTestBrun
             Assert.AreEqual(11, worker.Context.endNb);
         }
     }
-    
+
 }

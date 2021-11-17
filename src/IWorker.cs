@@ -21,10 +21,6 @@ namespace Brun
         /// </summary>
         string Name { get; }
         /// <summary>
-        /// Worker分组标签
-        /// </summary>
-        string Tag { get; }
-        /// <summary>
         /// Worker上下文
         /// </summary>
         WorkerContext Context { get; }

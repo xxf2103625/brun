@@ -42,7 +42,9 @@ namespace UnitTestBrun
             Assert.IsTrue(planTime.IsSuccess);
             //planTime.Parse("1 0 0 0 0");
             //Assert.AreEqual(5, planTime.Times);
-            DateTimeOffset? next= planTime.GetNextTime();
+            PlanTimeComputer planTimeComputer = new PlanTimeComputer();
+            //DateTimeOffset? next= planTime.GetNextTime();
+            DateTimeOffset? next = planTimeComputer.GetNextTime(planTime, DateTime.Now);
             Console.WriteLine(next);
             //Assert.AreEqual(3, cron.Seconds.Count);
         }

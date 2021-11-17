@@ -12,11 +12,7 @@ namespace Brun
     public class TimeBackRunOption
     {
         //private string _id;
-        public TimeBackRunOption()
-        {
-
-        }
-        public TimeBackRunOption(TimeSpan cycle, bool runWithStart, string backRunId = null)
+        public TimeBackRunOption(TimeSpan cycle, bool runWithStart=false, string backRunId = null)
         {
             Cycle = cycle;
             RunWithStart = runWithStart;

@@ -17,11 +17,11 @@ namespace Brun
         {
             Init();
         }
-        public WorkerConfig(string key,string name,string tag)
+        public WorkerConfig(string key,string name)
         {
             this.Key = key;
             this.Name = name;
-            this.Tag = tag;
+            Init();
         }
         public void Init()
         {
@@ -34,7 +34,6 @@ namespace Brun
         }
         public string Key { get; set; }
         public string Name { get; set; }
-        public string Tag { get; set; }
         public int WorkerContextMaxExcept { get; set; } = 10;
         public void AddWorkerObserver(WorkerObserver workerObserver)
         {

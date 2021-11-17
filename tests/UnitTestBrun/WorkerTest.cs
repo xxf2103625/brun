@@ -27,11 +27,15 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder
-               .Create<SimpleNumberRun>()//内部没有await
-               .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun));
+                });
+                // WorkerBuilder
+                //.Create<SimpleNumberRun>()//内部没有await
+                //.BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
             //不会等待
@@ -44,11 +48,15 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder
-                .Create<SimpleNumberRun>()//内部没有await
-                .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>();
+                });
+                //WorkerBuilder
+                //.Create<SimpleNumberRun>()//内部没有await
+                //.BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             Console.WriteLine("TestSimpleRun：await Run() 之后的调用线程");
             //等待
@@ -63,11 +71,16 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBefore>()//内部有await
-                   .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                });
+
+                //WorkerBuilder.Create<SimpNbDelayBefore>()//内部有await
+                //   .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBefore)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不等待 //backrun内部用了await
             Assert.AreEqual("0", work.GetData("nb"));
@@ -81,11 +94,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBefore>()// 内部有await
-                   .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBefore>()// 内部有await
+                //   .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBefore)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //等待结果
             WaitForBackRun();
@@ -99,11 +116,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBefore>()// 内部await
-               .SetData(data)
-               .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                });
+                // WorkerBuilder.Create<SimpNbDelayBefore>()// 内部await
+                //.SetData(data)
+                //.BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBefore)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不会等待结果
             Assert.AreEqual("0", work.GetData("nb"));
@@ -117,12 +138,16 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
-                   .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
+                //   .SetData(data)
+                //   .BuildOnceWorker();
             });
 
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBeforeTask)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不会等待，
             Assert.AreEqual("0", work.GetData("nb"));
@@ -136,11 +161,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
-                   .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
+                //   .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBeforeTask)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不会等待， 
             Assert.AreEqual("0", work.GetData("nb"));
@@ -154,11 +183,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
-                   .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
+                //   .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBefore)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不会等待任务
             Assert.AreEqual("0", work.GetData("nb"));
@@ -172,11 +205,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
-                    .SetData(data)
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
+                //    .SetData(data)
+                //    .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBefore)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //不等待任务
             Assert.AreEqual("0", work.GetData("nb"));
@@ -190,16 +227,23 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
-                   .SetData(data)
-                   //自定义等待任务结束时间
-                   .SetConfig(config =>
-                   {
-                       config.TimeWaitForBrun = TimeSpan.FromSeconds(5);
-                   })
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()
+                    {
+                        TimeWaitForBrun = TimeSpan.FromSeconds(5)
+                    }).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                });
+                //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
+                //   .SetData(data)
+                //   //自定义等待任务结束时间
+                //   .SetConfig(config =>
+                //   {
+                //       config.TimeWaitForBrun = TimeSpan.FromSeconds(5);
+                //   })
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBeforeTask)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
 
             Assert.AreEqual("0", work.GetData("nb"));
@@ -213,11 +257,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                IOnceWorker work = WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
-                    .SetData(data)
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                });
+                //IOnceWorker work = WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
+                //    .SetData(data)
+                //    .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpNbDelayBeforeTask)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             //等待任务
             WaitForBackRun();
@@ -230,15 +278,19 @@ namespace UnitTestBrun
             string key = Guid.NewGuid().ToString();
             StartHost(m =>
             {
-                WorkerBuilder.Create<ErrorBackRun3>() //await
-                    .SetKey(key)
-                  .Build();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig(key,"n")).AddBrun<ErrorBackRun3>();
+                });
+                //WorkerBuilder.Create<ErrorBackRun3>() //await
+                //    .SetKey(key)
+                //  .Build();
             });
-            IOnceWorker work = GetWorkerByKey(key).AsOnceWorker(); //GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
+            IWorker work = GetWorkerByKey(key); //GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
 
             for (int i = 0; i < max; i++)
             {
-                work.Run();
+                ((IOnceWorker)work).Run();
             }
             Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
             //TODO 批量单元测试时 >0
@@ -258,11 +310,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                WorkerBuilder.Create<ErrorBackRun3>() //await
-                   .SetData(data)
-                  .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<ErrorBackRun3>();
+                });
+                //WorkerBuilder.Create<ErrorBackRun3>() //await
+                //   .SetData(data)
+                //  .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorBackRun3)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -284,11 +340,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                WorkerBuilder.Create<DataBackRun>()//await
-                    .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                });
+                //WorkerBuilder.Create<DataBackRun>()//await
+                //    .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(DataBackRun)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -313,11 +373,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                WorkerBuilder.Create<DataBackRun>()//await
-                    .SetData(data)
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                });
+                //WorkerBuilder.Create<DataBackRun>()//await
+                //    .SetData(data)
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(DataBackRun)).First();
+            OnceWorker work =(OnceWorker) GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -336,15 +400,19 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                WorkerBuilder.Create<ErrorLongBackRun>() //await
-                   .SetData(data)
-                   .SetConfig(m =>
-                   {
-                       m.TimeWaitForBrun = TimeSpan.FromSeconds(10);
-                   })
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(10) }).SetData(data).AddBrun<ErrorLongBackRun>();
+                });
+                //WorkerBuilder.Create<ErrorLongBackRun>() //await
+                //   .SetData(data)
+                //   .SetConfig(m =>
+                //   {
+                //       m.TimeWaitForBrun = TimeSpan.FromSeconds(10);
+                //   })
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorLongBackRun)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -364,15 +432,19 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                WorkerBuilder.Create<ErrorBackRun4>()
-                    .SetData(data)
-                    .SetConfig(m =>
-                    {
-                        m.TimeWaitForBrun = TimeSpan.FromSeconds(5);
-                    })
-                   .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(5) }).SetData(data).AddBrun<ErrorBackRun4>();
+                });
+                //WorkerBuilder.Create<ErrorBackRun4>()
+                //    .SetData(data)
+                //    .SetConfig(m =>
+                //    {
+                //        m.TimeWaitForBrun = TimeSpan.FromSeconds(5);
+                //    })
+                //   .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorBackRun4)).First();
+            OnceWorker work =(OnceWorker) GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -389,10 +461,14 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder.Create<ErrorBackRun>()
-               .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<ErrorBackRun>();
+                });
+               // WorkerBuilder.Create<ErrorBackRun>()
+               //.BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(ErrorBackRun)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             Assert.AreEqual(0, work.Context.exceptNb);
             WaitForBackRun();
@@ -406,11 +482,15 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpleBackRun>()
-                    .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                });
+                //WorkerBuilder.Create<SimpleBackRun>()
+                //    .Build<SynchroWorker>();
                 //.Build();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleBackRun)).First();
+            SynchroWorker worker =(SynchroWorker) GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
@@ -428,11 +508,15 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpleLongBackRun>()
-                    .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleLongBackRun>();
+                });
+                //WorkerBuilder.Create<SimpleLongBackRun>()
+                //    .Build<SynchroWorker>();
                 //.Build();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleLongBackRun)).First();
+            SynchroWorker worker =(SynchroWorker) GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
@@ -450,10 +534,14 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpleBackRun>()
-                    .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                });
+                //WorkerBuilder.Create<SimpleBackRun>()
+                //    .Build<SynchroWorker>();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpleBackRun)).First();
+            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
@@ -467,10 +555,14 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpeManyBackRun>()
-                             .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                });
+                //WorkerBuilder.Create<SimpeManyBackRun>()
+                //             .Build<SynchroWorker>();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpeManyBackRun)).First();
+            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < 3; i++)
             {
                 worker.Run();
@@ -483,10 +575,14 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
-               .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                });
+               // WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+               //.BuildOnceWorker();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(SimpeManyBackRun)).First();
+            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < 3; i++)
             {
                 worker.Run();
@@ -505,11 +601,15 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<CuntomDataBackRun>(data)
-                    //.SetData(data)
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                });
+                //WorkerBuilder.Create<CuntomDataBackRun>(data)
+                //    //.SetData(data)
+                //    .BuildOnceWorker();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(CuntomDataBackRun)).First();
+            OnceWorker worker = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 //await worker.Run();
@@ -529,11 +629,15 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder.Create<CuntomDataBackRun>()
-                    .SetData(data)
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                });
+                //WorkerBuilder.Create<CuntomDataBackRun>()
+                //    .SetData(data)
+                //    .BuildOnceWorker();
             });
-            IOnceWorker worker = GetOnceWorkerByName(nameof(CuntomDataBackRun)).First();
+            IOnceWorker worker = GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 1; i++)
             {
                 worker.Run();
@@ -552,13 +656,18 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder
-                .Create<SimpleNumberRun>()//内部没有await
-                .Add<SimpNbDelayBefore>()
-                .Add<SimpNbDelayAfter>()
-                .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>()
+                    .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                });
+                //WorkerBuilder
+                //.Create<SimpleNumberRun>()//内部没有await
+                //.Add<SimpNbDelayBefore>()
+                //.Add<SimpNbDelayAfter>()
+                //.BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             work.Run<SimpNbDelayBefore>();
             work.Run<SimpNbDelayAfter>();
@@ -575,14 +684,19 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder
-                    .Create<SimpleNumberRun>()//内部没有await
-                    .SetData(data)
-                    .Add<SimpNbDelayBefore>()
-                    .Add<SimpNbDelayAfter>()
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>()
+                    .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                });
+                //WorkerBuilder
+                //    .Create<SimpleNumberRun>()//内部没有await
+                //    .SetData(data)
+                //    .Add<SimpNbDelayBefore>()
+                //    .Add<SimpNbDelayAfter>()
+                //    .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            IOnceWorker work = GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
             work.Run<SimpNbDelayBefore>();
             work.Run<SimpNbDelayAfter>();
@@ -601,12 +715,16 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                WorkerBuilder
-                    .Create<SimpleNumberRun>()//内部没有await
-                    .SetData(data)
-                    .BuildOnceWorker();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>();
+                });
+                //WorkerBuilder
+                //    .Create<SimpleNumberRun>()//内部没有await
+                //    .SetData(data)
+                //    .BuildOnceWorker();
             });
-            IOnceWorker work = GetOnceWorkerByName(nameof(SimpleNumberRun)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             //work.Run();
             //任务还没跑完
             Assert.AreEqual("0", work.GetData("nb"));

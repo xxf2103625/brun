@@ -285,11 +285,6 @@
             Worker名称，默认类型名称
             </summary>
         </member>
-        <member name="P:Brun.WorkerContext.Tag">
-            <summary>
-            自定义Tag
-            </summary>
-        </member>
         <member name="P:Brun.WorkerContext.Exceptions">
             <summary>
             BackRun运行异常列表，默认最多储存10个
@@ -376,11 +371,6 @@
         <member name="P:Brun.IWorker.Name">
             <summary>
             Worker名称，配置时指定，不指定为类型名称
-            </summary>
-        </member>
-        <member name="P:Brun.IWorker.Tag">
-            <summary>
-            Worker分组标签
             </summary>
         </member>
         <member name="P:Brun.IWorker.Context">
@@ -516,21 +506,6 @@
             </summary>
             <param name="workerEvent"><see cref="T:Brun.Enums.WorkerEvents"/></param>
             <param name="order">越小先执行，默认100，100以内为组件内部拦截器</param>
-        </member>
-        <member name="T:Brun.Options.WorkerOption">
-            <summary>
-            用于构造Worker
-            </summary>
-        </member>
-        <member name="P:Brun.Options.WorkerOption.DefaultBrunType">
-            <summary>
-            默认的BrunType
-            </summary>
-        </member>
-        <member name="P:Brun.Options.WorkerOption.Data">
-            <summary>
-            run内部还是需要自己加锁保证线程安全
-            </summary>
         </member>
         <member name="T:Brun.TimeBackRunOption">
             <summary>
@@ -1061,13 +1036,6 @@
             按name查询
             </summary>
             <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Services.BrunService.GetWorkerInfoByTag(System.String)">
-            <summary>
-            按Tag查询
-            </summary>
-            <param name="tag"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.Services.BrunService.StartWorker(System.String)">

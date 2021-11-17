@@ -36,7 +36,7 @@ namespace UnitTestBrun
                 .ConfigureServices((hostContext, services) =>
                 {
                     configure(services);
-                    services.AddBrunService();
+                    //services.AddBrunService();
                 })
                 .Build();
             host.Start();
@@ -53,10 +53,7 @@ namespace UnitTestBrun
         {
             return WorkerServer.Instance.GetWokerByName(name).Cast<IOnceWorker>();
         }
-        public IEnumerable<IWorker> GetWorkerByTag(string tag)
-        {
-            return WorkerServer.Instance.GetWokerByTag(tag);
-        }
+        
         /// <summary>
         /// 等待所有任务完成
         /// </summary>

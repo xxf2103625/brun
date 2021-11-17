@@ -3,6 +3,7 @@ using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -22,6 +23,18 @@ namespace Brun.Workers
         {
         }
         private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+        protected override void Init()
+        {
+            if (string.IsNullOrEmpty(this._config.Key))
+            {
+                this._config.Key = Guid.NewGuid().ToString();
+            }
+            if (string.IsNullOrEmpty(this._config.Name))
+            {
+                this._config.Name = nameof(SynchroWorker);
+            }
+            _logger.LogInformation($"SynchroWorker with key '{this.Key}' is init.");
+        }
         public override async Task StartBrun(Type brunType)
         {
             semaphoreSlim.Wait();

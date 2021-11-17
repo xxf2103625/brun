@@ -16,15 +16,23 @@ namespace Brun.Workers
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
-        
+
         private Type defuatBackRun = null;
         public OnceWorker(WorkerConfig config) : base(config)
         {
             Init();
         }
 
-        private void Init()
+        protected virtual void Init()
         {
+            if (string.IsNullOrEmpty(this._config.Key))
+            {
+                this._config.Key = Guid.NewGuid().ToString();
+            }
+            if (string.IsNullOrEmpty(this._config.Name))
+            {
+                this._config.Name = nameof(OnceWorker);
+            }
             _logger.LogInformation($"OnceWorker with key '{this.Key}' is init.");
         }
         /// <summary>
@@ -32,7 +40,7 @@ namespace Brun.Workers
         /// </summary>
         public virtual async Task StartBrun(Type brunType)
         {
-            if(_backRuns.TryGetValue(brunType.FullName, out IBackRun backRun))
+            if (_backRuns.TryGetValue(brunType.FullName, out IBackRun backRun))
             {
                 await Execute(new BrunContext(backRun));
             }
@@ -42,6 +50,7 @@ namespace Brun.Workers
                 _backRuns[brunType.FullName].SetWorkerContext(_context);
                 await Execute(new BrunContext(_backRuns[brunType.FullName]));
             }
+            _logger.LogInformation($"OnceWorker with key '{this.Key}' is executed.");
         }
         protected override async Task Brun(BrunContext context)
         {
@@ -135,7 +144,9 @@ namespace Brun.Workers
             }
             else
             {
-                if (_backRuns.TryAdd(backRunType.FullName, (IBackRun)BrunTool.CreateInstance(backRunType)))
+                var brun = (IBackRun)BrunTool.CreateInstance(backRunType);
+                brun.SetWorkerContext(this._context);
+                if (_backRuns.TryAdd(backRunType.FullName, brun))
                 {
                     if (_backRuns.Count == 1)
                     {

@@ -23,24 +23,19 @@ builder.Services.AddBrunService(workerServer =>
     {
         Key = "t1",
         Name = "name1",
-        Tag = "tag1"
     }).AddData(new ConcurrentDictionary<string, string>()).AddBrun<LogBackRun>();
 
     //配置循环任务
-    workerServer.CreateTimeWorker(new WorkerConfig("time_1", "time_name", "time_tag")).AddBrun(typeof(BrunTestHelper.TimeBackRuns.LogTimeBackRun), new TimeBackRunOption()
-    {
-        Cycle = TimeSpan.FromSeconds(10),
-        Id = Guid.NewGuid().ToString(),
-    });
+    workerServer.CreateTimeWorker(new WorkerConfig("time_1", "time_name")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(10)));
 
     //配置消息任务
-    workerServer.CreateQueueWorker(new WorkerConfig("q_1", "q_name", "q_tag")).AddBrun(typeof(BrunTestHelper.QueueBackRuns.LogQueueBackRun), new QueueBackRunOption()
+    workerServer.CreateQueueWorker(new WorkerConfig("q_1", "q_name")).AddBrun(typeof(BrunTestHelper.QueueBackRuns.LogQueueBackRun), new QueueBackRunOption()
     {
         Id = Guid.NewGuid().ToString()
     });
 
     //配置计划任务
-    workerServer.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name", "p_tag")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
+    workerServer.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
 });
 
 

@@ -41,11 +41,12 @@ namespace UnitTestBrun
             stopwatch.Stop();
             Console.WriteLine($"Activator.CreateInstance,times:{times},elapsed:{stopwatch.ElapsedMilliseconds}");
         }
+        //TODO 依赖Service的ILogger
         [TestMethod]
         public void TestCreaeObjectWithAgs()
         {
             WorkerConfig config = new WorkerConfig();
-            WorkerOption option = new WorkerOption();
+            //WorkerOption option = new WorkerOption();
             Stopwatch stopwatch = new Stopwatch();
 
 
@@ -53,8 +54,8 @@ namespace UnitTestBrun
             for (int i = 0; i < times; i++)
             {
                 Type type = typeof(OnceWorker);
-                IWorker worker = (IWorker)BrunTool.CreateInstance(type, args: new object[] { option, config });
-                IWorker worker2 = (IWorker)BrunTool.CreateInstance(type, args: new object[] { WorkerServer.Instance.ServerConfig.DefaultOption, WorkerServer.Instance.ServerConfig.DefaultConfig});
+                IWorker worker = (IWorker)BrunTool.CreateInstance(type, args: new object[] { config });
+                IWorker worker2 = (IWorker)BrunTool.CreateInstance(type, args: new object[] { WorkerServer.Instance.ServerConfig.DefaultConfig });
             }
             stopwatch.Stop();
             Console.WriteLine($"Activator.CreateInstance,times:{times},elapsed:{stopwatch.ElapsedMilliseconds}");
@@ -65,7 +66,7 @@ namespace UnitTestBrun
             for (int i = 0; i < times; i++)
             {
                 Type type = typeof(OnceWorker);
-                IWorker worker = (IWorker)type.Assembly.CreateInstance(type.FullName, false, System.Reflection.BindingFlags.Default, null, args: new object[] { option, config }, culture: null, activationAttributes: null);
+                IWorker worker = (IWorker)type.Assembly.CreateInstance(type.FullName, false, System.Reflection.BindingFlags.Default, null, args: new object[] { config }, culture: null, activationAttributes: null);
             }
             stopwatch.Stop();
             Console.WriteLine($"Assembly.CreateInstance,times:{times},elapsed:{stopwatch.ElapsedMilliseconds}");

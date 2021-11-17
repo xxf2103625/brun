@@ -18,11 +18,16 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder
-               .Create<SimpleNumberRun>()//内部没有await
-               .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig())
+                        .AddBrun(typeof(SimpleNumberRun));
+                });
+               // WorkerBuilder
+               //.Create<SimpleNumberRun>()//内部没有await
+               //.Build<SynchroWorker>();
             });
-            SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SimpleNumberRun)).First();
+            SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             work.Run();
 
             Console.WriteLine("TestSimpleRun：Run 之后的调用线程");
@@ -38,11 +43,16 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                WorkerBuilder
-               .Create<LogBackRun>()
-               .Build<SynchroWorker>();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateSynchroWorker(new WorkerConfig())
+                        .AddBrun(typeof(LogBackRun));
+                });
+               // WorkerBuilder
+               //.Create<LogBackRun>()
+               //.Build<SynchroWorker>();
             });
-            SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(LogBackRun)).First();
+            SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < 100; i++)
             {
                 work.Run();

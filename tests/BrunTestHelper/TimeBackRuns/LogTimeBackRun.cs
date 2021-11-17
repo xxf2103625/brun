@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BrunTestHelper.TimeBackRuns
+namespace BrunTestHelper
 {
     public class LogTimeBackRun : TimeBackRun
     {

@@ -73,10 +73,6 @@ namespace Brun
         {
             return worders.Where(m => m.Name == name);
         }
-        public IEnumerable<IWorker> GetWokerByTag(string tag)
-        {
-            return worders.Where(m => m.Tag == tag);
-        }
         public IOnceWorker GetOnceWorker(string key)
         {
             IWorker worker = worders.Where(m => m.GetType() == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);

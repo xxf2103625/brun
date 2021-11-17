@@ -18,30 +18,38 @@ namespace UnitTestBrun
         {
             string key = Guid.NewGuid().ToString();
             string name = "run_1";
-            string tag = "myTag";
+            //string tag = "myTag";
             StartHost(m =>
             {
-                WorkerBuilder.Create<SimpleBackRun>()
-               .SetNameTagKey(name, tag, key)
-               .Build();
+                m.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateOnceWorker(new WorkerConfig(key, name))
+                        .AddBrun(typeof(SimpleBackRun));
+                });
+               // WorkerBuilder.Create<SimpleBackRun>()
+               //.SetNameTagKey(name, tag, key)
+               //.Build();
             });
             IWorker work = WorkerServer.Instance.GetWorker(key);
             Assert.AreEqual(key, work.Key);
             Assert.AreEqual(name, work.Name);
-            Assert.AreEqual(tag, work.Tag);
         }
         [TestMethod]
         public void TestEmptyCreateAsync()
         {
             StartHost(m =>
            {
-               WorkerBuilder.Create<SimpleBackRun>()
-               .Build();
+               m.AddBrunService(workerServer =>
+               {
+                   workerServer.CreateOnceWorker(new WorkerConfig())
+                       .AddBrun(typeof(SimpleBackRun));
+               });
+               //WorkerBuilder.Create<SimpleBackRun>()
+               //.Build();
            });
-            IWorker work = GetWorkerByName(typeof(SimpleBackRun).Name).First();
+            IWorker work = GetWorkerByName(nameof(Brun.Workers.OnceWorker)).First();
             Assert.IsNotNull(work.Key);
-            Assert.AreEqual(typeof(SimpleBackRun).Name, work.Name);
-            Assert.AreEqual("Default", work.Tag);
+            Assert.AreEqual("OnceWorker", work.Name);
         }
     }
 }

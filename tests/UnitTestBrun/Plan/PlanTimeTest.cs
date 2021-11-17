@@ -19,53 +19,53 @@ namespace UnitTestBrun.Plan
 
             {
                 planTime.Parse("0 0 0 1 *");
-                computer.SetPlanTime(planTime);
-                DateTimeOffset? next = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                DateTimeOffset? next = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Console.WriteLine(next);
                 Assert.AreEqual(DateTime.Parse("2021-4-1 0:0:0"), next);
 
                 planTime.Parse("31 1 1 1 8 *");
-                computer.SetPlanTime(planTime);
-                var next2 = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                var next2 = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Assert.AreEqual(DateTime.Parse("2021-8-1 1:1:31"), next2);
             }
             {
                 planTime.Parse("31 1 1 1 8 2059");
-                computer.SetPlanTime(planTime);
-                var next3 = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                var next3 = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Assert.AreEqual(DateTime.Parse("2059-8-1 1:1:31"), next3);
             }
             {
                 planTime.Parse("31 1 1 31 * *");
-                computer.SetPlanTime(planTime);
-                var n1 = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                var n1 = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Assert.AreEqual(DateTime.Parse("2021-3-31 1:1:31"), n1);
 
-                var n2 = computer.GetNextTime(n1.Value);
+                var n2 = computer.GetNextTime(planTime, n1.Value);
                 Assert.AreEqual(DateTime.Parse("2021-5-31 1:1:31"), n2);
 
-                var n3 = computer.GetNextTime(n2.Value);
+                var n3 = computer.GetNextTime(planTime, n2.Value);
                 Assert.AreEqual(DateTime.Parse("2021-7-31 1:1:31"), n3);
             }
             {
                 planTime.Parse("10-50/15 1 1 * * *");
-                computer.SetPlanTime(planTime);
-                var n1 = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                var n1 = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Assert.AreEqual(DateTime.Parse("2021-3-18 1:1:10"), n1);
 
-                var n2 = computer.GetNextTime(n1.Value);
+                var n2 = computer.GetNextTime(planTime, n1.Value);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 1:1:25"), n2);
 
-                var n3 = computer.GetNextTime(n2.Value);
+                var n3 = computer.GetNextTime(planTime, n2.Value);
                 Assert.AreEqual(DateTime.Parse("2021-3-18 1:1:40"), n3);
 
-                var n4 = computer.GetNextTime(n3.Value);
+                var n4 = computer.GetNextTime(planTime, n3.Value);
                 Assert.AreEqual(DateTime.Parse("2021-3-19 1:1:10"), n4);
             }
             {
                 planTime.Parse("10-50/15 1 1 * * 2010");
-                computer.SetPlanTime(planTime);
-                var n1 = computer.GetNextTime(DateTime.Parse("2021-3-18 0:0:59"));
+                //computer.SetPlanTime(planTime);
+                var n1 = computer.GetNextTime(planTime, DateTime.Parse("2021-3-18 0:0:59"));
                 Assert.AreEqual(null, n1);
             }
         }
@@ -88,13 +88,13 @@ namespace UnitTestBrun.Plan
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
             planTime.Parse("0 0 0 29 2");
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             DateTimeOffset? next = DateTime.Now;// = computer.GetNextTime();
             for (int i = 0; i < 10; i++)
             {
                 if (next != null)
                 {
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime, next.Value);
                     Console.WriteLine(next);
                     Assert.AreEqual(rs[i], next);
                 }
@@ -119,13 +119,13 @@ namespace UnitTestBrun.Plan
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
             planTime.Parse("0 0 0 31 *");
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
             for (int i = 0; i < 10; i++)
             {
                 if (next != null)
                 {
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime, next.Value);
                     Console.WriteLine(next);
                     Assert.AreEqual(rs[i], next);
                 }
@@ -152,14 +152,14 @@ namespace UnitTestBrun.Plan
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
             planTime.Parse("0 0 0 L *");
-            computer.SetPlanTime(planTime);
-            DateTimeOffset? next = DateTime.Parse("03/3/2021 00:00:00 +08:00");
+            //computer.SetPlanTime(planTime);
+            DateTimeOffset? next = DateTime.Parse( "03/3/2021 00:00:00 +08:00");
             for (int i = 0; i < 12; i++)
             {
 
                 if (next != null)
                 {
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime, next.Value);
                     Console.WriteLine(next);
                     Assert.AreEqual(rs[i], next);
                 }
@@ -182,13 +182,13 @@ namespace UnitTestBrun.Plan
                 DateTime.Parse("12/01/2022 00:00:00 +08:00"),
                 };
                 planTime.Parse("0 0 0 30L *");
-                DateTimeOffset? next2 = DateTime.Now;
+                DateTimeOffset? next2 = DateTime.Parse("04/23/2021 00:00:00 +08:00");
                 for (int i = 0; i < 12; i++)
                 {
 
                     if (next2 != null)
                     {
-                        next2 = computer.GetNextTime(next2.Value);
+                        next2 = computer.GetNextTime(planTime, next2.Value);
                         Console.WriteLine(next2);
                         Assert.AreEqual(rs2[i], next2);
                     }
@@ -218,14 +218,14 @@ namespace UnitTestBrun.Plan
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
             planTime.Parse("0 0 0 1,5,31 3,6 2021,2023");
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
             for (int i = 0; i < 12; i++)
             {
                 Console.WriteLine(next);
                 if (next != null)
                 {
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime, next.Value);
 
                     Assert.AreEqual(rs[i], next);
                 }
@@ -236,12 +236,12 @@ namespace UnitTestBrun.Plan
         {
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             {
                 planTime.Parse("0 0 0 x1 3,6 2021,2023");
                 DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
                 Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
-                next = computer.GetNextTime(next.Value);
+                next = computer.GetNextTime(planTime, next.Value);
                 Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
                 Assert.AreEqual(DateTime.Parse("03/21/2021 00:00:00 +08:00"), next);
             }
@@ -249,7 +249,7 @@ namespace UnitTestBrun.Plan
                 planTime.Parse("0 0 0 x7 3,6 2021,2023");
                 DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
                 Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
-                next = computer.GetNextTime(next.Value);
+                next = computer.GetNextTime(planTime,next.Value);
                 Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
                 Assert.AreEqual(DateTime.Parse("03/27/2021 00:00:00 +08:00"), next);
             }
@@ -257,7 +257,7 @@ namespace UnitTestBrun.Plan
                 planTime.Parse("0 0 0 x3 3,6 2021,2023");//周2
                 DateTimeOffset? next = DateTime.Parse("03/24/2021 07:38:14 +08:00");//周三
                 Console.WriteLine("start week:{0}", (int)next.Value.DayOfWeek);
-                next = computer.GetNextTime(next.Value);
+                next = computer.GetNextTime(planTime,next.Value);
                 Console.WriteLine(next + ",week:{0}", (int)next.Value.DayOfWeek);
                 Assert.AreEqual(DateTime.Parse("03/30/2021 00:00:00 +08:00"), next);//周二
             }
@@ -281,7 +281,7 @@ namespace UnitTestBrun.Plan
 
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             {
                 planTime.Parse("0 0 0 x1,3,5,7 *");
                 DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
@@ -291,7 +291,7 @@ namespace UnitTestBrun.Plan
                     {
                         Console.WriteLine(next + ",星期DayOfWeek：{0}", (int)next.Value.DayOfWeek);
                     }
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime,next.Value);
                     Assert.AreEqual(r[i], next);
                 }
             }
@@ -314,7 +314,7 @@ namespace UnitTestBrun.Plan
             };
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             {
                 planTime.Parse("0 0 0 x3-7 *");
                 DateTimeOffset? next = DateTime.Parse("03/20/2021 07:38:14 +08:00");
@@ -324,7 +324,7 @@ namespace UnitTestBrun.Plan
                     {
                         Console.WriteLine(next + ",星期DayOfWeek：{0}", (int)next.Value.DayOfWeek);
                     }
-                    next = computer.GetNextTime(next.Value);
+                    next = computer.GetNextTime(planTime,next.Value);
                     Assert.AreEqual(r[i], next);
                 }
             }
@@ -359,7 +359,7 @@ DateTimeOffset.Parse("03/02/2021 00:00:00 +08:00"),
              */
             PlanTimeComputer computer = new PlanTimeComputer();
             PlanTime planTime = new PlanTime();
-            computer.SetPlanTime(planTime);
+            //computer.SetPlanTime(planTime);
             {
                 planTime.Parse("0 0 0 x* *");
                 DateTimeOffset? next = DateTime.Parse("02/20/2021 07:38:14 +08:00");
@@ -367,7 +367,7 @@ DateTimeOffset.Parse("03/02/2021 00:00:00 +08:00"),
                 {
                     if (next != null)
                     {
-                        next = computer.GetNextTime(next.Value);
+                        next = computer.GetNextTime(planTime,next.Value);
                         Assert.AreEqual(r[i], next);
                         Console.WriteLine(next + ",星期DayOfWeek：{0}", (int)next.Value.DayOfWeek);
                     }

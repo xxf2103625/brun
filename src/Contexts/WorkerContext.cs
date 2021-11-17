@@ -11,13 +11,11 @@ namespace Brun
 {
     public sealed class WorkerContext : IDisposable
     {
-        //private ILogger<WorkerContext> _logger;
-        //private WorkerOption _option;
         private WorkerConfig _config;
         //元数据，用于后期持久化
         //private IDictionary<string, object> meta;
         //BackRun自定义的数据
-        private ConcurrentDictionary<string, string> items;
+        //private ConcurrentDictionary<string, string> items;
         //异常堆栈
         private IList<Exception> exceptions;
         //BackRun开始运行计数
@@ -35,6 +33,7 @@ namespace Brun
         }
         private void Init()
         {
+            this.Items = new ConcurrentDictionary<string, string>();
             //if (_option.Data == null)
             //{
             //    items = new ConcurrentDictionary<string, string>();
@@ -52,14 +51,6 @@ namespace Brun
         /// Worker名称，默认类型名称
         /// </summary>
         public string Name => _config.Name;
-        /// <summary>
-        /// 自定义Tag
-        /// </summary>
-        public string Tag => _config.Tag;
-        ///// <summary>
-        ///// 配置
-        ///// </summary>
-        //public WorkerOption Option => _option;
         /// <summary>
         /// BackRun运行异常列表，默认最多储存10个
         /// </summary>
@@ -83,12 +74,12 @@ namespace Brun
         /// <summary>
         /// OnceWorker共享数据
         /// </summary>
-        public ConcurrentDictionary<string, string> Items { get => items; set { items = value; } }
+        public ConcurrentDictionary<string, string> Items { get; set; }
         public IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
-        public BlockingCollection<Task> Tasks { get; set; }
+        public BlockingCollection<Task> RunningTasks { get; set; }
         public void Dispose()
         {
-            items?.Clear();
+            Items?.Clear();
             exceptions?.Clear();
         }
     }

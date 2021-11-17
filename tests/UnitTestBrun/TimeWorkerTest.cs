@@ -34,11 +34,16 @@ namespace UnitTestBrun
             StartHost(services =>
             {
                 string key = nameof(TestTimeWorker);
-                WorkerBuilder
-                   .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime), false)
-                   .SetKey(key)
-                   .Build()
-                   ;
+                services.AddBrunService(workerServer =>
+                {
+                    workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime)));
+                });
+
+                //WorkerBuilder
+                //   .CreateTime<LogBackRun>(TimeSpan.FromSeconds(sleepTime), false)
+                //   .SetKey(key)
+                //   .Build()
+                //   ;
                 //services.AddBrunService();
             });
             IWorker woker = WorkerServer.Instance.GetWorker(key);

@@ -19,7 +19,7 @@ namespace UnitTestBrun
         {
             WorkerServer server = (WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
             await Task.Delay(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.RunningTasks.Count > 0))
+            while (server.GetAllWorker().Any(m => m.Context.RunningTasks.Count > 0))
             {
                 await Task.Delay(5);
             }

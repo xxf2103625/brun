@@ -29,7 +29,14 @@ namespace Brun.Workers
         }
         private void Init()
         {
-
+            if (string.IsNullOrEmpty(this._config.Key))
+            {
+                this._config.Key = Guid.NewGuid().ToString();
+            }
+            if (string.IsNullOrEmpty(this._config.Name))
+            {
+                this._config.Name = nameof(TimeWorker);
+            }
         }
 
         /// <summary>

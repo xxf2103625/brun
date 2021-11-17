@@ -55,6 +55,10 @@ namespace BrunWebTest
     }
     public class TestQueueWorker : QueueBackRun
     {
+        public TestQueueWorker(QueueBackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(string message, CancellationToken stoppingToken)
         {
 
@@ -73,6 +77,10 @@ namespace BrunWebTest
     }
     public class TestQueueErrorWorker : QueueBackRun
     {
+        public TestQueueErrorWorker(QueueBackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(string message, CancellationToken stoppingToken)
         {
             throw new NotImplementedException("请自己实现");
