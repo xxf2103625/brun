@@ -95,7 +95,8 @@ namespace Brun.Workers
                     _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key, runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
                     return;
                 }
-                Task brun = Task.Run(async () => await Brun(runContext));
+                //Task brun = Task.Run(async () => await Brun(runContext));
+                Task brun =  Brun(runContext);
                 RunningTasks.TryAdd(brun);
                 _ = brun.ContinueWith(t =>
                  {

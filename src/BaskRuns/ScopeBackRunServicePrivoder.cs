@@ -13,8 +13,6 @@ namespace Brun.BaskRuns
         /// Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
         /// </summary>
         protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
-
-
         /// <summary>
         /// 获取Ioc注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="NewScope"/>里获取
         /// </summary>

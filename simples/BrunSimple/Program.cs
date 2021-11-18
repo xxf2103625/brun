@@ -1,4 +1,5 @@
 using Brun;
+using BrunUI;
 using BrunTestHelper.BackRuns;
 using System.Collections.Concurrent;
 
@@ -48,6 +49,11 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 
+app.Map("/brun", app =>
+{
+    app.UseBrunUI();
+});
+//app.UseBrunUI();
 app.UseRouting();
 
 app.UseAuthorization();

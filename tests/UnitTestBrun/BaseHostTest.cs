@@ -53,9 +53,9 @@ namespace UnitTestBrun
         {
             return WorkerServer.Instance.GetWokerByName(name).Cast<IOnceWorker>();
         }
-        
+
         /// <summary>
-        /// 等待所有任务完成
+        /// //TODO 等待所有任务完成
         /// </summary>
         /// <param name="runCount">等待任务数</param>
         protected void WaitForBackRun(int runCount = 0)
@@ -63,10 +63,15 @@ namespace UnitTestBrun
             Console.WriteLine("WaitForBackRun 开始");
             WorkerServer server = WorkerServer.Instance;
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || (server.GetAllWorker().Sum(m => m.Context.endNb) < runCount&&runCount!=0))
+            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || (server.GetAllWorker().First().Context.RunningTasks.Count != 0 ))
             {
-                Thread.Sleep(5);
+                Thread.Sleep(50);
             }
+            while (runCount > 0&& server.GetAllWorker().Any(m => m.Context.endNb < runCount))
+            {
+                Thread.Sleep(50);
+            }
+            //Console.WriteLine(server.GetAllWorker().FirstOrDefault());
             Console.WriteLine("WaitForBackRun 结束");
         }
         protected void WiatAfter(TimeSpan timeSpan)

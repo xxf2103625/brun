@@ -144,7 +144,7 @@ namespace Brun.Workers
             }
             else
             {
-                var brun = (IBackRun)BrunTool.CreateInstance(backRunType);
+                IBackRun brun = (IBackRun)BrunTool.CreateInstance(backRunType);
                 brun.SetWorkerContext(this._context);
                 if (_backRuns.TryAdd(backRunType.FullName, brun))
                 {

@@ -67,7 +67,7 @@ namespace Brun.Workers
                          }
                          if (backRun.NextRunTime == null)
                          {
-                             var nextRunTime = planTimeComputer.GetNextTime(backRun.Option.PlanTime,now);
+                             var nextRunTime = planTimeComputer.GetNextTime(backRun.Option.PlanTime, now);
                              if (nextRunTime == null)
                              {
                                  _logger.LogError("the {0} in PlanWorker with id:'{1}' nextRunTime is null,delete this PlanWorker.", backRun.GetType(), backRun.Id);
@@ -79,15 +79,15 @@ namespace Brun.Workers
                          if (backRun.NextRunTime < now)
                          {
                              backRun.LastRunTime = now;
-                             backRun.NextRunTime = planTimeComputer.GetNextTime(backRun.Option.PlanTime,now);
+                             backRun.NextRunTime = planTimeComputer.GetNextTime(backRun.Option.PlanTime, now);
                              if (backRun.NextRunTime == null)
                              {
                                  _logger.LogWarning("the {0} in PlanWorker with id:'{1}' nextRunTime is null,delete this PlanWorker.", backRun.GetType(), backRun.Id);
-                                 //下一轮会移除
+                                 //执行一次 下一轮会移除
                              }
-                             BrunContext brunContext = new BrunContext(backRun);
                              Task.Run(async () =>
                              {
+                                 BrunContext brunContext = new BrunContext(backRun);
                                  await Execute(brunContext);
                              });
                          }
@@ -122,6 +122,7 @@ namespace Brun.Workers
             else
             {
                 PlanBackRun planBackRun = (PlanBackRun)BrunTool.CreateInstance(planBackRunType, option);
+                planBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(planBackRun.Id, planBackRun);
                 //InitPreTimeBackRun(queueBackRun);
                 _logger.LogInformation("the PlanWorker with key:'{0}' added PlanBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, planBackRunType.FullName);

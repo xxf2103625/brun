@@ -16,18 +16,17 @@ namespace BrunWebTest.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         Brun.IWorkerServer _workerServer;
-        BrunService _brunService;
-        public HomeController(ILogger<HomeController> logger, BrunService brunService)
+        //BrunService _brunService;
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             _workerServer = WorkerServer.Instance;//或者构造函数中用 IWorkerServer 取
-            _brunService = brunService;
         }
 
         public IActionResult Index()
         {
-            var model = _brunService.GetBrunInfo();
-            return View(model);
+            
+            return View();
         }
 
         public IActionResult Once()
@@ -58,14 +57,7 @@ namespace BrunWebTest.Controllers
             _workerServer.GetOnceWorker(Program.ScopeKey).Run();
             return View();
         }
-        public IActionResult SysInfo()
-        {
-            return Json(new { Data = _brunService.GetSystemInfo() , Success = true });
-        }
-        public IActionResult SysRunInfo()
-        {
-            return Json(new { Data = _brunService.GetSystemRunInfos(), Success=true });
-        }
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

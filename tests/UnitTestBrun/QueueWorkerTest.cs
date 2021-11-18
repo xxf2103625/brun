@@ -19,14 +19,14 @@ namespace UnitTestBrun
         [TestMethod]
         public void TestExcept()
         {
-            throw new Exception("测试会死循环");
+            //throw new Exception("测试会死循环");
             string key = nameof(TestExcept);
             StartHost(services =>
             {
                 string key = nameof(TestExcept);
                 services.AddBrunService(workerServer =>
                 {
-                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                 });
                 //IQueueWorker worker = WorkerBuilder
                 //        .CreateQueue<LogQueueBackRun>()
@@ -40,13 +40,14 @@ namespace UnitTestBrun
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
             for (int i = 0; i < 100; i++)
             {
-                worker.Enqueue($"测试消息:{i}");
+                worker.Enqueue<LogQueueBackRun>($"测试消息:{i}");
                 worker.Enqueue<ErrorQueueBackRun>($"内部异常{i}");
             }
             Assert.AreNotEqual(200, worker.Context.startNb);
             Assert.AreNotEqual(100, worker.Context.exceptNb);
             Assert.AreNotEqual(200, worker.Context.endNb);
             Console.WriteLine("wait before start:{0},except:{1},end:{2}", worker.Context.startNb, worker.Context.exceptNb, worker.Context.endNb);
+            //TODO 如何判断所有任务已执行结束
             WaitForBackRun(200);
             Assert.AreEqual(0, worker.Context.RunningTasks.Count);
             Assert.AreEqual(200, worker.Context.startNb);

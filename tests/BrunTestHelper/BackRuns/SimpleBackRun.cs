@@ -45,7 +45,7 @@ namespace BrunTestHelper.BackRuns
         {
             await Task.Delay(TimeSpan.FromSeconds(0.1));
             var log = GetRequiredService<ILogger<SimpeManyBackRun>>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 log.LogInformation($"第 {i} 次运行");
                 await Task.Delay(TimeSpan.FromSeconds(0.1), stoppingToken);

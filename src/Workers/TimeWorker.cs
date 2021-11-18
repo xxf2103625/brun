@@ -63,9 +63,9 @@ namespace Brun.Workers
                             TimeBackRun backRun = (TimeBackRun)item.Value;
                             if (backRun.Option.NextTime != null && backRun.Option.NextTime.Value <= DateTime.Now)
                             {
-                                BrunContext brunContext = new BrunContext(backRun);
                                 Task.Run(async () =>
                                 {
+                                    BrunContext brunContext = new BrunContext(backRun);
                                     await Execute(brunContext);
                                 });
                                 backRun.Option.NextTime = DateTime.Now.Add(backRun.Option.Cycle);
@@ -88,8 +88,6 @@ namespace Brun.Workers
                 }, TaskCreationOptions.LongRunning);
                 _logger.LogInformation("the {0} key:{1} is started.", GetType().Name, _context.Key);
             }
-
-            
         }
         protected override Task Brun(BrunContext context)
         {
@@ -110,6 +108,7 @@ namespace Brun.Workers
             else
             {
                 TimeBackRun timeBackRun = (TimeBackRun)BrunTool.CreateInstance(timeBackRunType, option);
+                timeBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(timeBackRun.Id, timeBackRun);
                 InitPreTimeBackRun(timeBackRun);
                 _logger.LogInformation("the TimeWorker with key:'{0}' added TimeBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, timeBackRunType.FullName);

@@ -20,7 +20,7 @@ namespace Brun
         }
         public override Task Run(CancellationToken stoppingToken)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("use Run(string message, CancellationToken stoppingToken)");
         }
         /// <summary>
         /// 业务逻辑

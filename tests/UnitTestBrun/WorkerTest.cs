@@ -590,7 +590,7 @@ namespace UnitTestBrun
             Console.WriteLine($"before start:{worker.Context.startNb},end:{worker.Context.endNb}");
             Assert.AreEqual(0, worker.Context.startNb);
             Assert.AreEqual(0, worker.Context.endNb);
-            WaitForBackRun();
+            WaitForBackRun(3);
             Console.WriteLine($"after start:{worker.Context.startNb},end:{worker.Context.endNb}");
             Assert.AreEqual(3, worker.Context.endNb);
         }
@@ -616,7 +616,7 @@ namespace UnitTestBrun
                 worker.Run();
             }
             Assert.AreEqual("0", worker.GetData("nb"));
-            WaitForBackRun();
+            WaitForBackRun(10);
             string nb = worker.GetData("nb");
             Assert.AreEqual("10", nb);
             Assert.AreEqual(0, worker.Context.exceptNb);

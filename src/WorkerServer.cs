@@ -67,7 +67,7 @@ namespace Brun
         public IList<IWorker> GetAllWorker()
         {
 
-            return worders.Where(m => m.Key != SystemBackRun.Worker_KEY).ToList();
+            return worders.ToList();
         }
         public IEnumerable<IWorker> GetWokerByName(string name)
         {

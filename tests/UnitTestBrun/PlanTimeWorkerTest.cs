@@ -16,17 +16,17 @@ namespace UnitTestBrun
         [TestMethod]
         public void TestPlanTimeSystem()
         {
-            WorkerServer.Instance.ServerConfig.UseSystemBrun = true;
-            StartHost(config =>
-            {
-                //WorkerBuilder.CreatePlanTime<SystemBackRun>("* * * * * ")
-                //       .SetKey(SystemBackRun.Worker_KEY)
-                //       .SetName("Brun系统监控")
-                //       .Build()
-                //       ;
-            });
-            Thread.Sleep(TimeSpan.FromSeconds(3));
-            WaitForBackRun();
+            //WorkerServer.Instance.ServerConfig.UseSystemBrun = true;
+            //StartHost(config =>
+            //{
+            //    //WorkerBuilder.CreatePlanTime<SystemBackRun>("* * * * * ")
+            //    //       .SetKey(SystemBackRun.Worker_KEY)
+            //    //       .SetName("Brun系统监控")
+            //    //       .Build()
+            //    //       ;
+            //});
+            //Thread.Sleep(TimeSpan.FromSeconds(3));
+            //WaitForBackRun();
 
         }
     }

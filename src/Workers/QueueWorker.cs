@@ -42,7 +42,7 @@ namespace Brun.Workers
         /// <returns></returns>
         public override void Start()
         {
-            if(_context.State== WorkerState.Started)
+            if (_context.State == WorkerState.Started)
             {
                 _logger.LogWarning("the QueueWorker key:'{0}' is already started.", _context.Key);
                 return;
@@ -60,10 +60,10 @@ namespace Brun.Workers
                             QueueBackRun backRun = (QueueBackRun)item.Value;
                             if (backRun.Option.Queue.TryDequeue(out string msg))
                             {
-                                var context = new BrunContext(item.Value);
-                                context.Message = msg;
                                 Task.Run(async () =>
                                 {
+                                    var context = new BrunContext(item.Value);
+                                    context.Message = msg;
                                     await Execute(context);
                                 });
                             }
@@ -73,7 +73,7 @@ namespace Brun.Workers
                 }, creationOptions: TaskCreationOptions.LongRunning);
                 _logger.LogInformation("the {0} key:'{1}' is started.", GetType().Name, _context.Key);
             }
-            
+
         }
         /// <summary>
         /// 默认的QueueBackRun,添加消息到后台任务
@@ -110,7 +110,7 @@ namespace Brun.Workers
             {
                 _logger.LogWarning("传入的消息体为null，已忽略");
             }
-            _backRuns.Where(m => m.GetType() == queueBackRunType).ToList().ForEach(m =>
+            _backRuns.Where(m => m.Value.GetType() == queueBackRunType).ToList().ForEach(m =>
                 {
                     ((QueueBackRun)m.Value).Option.Queue.Enqueue(message);
                 });
@@ -146,6 +146,7 @@ namespace Brun.Workers
             else
             {
                 QueueBackRun queueBackRun = (QueueBackRun)BrunTool.CreateInstance(queueBackRunType, option);
+                queueBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(queueBackRun.Id, queueBackRun);
                 //InitPreTimeBackRun(queueBackRun);
                 _logger.LogInformation("the QueueWorker with key:'{0}' added QueueBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, queueBackRunType.FullName);
