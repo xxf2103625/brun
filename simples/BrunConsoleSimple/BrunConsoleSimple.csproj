@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Brun.csproj" />
     <ProjectReference Include="..\..\tests\BrunTestHelper\BrunTestHelper.csproj" />
   </ItemGroup>
 

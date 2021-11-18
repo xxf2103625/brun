@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BrunUI\BrunUI.csproj" />
-    <ProjectReference Include="..\..\src\Brun.csproj" />
+    <ProjectReference Include="..\..\src\BrunUI\BrunUI.csproj" />
     <ProjectReference Include="..\..\tests\BrunTestHelper\BrunTestHelper.csproj" />
   </ItemGroup>
 
