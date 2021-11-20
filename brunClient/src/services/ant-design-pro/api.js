@@ -21,7 +21,7 @@ export async function outLogin(options) {
 /** 登录接口 POST /api/login/account */
 
 export async function login(body, options) {
-  return request('/brunapi/brun/login', {
+  return request('/brunapi/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

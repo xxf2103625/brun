@@ -25,6 +25,14 @@ namespace Brun
         /// 扩展库用的服务注册/替换
         /// </summary>
         public Action<IServiceCollection> ServicesConfigure { get; set; }
+        /// <summary>
+        /// UI登录用户名，默认brun
+        /// </summary>
+        public string UserName { get; set; } = "brun";
+        /// <summary>
+        /// UI登录密码，默认brun
+        /// </summary>
+        public string Password { get; set; } = "brun";
     }
     /// <summary>
     /// 储存类型

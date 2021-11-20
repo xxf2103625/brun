@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BrunUI
+namespace BrunUI.Controllers
 {
     public class BrunController : BaseBrunController
     {

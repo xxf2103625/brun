@@ -16,20 +16,18 @@ namespace BrunUI
         public async Task InvokeAsync(HttpContext context)
         {
             var query = context.Request.Path.ToString();
-            if (string.IsNullOrEmpty(query))
+            if (string.IsNullOrEmpty(query))// 路径为 /brun
             {
                 context.Response.Redirect("/brun/index.html");
                 return;
             }
-            _logger.LogWarning(query);
+            //_logger.LogWarning(query);
             string[] staticEnds = new string[] { ".js", ".html", ".css", ".svg", ".ico" };
             for (int i = 0; i < staticEnds.Length; i++)
             {
                 if (query.EndsWith(staticEnds[i]))
                 {
                     string sourceKey = query.Substring(1);
-                    //string sourceKey = query.Substring(1,query.Length - staticEnds[i].Length-1);
-                    //sourceKey = sourceKey.Replace(".", "_");
                     string? content = "";
                     if (staticEnds[i] == ".svg" || staticEnds[i] == ".ico")
                     {
@@ -43,10 +41,6 @@ namespace BrunUI
                             context.Response.Headers.Add("Content-Type", "image/svg+xml");
                             await context.Response.Body.WriteAsync(buffer);
                             return;
-                            //await stream.ReadAsync(buffer, 0, (int)stream.Length);
-                            //content = System.Text.UTF8Encoding.UTF8.GetString(buffer);
-                            //await context.Response.WriteAsync(content);
-                            //return;
                         }
                     }
                     else
@@ -55,7 +49,7 @@ namespace BrunUI
                     }
                     if (content == null)
                     {
-                        _logger.LogError(sourceKey);
+                        //_logger.LogError(sourceKey);
                         await context.Response.WriteAsync($"path:{query},sourceKey:{sourceKey}");
                     }
                     else
@@ -66,14 +60,6 @@ namespace BrunUI
                     return;
                 }
             }
-
-            //string ? type = query["type"][0];
-            //string? name = query["name"][0];
-            ////Console.WriteLine($"type:{type},name:{name}");
-            //_logger.LogWarning($"type:{type},name:{name}");
-            //var sour= Resource.ResourceManager.GetString(name);
-            //await context.Response.WriteAsync($"Query: type:{type},name:{sour}");
-
             await _next.Invoke(context);
         }
     }

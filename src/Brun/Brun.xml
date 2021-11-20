@@ -378,6 +378,16 @@
             扩展库用的服务注册/替换
             </summary>
         </member>
+        <member name="P:Brun.WorkerServerOption.UserName">
+            <summary>
+            UI登录用户名，默认brun
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServerOption.Password">
+            <summary>
+            UI登录密码，默认brun
+            </summary>
+        </member>
         <member name="T:Brun.WorkerStoreType">
             <summary>
             储存类型

@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
 //builder.Services.
 builder.Services.AddBrunService(options =>
 {
@@ -42,23 +44,30 @@ builder.Services.AddBrunService(options =>
     //    //配置计划任务
     //    options.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
     //};
-});
+}).AddBrunUI();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+
     app.UseExceptionHandler("/Home/Error");
+}
+else
+{
+    app.UseHttpLogging();
 }
 
 app.UseStaticFiles();
 
-app.UseAuthorization();
+
 
 app.UseBrunUI();
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
