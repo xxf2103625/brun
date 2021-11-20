@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Brun
 {
+    [Obsolete("移除", true)]
     public interface IWorkerServer
     {
         IList<IWorker> Worders { get; }

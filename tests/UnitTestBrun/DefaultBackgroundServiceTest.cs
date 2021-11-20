@@ -22,7 +22,8 @@ namespace UnitTestBrun
                         .ConfigureServices(services =>
                         {
                             //services.AddMyServices();
-                            services.AddHostedService<BrunBackgroundService>();
+                            services.AddBrunService();
+                            //services.AddHostedService<BrunBackgroundService>();
                         })
                         .Configure(app =>
                         {

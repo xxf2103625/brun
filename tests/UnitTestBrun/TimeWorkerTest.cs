@@ -34,9 +34,12 @@ namespace UnitTestBrun
             StartHost(services =>
             {
                 string key = nameof(TestTimeWorker);
-                services.AddBrunService(workerServer =>
+                services.AddBrunService(options =>
                 {
-                    workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime)));
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime)));
+                    };
                 });
 
                 //WorkerBuilder

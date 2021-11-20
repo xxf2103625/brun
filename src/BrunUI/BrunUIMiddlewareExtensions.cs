@@ -12,7 +12,10 @@ namespace BrunUI
         public static IApplicationBuilder UseBrunUI(
             this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<BrunUIMiddleware>();
+            return builder.Map("/brun", app =>
+            {
+                app.UseMiddleware<BrunUIMiddleware>();
+            });
         }
     }
 }

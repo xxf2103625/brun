@@ -7,7 +7,11 @@ import routes from './routes';
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   history: { type: 'hash' }, // 默认是 browser
-  hash: true,
+  publicPath: './',
+  favicon: './favicon.ico',
+  //base: '/admin/', //访问api加前缀
+  //配置打包后的随机名
+  hash: false,
   antd: {},
   dva: {
     hmr: true,
@@ -26,9 +30,11 @@ export default defineConfig({
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: false,
   },
-  dynamicImport: {
-    loading: '@ant-design/pro-layout/es/PageLoading',
-  },
+  dynamicImport: false,
+  exportStatic: false,
+  // dynamicImport: {
+  //   loading: '@ant-design/pro-layout/es/PageLoading',
+  // },
   targets: {
     ie: 11,
   },
@@ -46,7 +52,7 @@ export default defineConfig({
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
-    basePath: '/',
+    basePath: '../',
   },
   // Fast Refresh 热更新
   fastRefresh: {},
@@ -69,5 +75,5 @@ export default defineConfig({
   },
   mfsu: {},
   webpack5: {},
-  exportStatic: {},
+  //exportStatic: {},
 });

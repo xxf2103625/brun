@@ -213,28 +213,17 @@
             已停止
             </summary>
         </member>
-        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="T:Brun.ServiceCollectionExtensions">
             <summary>
-            以服务形式启动Brun.在ConfigureServices中调用.
+            注册入口
+            </summary>
+        </member>
+        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Brun.WorkerServerOption})">
+            <summary>
+            注册 配置 并启用Brun组件
             </summary>
             <param name="services"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Brun.WorkerServer})">
-            <summary>
-            以服务形式启动Brun.在ConfigureServices中调用.
-            </summary>
-            <param name="services"></param>
-            <param name="workerServer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.ServiceCollectionExtensions.AddBrunService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Brun.WorkerServer},System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
-            <summary>
-            以服务形式启动Brun.在ConfigureServices中调用.
-            </summary>
-            <param name="serviceDescriptors"></param>
-            <param name="workerServer"></param>
-            <param name="services">和在ConfigureServices中注入服务没有任何区别，可能你需要在代码位置上明确这些服务只给Brun使用</param>
+            <param name="workerServerOptions"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.WorkerServerExtenstions.CreateOnceWorker(Brun.WorkerServer,Brun.WorkerConfig)">
@@ -277,59 +266,29 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Brun.Models.SystemInfo.HostName">
+        <member name="T:Brun.Models.BrunResultState">
             <summary>
-            服务器名称
+            定义常用结果状态码
             </summary>
         </member>
-        <member name="P:Brun.Models.SystemInfo.SystemOs">
+        <member name="F:Brun.Models.BrunResultState.IdBeUsed">
             <summary>
-            操作系统名称
+            Id被占用
             </summary>
         </member>
-        <member name="P:Brun.Models.SystemInfo.OsArchitecture">
+        <member name="F:Brun.Models.BrunResultState.Success">
             <summary>
-            操作系统架构
+            操作成功
             </summary>
         </member>
-        <member name="P:Brun.Models.SystemInfo.DotnetDescription">
+        <member name="P:Brun.Models.WorkerConfigModel.Key">
             <summary>
-            dotnet版本信息
+            key为空时为随机字符串
             </summary>
         </member>
-        <member name="P:Brun.Models.SystemInfo.ProcessorCount">
+        <member name="P:Brun.Models.WorkerConfigModel.Name">
             <summary>
-            CPU核心数
-            </summary>
-        </member>
-        <member name="P:Brun.Models.SystemInfo.TotalRam">
-            <summary>
-            总内存 单位GB
-            </summary>
-        </member>
-        <member name="T:Brun.Models.SystemRunInfo">
-            <summary>
-            系统资源实时信息
-            </summary>
-        </member>
-        <member name="P:Brun.Models.SystemRunInfo.Time">
-            <summary>
-            时间点，精确到秒
-            </summary>
-        </member>
-        <member name="P:Brun.Models.SystemRunInfo.CpuRage">
-            <summary>
-            Cpu使用率
-            </summary>
-        </member>
-        <member name="P:Brun.Models.SystemRunInfo.RamUse">
-            <summary>
-            内存使用，单位mb
-            </summary>
-        </member>
-        <member name="P:Brun.Models.SystemRunInfo.ProcessRamUse">
-            <summary>
-            当前进程内存使用，单位mb
+            为空时为类型名称字符串
             </summary>
         </member>
         <member name="P:Brun.Models.WorkerInfo.TypeName">
@@ -397,6 +356,31 @@
         <member name="T:Brun.TimeBackRunOption">
             <summary>
             TimeBackRun配置
+            </summary>
+        </member>
+        <member name="T:Brun.WorkerServerOption">
+            <summary>
+            WorkerServer配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServerOption.StoreType">
+            <summary>
+            储存类型
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServerOption.StoreConn">
+            <summary>
+            持久化连接字符串
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServerOption.ServicesConfigure">
+            <summary>
+            扩展库用的服务注册/替换
+            </summary>
+        </member>
+        <member name="T:Brun.WorkerStoreType">
+            <summary>
+            储存类型
             </summary>
         </member>
         <member name="T:Brun.Plan.CronParser">
@@ -900,6 +884,22 @@
             L 只能在日期域中出现，最后一天，5L：当月最后一天再倒数5天
             </summary>
         </member>
+        <member name="T:Brun.Services.BaseWorkerService`1">
+            <summary>
+            封装Brun实例对象常用操作
+            </summary>
+        </member>
+        <member name="T:Brun.Services.OnceWorkerService">
+            <summary>
+            内存模式管理OnceWorker
+            </summary>
+        </member>
+        <member name="M:Brun.Services.OnceWorkerService.AddOnceWorker(Brun.Models.WorkerConfigModel)">
+            <summary>
+            添加OnceWorker
+            </summary>
+            <param name="model"></param>
+        </member>
         <member name="T:Brun.WorkerServer">
             <summary>
             进程单例，暂时只考虑单机运行
@@ -922,7 +922,7 @@
         </member>
         <member name="P:Brun.WorkerServer.LoggerFactory">
             <summary>
-            
+            日志工厂
             </summary>
         </member>
         <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">

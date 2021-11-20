@@ -27,9 +27,12 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun));
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun));
+                    };
                 });
                 // WorkerBuilder
                 //.Create<SimpleNumberRun>()//内部没有await
@@ -48,9 +51,12 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>();
+                    };
                 });
                 //WorkerBuilder
                 //.Create<SimpleNumberRun>()//内部没有await
@@ -71,9 +77,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    };
                 });
 
                 //WorkerBuilder.Create<SimpNbDelayBefore>()//内部有await
@@ -94,9 +103,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()// 内部有await
                 //   .SetData(data)
@@ -116,9 +128,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    };
                 });
                 // WorkerBuilder.Create<SimpNbDelayBefore>()// 内部await
                 //.SetData(data)
@@ -138,9 +153,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
                 //   .SetData(data)
@@ -161,9 +179,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
                 //   .SetData(data)
@@ -183,9 +204,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
                 //   .SetData(data)
@@ -205,9 +229,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
                 //    .SetData(data)
@@ -227,12 +254,15 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()
+                    options.WorkerServer = workerServer =>
                     {
-                        TimeWaitForBrun = TimeSpan.FromSeconds(5)
-                    }).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()
+                        {
+                            TimeWaitForBrun = TimeSpan.FromSeconds(5)
+                        }).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
                 //   .SetData(data)
@@ -257,9 +287,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                    };
                 });
                 //IOnceWorker work = WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
                 //    .SetData(data)
@@ -278,9 +311,12 @@ namespace UnitTestBrun
             string key = Guid.NewGuid().ToString();
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig(key,"n")).AddBrun<ErrorBackRun3>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig(key, "n")).AddBrun<ErrorBackRun3>();
+                    };
                 });
                 //WorkerBuilder.Create<ErrorBackRun3>() //await
                 //    .SetKey(key)
@@ -310,9 +346,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<ErrorBackRun3>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<ErrorBackRun3>();
+                    };
                 });
                 //WorkerBuilder.Create<ErrorBackRun3>() //await
                 //   .SetData(data)
@@ -340,9 +379,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<DataBackRun>()//await
                 //    .SetData(data)
@@ -373,15 +415,18 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<DataBackRun>()//await
                 //    .SetData(data)
                 //   .BuildOnceWorker();
             });
-            OnceWorker work =(OnceWorker) GetOnceWorkerByName(nameof(OnceWorker)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -400,9 +445,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(10) }).SetData(data).AddBrun<ErrorLongBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(10) }).SetData(data).AddBrun<ErrorLongBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<ErrorLongBackRun>() //await
                 //   .SetData(data)
@@ -432,9 +480,12 @@ namespace UnitTestBrun
             {
                 ConcurrentDictionary<string, string> data = new ConcurrentDictionary<string, string>();
                 data["b"] = "2";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(5) }).SetData(data).AddBrun<ErrorBackRun4>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(5) }).SetData(data).AddBrun<ErrorBackRun4>();
+                    };
                 });
                 //WorkerBuilder.Create<ErrorBackRun4>()
                 //    .SetData(data)
@@ -444,7 +495,7 @@ namespace UnitTestBrun
                 //    })
                 //   .BuildOnceWorker();
             });
-            OnceWorker work =(OnceWorker) GetOnceWorkerByName(nameof(OnceWorker)).First();
+            OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
             {
                 work.Run();
@@ -461,12 +512,15 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<ErrorBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<ErrorBackRun>();
+                    };
                 });
-               // WorkerBuilder.Create<ErrorBackRun>()
-               //.BuildOnceWorker();
+                // WorkerBuilder.Create<ErrorBackRun>()
+                //.BuildOnceWorker();
             });
             OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             work.Run();
@@ -482,15 +536,18 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpleBackRun>()
                 //    .Build<SynchroWorker>();
                 //.Build();
             });
-            SynchroWorker worker =(SynchroWorker) GetWorkerByName(nameof(SynchroWorker)).First();
+            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
@@ -508,15 +565,18 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleLongBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleLongBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpleLongBackRun>()
                 //    .Build<SynchroWorker>();
                 //.Build();
             });
-            SynchroWorker worker =(SynchroWorker) GetWorkerByName(nameof(SynchroWorker)).First();
+            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < max; i++)
             {
                 worker.Run();
@@ -534,9 +594,12 @@ namespace UnitTestBrun
             int max = 10;
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpleBackRun>()
                 //    .Build<SynchroWorker>();
@@ -555,9 +618,12 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<SimpeManyBackRun>()
                 //             .Build<SynchroWorker>();
@@ -575,12 +641,15 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+                    };
                 });
-               // WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
-               //.BuildOnceWorker();
+                // WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+                //.BuildOnceWorker();
             });
             SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < 3; i++)
@@ -601,9 +670,12 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<CuntomDataBackRun>(data)
                 //    //.SetData(data)
@@ -629,9 +701,12 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                    };
                 });
                 //WorkerBuilder.Create<CuntomDataBackRun>()
                 //    .SetData(data)
@@ -656,10 +731,13 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>()
-                    .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>()
+                        .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                    };
                 });
                 //WorkerBuilder
                 //.Create<SimpleNumberRun>()//内部没有await
@@ -684,10 +762,13 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>()
-                    .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>()
+                        .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                    };
                 });
                 //WorkerBuilder
                 //    .Create<SimpleNumberRun>()//内部没有await
@@ -715,9 +796,12 @@ namespace UnitTestBrun
             {
                 var data = new ConcurrentDictionary<string, string>();
                 data["nb"] = "0";
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>();
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>();
+                    };
                 });
                 //WorkerBuilder
                 //    .Create<SimpleNumberRun>()//内部没有await

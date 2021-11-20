@@ -16,7 +16,7 @@ namespace Brun
     /// <summary>
     /// 进程单例，暂时只考虑单机运行
     /// </summary>
-    public sealed class WorkerServer : IWorkerServer
+    public sealed class WorkerServer
     {
         private WorkerServerConfig serverConfig = new WorkerServerConfig();
         private static WorkerServer _workerServer;
@@ -31,6 +31,7 @@ namespace Brun
 
         }
         public Action<WorkerServer> Configure { get; set; }
+        public WorkerServerOption Option { get; set; }
         /// <summary>
         /// server配置，用于设置系统默认配置
         /// </summary>
@@ -44,7 +45,7 @@ namespace Brun
         /// </summary>
         public IServiceProvider ServiceProvider => _serviceProvider;
         /// <summary>
-        /// 
+        /// 日志工厂
         /// </summary>
         public ILoggerFactory LoggerFactory => loggerFactory;
         public void SetLogFactory(ILoggerFactory loggerFactory)

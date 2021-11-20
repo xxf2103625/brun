@@ -15,27 +15,20 @@ namespace UnitTestBrun
     [TestClass]
     public class QueueWorkerTest : BaseHostTest
     {
-        //TODO 测试会死循环
         [TestMethod]
         public void TestExcept()
         {
-            //throw new Exception("测试会死循环");
             string key = nameof(TestExcept);
             StartHost(services =>
             {
                 string key = nameof(TestExcept);
-                services.AddBrunService(workerServer =>
+                services.AddBrunService(options =>
                 {
-                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                    };
                 });
-                //IQueueWorker worker = WorkerBuilder
-                //        .CreateQueue<LogQueueBackRun>()
-                //        .AddQueue<ErrorQueueBackRun>()
-                //        .SetKey(key)
-                //        .Build<QueueWorker>()
-                //        .AsQueueWorker()
-                //        ;
-                //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
             for (int i = 0; i < 100; i++)
@@ -47,7 +40,6 @@ namespace UnitTestBrun
             Assert.AreNotEqual(100, worker.Context.exceptNb);
             Assert.AreNotEqual(200, worker.Context.endNb);
             Console.WriteLine("wait before start:{0},except:{1},end:{2}", worker.Context.startNb, worker.Context.exceptNb, worker.Context.endNb);
-            //TODO 如何判断所有任务已执行结束
             WaitForBackRun(200);
             Assert.AreEqual(0, worker.Context.RunningTasks.Count);
             Assert.AreEqual(200, worker.Context.startNb);
@@ -61,9 +53,12 @@ namespace UnitTestBrun
             StartHost(services =>
             {
                 string key = nameof(TestStartAndStopAsync);
-                services.AddBrunService(workerServer =>
+                services.AddBrunService(options =>
                 {
-                    workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                    };
                 });
                 //WorkerBuilder
                 //   .CreateQueue<LogQueueBackRun>()

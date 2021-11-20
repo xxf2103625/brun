@@ -56,9 +56,9 @@ namespace Brun.Workers
         /// <param name="config"></param>
         public AbstractWorker(WorkerConfig config)
         {
-            if (WorkerServer.Instance.ServiceProvider!= null)
+            if (WorkerServer.Instance.ServiceProvider != null)
             {
-                _logger = ((ILoggerFactory)(WorkerServer.Instance.ServiceProvider.GetService(typeof(ILoggerFactory)))).CreateLogger(this.GetType());
+                _logger = WorkerServer.Instance.LoggerFactory.CreateLogger(this.GetType());
             }
 
             //_option = option;
@@ -96,7 +96,7 @@ namespace Brun.Workers
                     return;
                 }
                 //Task brun = Task.Run(async () => await Brun(runContext));
-                Task brun =  Brun(runContext);
+                Task brun = Brun(runContext);
                 RunningTasks.TryAdd(brun);
                 _ = brun.ContinueWith(t =>
                  {

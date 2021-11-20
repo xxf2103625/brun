@@ -20,25 +20,22 @@ namespace UnitTestBrun.WorkerObservers
             StartHost(services =>
             {
                 string key = nameof(Test);
-                services.AddBrunService(workerServer =>
+                services.AddBrunService(options =>
                 {
-                    var config = new WorkerConfig(key, "name");
-                    config.AddWorkerObserver(new List<Brun.Observers.WorkerObserver>()
+                    options.WorkerServer = workerServer =>
                     {
+                        var config = new WorkerConfig(key, "name");
+                        config.AddWorkerObserver(new List<Brun.Observers.WorkerObserver>()
+                        {
                         new TestStartWorkerObserver_20(),new TestStartWorkerObserver_30()
-                    });
-                    workerServer.CreateOnceWorker(config).AddBrun<LogBackRun>();
+                        });
+                        workerServer.CreateOnceWorker(config).AddBrun<LogBackRun>();
+                    };
                 });
-                //WorkerBuilder.Create<LogBackRun>()
-                //.SetKey(key)
-                //.SetConfig(configure =>
-                //{
-                //    configure.AddWorkerObserver(new TestStartWorkerObserver_20());
-                //    configure.AddWorkerObserver(new TestStartWorkerObserver_30());
-                //})
-                //.Build();
             });
-            IOnceWorker worker = WorkerServer.Instance.GetOnceWorker(key);
+            var onceWorker=(Brun.Services.IOnceWorkerService) host.Services.GetService(typeof(Brun.Services.IOnceWorkerService));
+            //IOnceWorker worker = WorkerServer.Instance.GetOnceWorker(key);
+            IOnceWorker worker = onceWorker.GetOnceWorkers().Result.ToList().FirstOrDefault(m => m.Key == key);
             worker.Run();
             WaitForBackRun();
             Assert.AreEqual("30", worker.GetData()["Order"]);

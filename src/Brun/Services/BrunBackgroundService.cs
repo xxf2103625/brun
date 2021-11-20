@@ -13,10 +13,14 @@ namespace Brun.Services
         private CancellationTokenSource _stoppingCts;
         private Task _executeTask;
         readonly IServiceProvider _serviceProvider;
-        public BrunBackgroundService(ILogger<BrunBackgroundService> logger, IServiceProvider serviceProvider)
+        ILoggerFactory loggerFactory;
+        WorkerServer workerServer;
+        public BrunBackgroundService(ILogger<BrunBackgroundService> logger, IServiceProvider serviceProvider, WorkerServer workerServer, ILoggerFactory loggerFactory)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+            this.workerServer = workerServer;
+            this.loggerFactory = loggerFactory;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -32,18 +36,20 @@ namespace Brun.Services
                 return _executeTask;
             }
             return Task.CompletedTask;
+            //新开了线程不会在这卡住
         }
 
         private Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            WorkerServer.Instance.SetServiceProvider(_serviceProvider);
-            WorkerServer.Instance.SetLogFactory(_serviceProvider.GetRequiredService<ILoggerFactory>());
             _logger.LogInformation("BrunBackgroundService startting...");
-            if (WorkerServer.Instance.Configure != null)
+            //var workerServer = (WorkerServer)_serviceProvider.GetRequiredService(typeof(WorkerServer));
+            workerServer.SetServiceProvider(_serviceProvider);
+            workerServer.SetLogFactory(loggerFactory);
+            if (workerServer.Option.WorkerServer != null)
             {
-                WorkerServer.Instance.Configure.Invoke(WorkerServer.Instance);
+                workerServer.Option.WorkerServer.Invoke(workerServer);
             }
-            WorkerServer.Instance.Start(_serviceProvider, stoppingToken);
+            workerServer.Start(_serviceProvider, stoppingToken);
             return Task.CompletedTask;
         }
 

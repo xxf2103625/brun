@@ -16,29 +16,33 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddBrunService(workerServer =>
+//builder.Services.
+builder.Services.AddBrunService(options =>
 {
-    //配置瞬时任务
-    workerServer.CreateOnceWorker(new WorkerConfig()
-    {
-        Key = "t1",
-        Name = "name1",
-    }).AddData(new ConcurrentDictionary<string, string>()).AddBrun<LogBackRun>();
+    options.UseRedis("192.168.1.8");
+    //options.UseInMemory();
+    //options.WorkerServer = options =>
+    //{
+    //    //配置瞬时任务
+    //    options.CreateOnceWorker(new WorkerConfig()
+    //    {
+    //        Key = "t1",
+    //        Name = "name1",
+    //    }).AddData(new ConcurrentDictionary<string, string>()).AddBrun<LogBackRun>();
 
-    //配置循环任务
-    workerServer.CreateTimeWorker(new WorkerConfig("time_1", "time_name")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(10)));
+    //    //配置循环任务
+    //    options.CreateTimeWorker(new WorkerConfig("time_1", "time_name")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(10)));
 
-    //配置消息任务
-    workerServer.CreateQueueWorker(new WorkerConfig("q_1", "q_name")).AddBrun(typeof(BrunTestHelper.QueueBackRuns.LogQueueBackRun), new QueueBackRunOption()
-    {
-        Id = Guid.NewGuid().ToString()
-    });
+    //    //配置消息任务
+    //    options.CreateQueueWorker(new WorkerConfig("q_1", "q_name")).AddBrun(typeof(BrunTestHelper.QueueBackRuns.LogQueueBackRun), new QueueBackRunOption()
+    //    {
+    //        Id = Guid.NewGuid().ToString()
+    //    });
 
-    //配置计划任务
-    workerServer.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
+    //    //配置计划任务
+    //    options.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
+    //};
 });
-
 
 var app = builder.Build();
 
@@ -47,16 +51,14 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
-app.Map("/brun", app =>
-{
-    app.UseBrunUI();
-});
-//app.UseBrunUI();
-app.UseRouting();
-
 app.UseAuthorization();
+
+app.UseBrunUI();
+
+app.UseRouting();
 
 app.MapControllerRoute(
     name: "default",

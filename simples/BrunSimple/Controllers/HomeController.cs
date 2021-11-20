@@ -8,8 +8,8 @@ namespace BrunSimple.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        IWorkerServer _workerServer;
-        public HomeController(ILogger<HomeController> logger,IWorkerServer workerServer)
+        WorkerServer _workerServer;
+        public HomeController(ILogger<HomeController> logger,WorkerServer workerServer)
         {
             _logger = logger;
             _workerServer = workerServer;
@@ -23,7 +23,7 @@ namespace BrunSimple.Controllers
         public IActionResult Privacy()
         {
             //_workerServer.GetOnceWorker("t1").Run(typeof(BrunTestHelper.BackRuns.LogBackRun));
-            _workerServer.GetOnceWorker("t1").Run();
+            //_workerServer.GetOnceWorker("t1").Run();
             return View();
         }
 

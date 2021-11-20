@@ -18,19 +18,19 @@ namespace Brun
         public static OnceWorker CreateOnceWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new OnceWorker(config);
-            WorkerServer.Instance.Worders.Add(worker);
+            workerServer.Worders.Add(worker);
             return worker;
         }
         public static SynchroWorker CreateSynchroWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new SynchroWorker(config);
-            WorkerServer.Instance.Worders.Add(worker);
+            workerServer.Worders.Add(worker);
             return worker;
         }
         public static QueueWorker CreateQueueWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new QueueWorker(config);
-            WorkerServer.Instance.Worders.Add(worker);
+            workerServer.Worders.Add(worker);
             return worker;
         }
         //public static OnceWorker CreateOnceWorker(this WorkerServer workerServer,string key,string name,string tag)
@@ -40,14 +40,19 @@ namespace Brun
         public static TimeWorker CreateTimeWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new TimeWorker(config);
-            WorkerServer.Instance.Worders.Add(worker);
+            workerServer.Worders.Add(worker);
             return worker;
         }
-        
-        public static PlanWorker CreatePlanTimeWorker(this WorkerServer workerServer,WorkerConfig config)
+
+        public static PlanWorker CreatePlanTimeWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new PlanWorker(config);
-            WorkerServer.Instance.Worders.Add(worker);
+            workerServer.Worders.Add(worker);
+            return worker;
+        }
+        public static TWorker CreateWorker<TWorker>(this WorkerServer workerServer, WorkerConfig config) where TWorker : AbstractWorker
+        {
+            var worker = Commons.BrunTool.CreateInstance<TWorker>(config);
             return worker;
         }
     }

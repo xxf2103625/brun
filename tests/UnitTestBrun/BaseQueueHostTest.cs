@@ -17,7 +17,7 @@ namespace UnitTestBrun
         public CancellationTokenSource tokenSource;
         protected async Task WaitForBackRun()
         {
-            WorkerServer server = (WorkerServer)host.Services.GetRequiredService<IWorkerServer>();
+            WorkerServer server = host.Services.GetRequiredService<WorkerServer>();
             await Task.Delay(TimeSpan.FromSeconds(0.1));
             while (server.GetAllWorker().Any(m => m.Context.RunningTasks.Count > 0))
             {

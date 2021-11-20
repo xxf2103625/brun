@@ -15,7 +15,7 @@ namespace BrunWebTest.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        Brun.IWorkerServer _workerServer;
+        WorkerServer _workerServer;
         //BrunService _brunService;
         public HomeController(ILogger<HomeController> logger)
         {

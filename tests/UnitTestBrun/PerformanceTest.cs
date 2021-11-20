@@ -41,8 +41,8 @@ namespace UnitTestBrun
             stopwatch.Stop();
             Console.WriteLine($"Activator.CreateInstance,times:{times},elapsed:{stopwatch.ElapsedMilliseconds}");
         }
-        //TODO 依赖Service的ILogger
-        [TestMethod]
+        //依赖Service的ILogger
+        //[TestMethod]
         public void TestCreaeObjectWithAgs()
         {
             WorkerConfig config = new WorkerConfig();

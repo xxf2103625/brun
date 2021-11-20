@@ -11,29 +11,32 @@ using System.Threading.Tasks;
 namespace UnitTestBrun
 {
     [TestClass]
-    public class SynchroWorkerTest:BaseHostTest
+    public class SynchroWorkerTest : BaseHostTest
     {
         [TestMethod]
         public void Test()
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig())
-                        .AddBrun(typeof(SimpleNumberRun));
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig())
+                            .AddBrun(typeof(SimpleNumberRun));
+                    };
                 });
-               // WorkerBuilder
-               //.Create<SimpleNumberRun>()//内部没有await
-               //.Build<SynchroWorker>();
+                // WorkerBuilder
+                //.Create<SimpleNumberRun>()//内部没有await
+                //.Build<SynchroWorker>();
             });
             SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             work.Run();
 
             Console.WriteLine("TestSimpleRun：Run 之后的调用线程");
-            
+
             Assert.AreEqual(null, work.GetData("nb"));
-            
+
             WaitForBackRun();
             Console.WriteLine("TestSimpleRun：WaitForBackRun 之后的调用线程");
             Assert.AreEqual("100", work.GetData("nb"));
@@ -43,14 +46,17 @@ namespace UnitTestBrun
         {
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateSynchroWorker(new WorkerConfig())
-                        .AddBrun(typeof(LogBackRun));
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateSynchroWorker(new WorkerConfig())
+                            .AddBrun(typeof(LogBackRun));
+                    };
                 });
-               // WorkerBuilder
-               //.Create<LogBackRun>()
-               //.Build<SynchroWorker>();
+                // WorkerBuilder
+                //.Create<LogBackRun>()
+                //.Build<SynchroWorker>();
             });
             SynchroWorker work = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
             for (int i = 0; i < 100; i++)

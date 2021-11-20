@@ -21,14 +21,17 @@ namespace UnitTestBrun
             //string tag = "myTag";
             StartHost(m =>
             {
-                m.AddBrunService(workerServer =>
+                m.AddBrunService(options =>
                 {
-                    workerServer.CreateOnceWorker(new WorkerConfig(key, name))
-                        .AddBrun(typeof(SimpleBackRun));
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig(key, name))
+                            .AddBrun(typeof(SimpleBackRun));
+                    };
                 });
-               // WorkerBuilder.Create<SimpleBackRun>()
-               //.SetNameTagKey(name, tag, key)
-               //.Build();
+                // WorkerBuilder.Create<SimpleBackRun>()
+                //.SetNameTagKey(name, tag, key)
+                //.Build();
             });
             IWorker work = WorkerServer.Instance.GetWorker(key);
             Assert.AreEqual(key, work.Key);
@@ -38,15 +41,18 @@ namespace UnitTestBrun
         public void TestEmptyCreateAsync()
         {
             StartHost(m =>
-           {
-               m.AddBrunService(workerServer =>
-               {
-                   workerServer.CreateOnceWorker(new WorkerConfig())
-                       .AddBrun(typeof(SimpleBackRun));
-               });
-               //WorkerBuilder.Create<SimpleBackRun>()
-               //.Build();
-           });
+            {
+                m.AddBrunService(options =>
+                {
+                    options.WorkerServer = workerServer =>
+                    {
+                        workerServer.CreateOnceWorker(new WorkerConfig())
+                        .AddBrun(typeof(SimpleBackRun));
+                    };
+                });
+                //WorkerBuilder.Create<SimpleBackRun>()
+                //.Build();
+            });
             IWorker work = GetWorkerByName(nameof(Brun.Workers.OnceWorker)).First();
             Assert.IsNotNull(work.Key);
             Assert.AreEqual("OnceWorker", work.Name);
