@@ -7,7 +7,7 @@ namespace Brun.Services
 {
     public interface IOnceWorkerService
     {
-        Task<BrunResultState> AddOnceWorker(WorkerConfigModel model);
-        Task<IEnumerable<OnceWorker>> GetOnceWorkers();
+        Task<BrunResultState> AddOnceBrun(WorkerConfigModel model);
+        Task<IEnumerable<WorkerInfo>> GetOnceBruns();
     }
 }

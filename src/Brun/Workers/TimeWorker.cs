@@ -97,7 +97,7 @@ namespace Brun.Workers
         {
             if (!timeBackRunType.IsSubclassOf(typeof(TimeBackRun)))
             {
-                throw new BrunTypeErrorException($"{timeBackRunType.FullName} can not add to TimeWorker.");
+                throw new BrunException( BrunErrorCode.TypeError,$"{timeBackRunType.FullName} can not add to TimeWorker.");
             }
 
             if (_backRuns.Any(m => m.Key == option.Id))

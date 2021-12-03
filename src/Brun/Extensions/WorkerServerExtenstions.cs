@@ -18,19 +18,19 @@ namespace Brun
         public static OnceWorker CreateOnceWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new OnceWorker(config);
-            workerServer.Worders.Add(worker);
+            workerServer.Worders.Add(worker.Key,worker);
             return worker;
         }
         public static SynchroWorker CreateSynchroWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new SynchroWorker(config);
-            workerServer.Worders.Add(worker);
+            workerServer.Worders.Add(worker.Key,worker);
             return worker;
         }
         public static QueueWorker CreateQueueWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new QueueWorker(config);
-            workerServer.Worders.Add(worker);
+            workerServer.Worders.Add(worker.Key,worker);
             return worker;
         }
         //public static OnceWorker CreateOnceWorker(this WorkerServer workerServer,string key,string name,string tag)
@@ -40,19 +40,24 @@ namespace Brun
         public static TimeWorker CreateTimeWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new TimeWorker(config);
-            workerServer.Worders.Add(worker);
+            workerServer.Worders.Add(worker.Key,worker);
             return worker;
         }
 
         public static PlanWorker CreatePlanTimeWorker(this WorkerServer workerServer, WorkerConfig config)
         {
             var worker = new PlanWorker(config);
-            workerServer.Worders.Add(worker);
+            workerServer.Worders.Add(worker.Key,worker);
             return worker;
         }
         public static TWorker CreateWorker<TWorker>(this WorkerServer workerServer, WorkerConfig config) where TWorker : AbstractWorker
         {
             var worker = Commons.BrunTool.CreateInstance<TWorker>(config);
+            return worker;
+        }
+        public static IWorker CreateWorker(this WorkerServer workerServer, Type workerType, WorkerConfig config)
+        {
+            var worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, config);
             return worker;
         }
     }

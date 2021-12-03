@@ -51,21 +51,6 @@
             所有后台任务的接口,直接继承这个无法使用自定义Data
             </summary>
         </member>
-        <member name="T:Brun.BaskRuns.PlanBackRun">
-            <summary>
-            计划时间任务
-            </summary>
-        </member>
-        <member name="P:Brun.BaskRuns.PlanBackRun.LastRunTime">
-            <summary>
-            上次执行时间
-            </summary>
-        </member>
-        <member name="P:Brun.BaskRuns.PlanBackRun.NextRunTime">
-            <summary>
-            下次执行时间
-            </summary>
-        </member>
         <member name="T:Brun.BaskRuns.ScopeBackRun">
             <summary>
             每次运行在Ioc的Scope中，可以理解成类似mvc每个请求的生命周期
@@ -139,6 +124,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Brun.PlanBackRun">
+            <summary>
+            计划时间任务
+            </summary>
+        </member>
+        <member name="P:Brun.PlanBackRun.LastRunTime">
+            <summary>
+            上次执行时间
+            </summary>
+        </member>
+        <member name="P:Brun.PlanBackRun.NextRunTime">
+            <summary>
+            下次执行时间
+            </summary>
+        </member>
         <member name="T:Brun.QueueBackRun">
             <summary>
             队列任务基类
@@ -211,6 +211,26 @@
         <member name="F:Brun.Enums.WorkerState.Stoped">
             <summary>
             已停止
+            </summary>
+        </member>
+        <member name="T:Brun.Exceptions.BrunErrorCode">
+            <summary>
+            Brun异常码
+            </summary>
+        </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.TypeError">
+            <summary>
+            类型异常
+            </summary>
+        </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.AllreadyKey">
+            <summary>
+            id/key重复
+            </summary>
+        </member>
+        <member name="T:Brun.Exceptions.BrunException">
+            <summary>
+            Brun异常信息
             </summary>
         </member>
         <member name="T:Brun.ServiceCollectionExtensions">
@@ -304,11 +324,6 @@
         <member name="P:Brun.Models.WorkerInfo.Name">
             <summary>
             Worker名称
-            </summary>
-        </member>
-        <member name="P:Brun.Models.WorkerInfo.Tag">
-            <summary>
-            Worker Tag
             </summary>
         </member>
         <member name="P:Brun.Models.WorkerInfo.BrunTypes">
@@ -899,16 +914,47 @@
             封装Brun实例对象常用操作
             </summary>
         </member>
+        <member name="M:Brun.Services.BaseWorkerService`1.ExistWorkerKey(System.String)">
+            <summary>
+            是否已有key
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IBaseWorkerService`1.AddWorker(Brun.Models.WorkerConfigModel)">
+            <summary>
+            添加worker
+            </summary>
+            <param name="model"></param>
+        </member>
+        <member name="M:Brun.Services.IBaseWorkerService`1.GetWorkers">
+            <summary>
+            获取worker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IBaseWorkerService`1.ExistWorkerKey(System.String)">
+            <summary>
+            是否已有key
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
         <member name="T:Brun.Services.OnceWorkerService">
             <summary>
             内存模式管理OnceWorker
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceWorkerService.AddOnceWorker(Brun.Models.WorkerConfigModel)">
+        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Models.WorkerConfigModel)">
             <summary>
             添加OnceWorker
             </summary>
             <param name="model"></param>
+        </member>
+        <member name="T:Brun.Services.WorkerService">
+            <summary>
+            Worker管理，内存中
+            </summary>
         </member>
         <member name="T:Brun.WorkerServer">
             <summary>
@@ -1077,7 +1123,7 @@
             </summary>
             <param name="backRunType"></param>
             <returns></returns>
-            <exception cref="T:Brun.Exceptions.BrunTypeErrorException"></exception>
+            <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
         <member name="M:Brun.Workers.OnceWorker.AddBrun``1">
             <summary>
@@ -1158,7 +1204,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Brun.Workers.TimeWorker.InitPreTimeBackRun(Brun.BaskRuns.TimeBackRun)">
+        <member name="M:Brun.Workers.TimeWorker.InitPreTimeBackRun(Brun.TimeBackRun)">
             <summary>
             添加TimeBackRun前的预处理
             </summary>

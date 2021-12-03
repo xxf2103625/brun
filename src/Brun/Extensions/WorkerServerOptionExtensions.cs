@@ -15,6 +15,7 @@ namespace Brun
             workerServerOption.StoreType = WorkerStoreType.Memory;
             workerServerOption.ServicesConfigure = services =>
             {
+                
                 services.AddScoped<IOnceWorkerService, OnceWorkerService>();
             };
             return workerServerOption;

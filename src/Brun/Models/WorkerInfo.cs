@@ -20,10 +20,6 @@ namespace Brun.Models
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Worker Tag
-        /// </summary>
-        public string Tag { get; set; }
-        /// <summary>
         /// 包含的BackRun类型
         /// </summary>
         public IEnumerable<string> BrunTypes { get; set; }

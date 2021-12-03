@@ -10,9 +10,10 @@ import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { login } from '@/services/user';
+//import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
+import { setToken } from '@/utils/utils';
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -46,17 +47,21 @@ const Login = () => {
       if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
+        setToken(msg.token);
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
-
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query;
         history.push(redirect || '/');
         return;
+
+        //
+      } else {
+        message.error(msg.msg);
       }
 
-      console.log(msg); // 如果失败去设置用户错误信息
+      //console.log(msg); // 如果失败去设置用户错误信息
 
       setUserLoginState(msg);
     } catch (error) {
@@ -71,8 +76,8 @@ const Login = () => {
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="./logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
+          title="Brun可视化组件"
+          subTitle={'Brun是dotnet跨平台开源任务调度组件'}
           initialValues={{
             autoLogin: true,
           }}
@@ -90,7 +95,7 @@ const Login = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="userName"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,

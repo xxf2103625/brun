@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BrunUI\BrunUI.csproj" />
     <ProjectReference Include="..\BrunTestHelper\BrunTestHelper.csproj" />
   </ItemGroup>
 

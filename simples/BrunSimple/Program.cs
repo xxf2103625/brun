@@ -21,8 +21,10 @@ builder.Services.AddControllersWithViews();
 //builder.Services.
 builder.Services.AddBrunService(options =>
 {
-    options.UseRedis("192.168.1.8");
+    //options.UseRedis("192.168.1.8");
     //options.UseInMemory();
+    options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
+
     //options.WorkerServer = options =>
     //{
     //    //配置瞬时任务
@@ -44,7 +46,18 @@ builder.Services.AddBrunService(options =>
     //    //配置计划任务
     //    options.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
     //};
-}).AddBrunUI();
+}).AddBrunUI(options =>
+{
+    options.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
+    options.CheckUser = (userName, pwd) =>
+    {
+        if (userName == "admin" && pwd == "admin")
+        {
+            return true;
+        }
+        return false;
+    };
+});
 
 var app = builder.Build();
 
@@ -56,7 +69,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseHttpLogging();
+    //app.UseHttpLogging();
 }
 
 app.UseStaticFiles();

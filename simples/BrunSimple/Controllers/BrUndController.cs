@@ -12,7 +12,7 @@ namespace BrunSimple.Controllers
         }
         public IActionResult Index()
         {
-            onceWorker.AddOnceWorker(new Brun.Models.WorkerConfigModel() { Key = "t1", Name = "tName" });
+            onceWorker.AddOnceBrun(new Brun.Models.WorkerConfigModel() { Key = "t1", Name = "tName" });
             return Content("Index");
         }
 

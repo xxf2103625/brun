@@ -35,7 +35,7 @@ namespace UnitTestBrun.WorkerObservers
             });
             var onceWorker=(Brun.Services.IOnceWorkerService) host.Services.GetService(typeof(Brun.Services.IOnceWorkerService));
             //IOnceWorker worker = WorkerServer.Instance.GetOnceWorker(key);
-            IOnceWorker worker = onceWorker.GetOnceWorkers().Result.ToList().FirstOrDefault(m => m.Key == key);
+            IOnceWorker worker = onceWorker.GetOnceBruns().Result.ToList().FirstOrDefault(m => m.Key == key);
             worker.Run();
             WaitForBackRun();
             Assert.AreEqual("30", worker.GetData()["Order"]);

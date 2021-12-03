@@ -128,13 +128,13 @@ namespace Brun.Workers
         /// </summary>
         /// <param name="backRunType"></param>
         /// <returns></returns>
-        /// <exception cref="BrunTypeErrorException"></exception>
+        /// <exception cref="BrunException"></exception>
         public OnceWorker AddBrun(Type backRunType)
         {
             //_logger.LogDebug($"the OnceWorker with key:'{this.Key}' is adding '{backRunType.FullName}'");
             if (!backRunType.IsSubclassOf(typeof(BackRun)))
             {
-                throw new BrunTypeErrorException($"{backRunType.FullName} can not add to OnceWorker.");
+                throw new BrunException(BrunErrorCode.TypeError, $"{backRunType.FullName} can not add to OnceWorker.");
             }
             if (_backRuns.ContainsKey(backRunType.FullName))
             {
@@ -157,7 +157,7 @@ namespace Brun.Workers
                 }
                 else
                 {
-                    throw new BrunTypeErrorException(string.Format("can not add {0} to OnceWorker.", backRunType.FullName));
+                    throw new BrunException( BrunErrorCode.TypeError,string.Format("can not add {0} to OnceWorker.", backRunType.FullName));
                 }
             }
         }

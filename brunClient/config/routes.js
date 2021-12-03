@@ -49,6 +49,12 @@ export default [
     component: './PlanWorker',
   },
   {
+    path: '/worker',
+    name: '工作中心',
+    icon: 'smile',
+    component: './Worker',
+  },
+  {
     path: '/',
     redirect: '/Dashboard',
   },

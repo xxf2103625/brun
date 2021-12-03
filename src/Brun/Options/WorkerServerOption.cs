@@ -28,11 +28,11 @@ namespace Brun
         /// <summary>
         /// UI登录用户名，默认brun
         /// </summary>
-        public string UserName { get; set; } = "brun";
+        public string UserName { get; set; } = "admin";
         /// <summary>
         /// UI登录密码，默认brun
         /// </summary>
-        public string Password { get; set; } = "brun";
+        public string Password { get; set; } = "admin";
     }
     /// <summary>
     /// 储存类型

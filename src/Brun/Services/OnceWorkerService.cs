@@ -24,7 +24,7 @@ namespace Brun.Services
         /// 添加OnceWorker
         /// </summary>
         /// <param name="model"></param>
-        public Task<BrunResultState> AddOnceWorker(WorkerConfigModel model)
+        public Task<BrunResultState> AddOnceBrun(WorkerConfigModel model)
         {
             if (model.Key == null)
             {
@@ -34,16 +34,22 @@ namespace Brun.Services
             {
                 model.Name = nameof(OnceWorker);
             }
-            if (_workerServer.Worders.Any(m => m.Key == model.Key))
+            if (_baseService.ExistWorkerKey(model.Key))
             {
                 return Task.FromResult(BrunResultState.IdBeUsed);
             }
             _baseService.AddWorker(model);
             return Task.FromResult(BrunResultState.Success);
         }
-        public Task<IEnumerable<OnceWorker>> GetOnceWorkers()
+        public Task<IEnumerable<WorkerInfo>> GetOnceBruns()
         {
-            return Task.FromResult(_baseService.GetWorkers());
+            var workers = _baseService.GetWorkers().ToList().Select(m => new WorkerInfo()
+            {
+                Key = m.Key,
+                Name = m.Name
+            });
+
+            return Task.FromResult(workers);
         }
     }
 }

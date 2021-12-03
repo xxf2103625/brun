@@ -1,4 +1,5 @@
-﻿using Brun.Models;
+﻿using Brun.Exceptions;
+using Brun.Models;
 using Brun.Workers;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,26 @@ namespace Brun.Services
         }
         public void AddWorker(WorkerConfigModel model)
         {
-            _workerServer.CreateWorker<TWorker>(new WorkerConfig(model.Key, model.Name));
+            var worker= _workerServer.CreateWorker<TWorker>(new WorkerConfig(model.Key, model.Name));
+            if(_workerServer.Worders.Any(m=>m.Key == model.Key))
+            {
+                throw new BrunException(BrunErrorCode.AllreadyKey, "add Worker key existed");
+            }
+            _workerServer.Worders.Add(worker.Key,worker);
             //return BrunResultState.Success;
         }
         public IEnumerable<TWorker> GetWorkers()
         {
             return _workerServer.Worders.Where(m => m.GetType() == typeof(TWorker)).Cast<TWorker>();
+        }
+        /// <summary>
+        /// 是否已有key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool ExistWorkerKey(string key)
+        {
+            return _workerServer.Worders.Any(m => m.Key == key);
         }
         ///// <summary>
         ///// 添加OnceWorker

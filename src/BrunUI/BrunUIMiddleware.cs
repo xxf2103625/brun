@@ -21,13 +21,12 @@ namespace BrunUI
                 context.Response.Redirect("/brun/index.html");
                 return;
             }
-            //_logger.LogWarning(query);
             string[] staticEnds = new string[] { ".js", ".html", ".css", ".svg", ".ico" };
             for (int i = 0; i < staticEnds.Length; i++)
             {
                 if (query.EndsWith(staticEnds[i]))
                 {
-                    string sourceKey = query.Substring(1);
+                    string sourceKey = query.Substring(1);//删除开头的/
                     string? content = "";
                     if (staticEnds[i] == ".svg" || staticEnds[i] == ".ico")
                     {
@@ -49,8 +48,9 @@ namespace BrunUI
                     }
                     if (content == null)
                     {
-                        //_logger.LogError(sourceKey);
-                        await context.Response.WriteAsync($"path:{query},sourceKey:{sourceKey}");
+                        throw new Exception(String.Format("can not find not this file:{0}", sourceKey));
+                        //_logger.LogError("can not find not this file:{0}",sourceKey);
+                        //await context.Response.WriteAsync($"path:{query},sourceKey:{sourceKey}");
                     }
                     else
                     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Brun.BaskRuns
+namespace Brun
 {
     /// <summary>
     /// 计划时间任务

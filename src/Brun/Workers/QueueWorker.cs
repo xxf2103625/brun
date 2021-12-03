@@ -136,7 +136,7 @@ namespace Brun.Workers
         {
             if (!queueBackRunType.IsSubclassOf(typeof(QueueBackRun)))
             {
-                throw new BrunTypeErrorException($"{queueBackRunType.FullName} can not add to QueueWorker.");
+                throw new BrunException(BrunErrorCode.TypeError, $"{queueBackRunType.FullName} can not add to QueueWorker.");
             }
             if (_backRuns.Any(m => m.Key == option.Id))
             {

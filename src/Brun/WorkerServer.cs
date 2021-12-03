@@ -21,7 +21,7 @@ namespace Brun
         private WorkerServerConfig serverConfig = new WorkerServerConfig();
         private static WorkerServer _workerServer;
         private static object serverCreate_LOCK = new object();
-        private IList<IWorker> worders = new List<IWorker>();
+        private IDictionary<string, IWorker> worders = new Dictionary<string, IWorker>();
         private DateTime? startTime = null;
         private IServiceProvider _serviceProvider;
         ILoggerFactory loggerFactory;
@@ -39,7 +39,7 @@ namespace Brun
         /// <summary>
         /// 所有运行中的worker
         /// </summary>
-        public IList<IWorker> Worders => worders;
+        public IDictionary<string, IWorker> Worders => worders;
         /// <summary>
         /// 服务容器
         /// </summary>
@@ -58,34 +58,38 @@ namespace Brun
         }
         public IWorker GetWorker(string key)
         {
-            IWorker worker = worders.FirstOrDefault(m => m.Key == key);
-            if (worker == null)
+            if (worders.TryGetValue(key, out var worker))
+            {
+                return worker;
+            }
+            else
             {
                 logger.LogError("can not find active Worker，key:'{0}'", key);
+                return null;
             }
-            return worker;
         }
         public IList<IWorker> GetAllWorker()
         {
 
-            return worders.ToList();
+            return worders.Values.ToList();
         }
         public IEnumerable<IWorker> GetWokerByName(string name)
         {
-            return worders.Where(m => m.Name == name);
+            return worders.Where(m => m.Value.Name == name).Select(m => m.Value);
         }
         public IOnceWorker GetOnceWorker(string key)
         {
-            IWorker worker = worders.Where(m => m.GetType() == typeof(OnceWorker)).FirstOrDefault(m => m.Key == key);
+            IWorker worker = worders.FirstOrDefault(m => m.Key == key && m.Value.GetType() == typeof(QueueWorker))!.Value;
             if (worker == null)
             {
                 logger.LogError("can not find active OnceWorker，key:'{0}'", key);
+                return null;
             }
             return (IOnceWorker)worker;
         }
         public IQueueWorker GetQueueWorker(string key)
         {
-            IWorker worker = worders.FirstOrDefault(m => m.Key == key);
+            IWorker worker = worders.FirstOrDefault(m => m.Key == key && m.Value.GetType() == typeof(QueueWorker))!.Value;
             if (worker == null)
             {
                 logger.LogError("can not find active QueueWorker，key:'{0}'", key);
@@ -104,7 +108,7 @@ namespace Brun
             startTime = DateTime.Now;
             foreach (var item in worders)
             {
-                item.Start();
+                item.Value.Start();
             }
             stoppingToken.Register(() => Stop());
         }
@@ -130,7 +134,7 @@ namespace Brun
             //此处用于处理所有worker注销
             foreach (var item in worders)
             {
-                item.Dispose();
+                item.Value.Dispose();
             }
             this.worders.Clear();
             logger?.LogDebug("WorkerServer is Stoped");

@@ -14,4 +14,5 @@ namespace BrunUI.Models
         [Required]
         public string Password { get; set; }
     }
+    
 }

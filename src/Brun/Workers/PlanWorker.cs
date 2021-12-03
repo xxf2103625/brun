@@ -112,7 +112,7 @@ namespace Brun.Workers
         {
             if (!planBackRunType.IsSubclassOf(typeof(PlanBackRun)))
             {
-                throw new BrunTypeErrorException($"{planBackRunType.FullName} can not add to PlanWorker.");
+                throw new BrunException(BrunErrorCode.TypeError, $"{planBackRunType.FullName} can not add to PlanWorker.");
             }
             if (_backRuns.Any(m => m.Key == option.Id))
             {
