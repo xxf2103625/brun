@@ -12,6 +12,10 @@ namespace Brun.Models
         /// </summary>
         public string TypeName { get; set; }
         /// <summary>
+        /// 类型
+        /// </summary>
+        public WorkerType? WorkerType => string.IsNullOrEmpty(TypeName) ? null : Commons.BrunTool.GetWorkerType(TypeName);
+        /// <summary>
         /// Worker唯一标识Key
         /// </summary>
         public string Key { get; set; }

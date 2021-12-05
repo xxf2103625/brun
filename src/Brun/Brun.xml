@@ -152,6 +152,27 @@
             <param name="stoppingToken"></param>
             <returns></returns>
         </member>
+        <member name="M:Brun.Commons.BrunTool.GetReferanceAssemblies">
+            <summary>
+            获取当前程序域里的程序集
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.BrunTool.LoadFile(System.String)">
+            <summary>
+            加载程序集
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Commons.BrunTool.GetWorkerType(Brun.Enums.WorkerType)">
+            <summary>
+            获取Worker类型
+            </summary>
+            <param name="workerType"></param>
+            <returns></returns>
+            <exception cref="T:Brun.Exceptions.BrunException"></exception>
+        </member>
         <member name="T:Brun.WorkerConfig">
             <summary>
             Worker配置项
@@ -228,6 +249,11 @@
             id/key重复
             </summary>
         </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.ObjectIsNull">
+            <summary>
+            对象不能为null
+            </summary>
+        </member>
         <member name="T:Brun.Exceptions.BrunException">
             <summary>
             Brun异常信息
@@ -274,6 +300,11 @@
             Worker上下文
             </summary>
         </member>
+        <member name="P:Brun.IWorker.State">
+            <summary>
+            Worker运行装备
+            </summary>
+        </member>
         <member name="M:Brun.IWorker.Start">
             <summary>
             启动
@@ -296,6 +327,16 @@
             Id被占用
             </summary>
         </member>
+        <member name="F:Brun.Models.BrunResultState.NotFound">
+            <summary>
+            找不到指定数据/对象
+            </summary>
+        </member>
+        <member name="F:Brun.Models.BrunResultState.NotRunning">
+            <summary>
+            Worker未运行
+            </summary>
+        </member>
         <member name="F:Brun.Models.BrunResultState.Success">
             <summary>
             操作成功
@@ -314,6 +355,11 @@
         <member name="P:Brun.Models.WorkerInfo.TypeName">
             <summary>
             Worker类型名称
+            </summary>
+        </member>
+        <member name="P:Brun.Models.WorkerInfo.WorkerType">
+            <summary>
+            类型
             </summary>
         </member>
         <member name="P:Brun.Models.WorkerInfo.Key">
@@ -368,7 +414,7 @@
             <param name="workerEvent"><see cref="T:Brun.Enums.WorkerEvents"/></param>
             <param name="order">越小先执行，默认100，100以内为组件内部拦截器</param>
         </member>
-        <member name="T:Brun.TimeBackRunOption">
+        <member name="T:Brun.Options.TimeBackRunOption">
             <summary>
             TimeBackRun配置
             </summary>
@@ -940,16 +986,24 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="T:Brun.Services.IOnceWorkerService">
+            <summary>
+            管理OnceWorker
+            </summary>
+        </member>
         <member name="T:Brun.Services.OnceWorkerService">
             <summary>
             内存模式管理OnceWorker
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Models.WorkerConfigModel)">
+        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Workers.OnceWorker,System.Type,Brun.Options.BackRunOption)">
             <summary>
             添加OnceWorker
             </summary>
-            <param name="model"></param>
+            <param name="onceWorker"></param>
+            <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
         </member>
         <member name="T:Brun.Services.WorkerService">
             <summary>
@@ -1078,6 +1132,16 @@
             上下文
             </summary>
         </member>
+        <member name="P:Brun.Workers.AbstractWorker.State">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="P:Brun.Workers.AbstractWorker.BackRuns">
+            <summary>
+            包含的Backrun
+            </summary>
+        </member>
         <member name="P:Brun.Workers.AbstractWorker.RunningTasks">
             <summary>
             正在运行的任务
@@ -1094,8 +1158,8 @@
             </summary>
         </member>
         <member name="M:Brun.Workers.OnceWorker.StartBrun(System.Type)">
-            <summary>
-            开始执行Execute
+            <summary> 
+            开始执行Execute //TODO 以id为基础
             </summary>
         </member>
         <member name="M:Brun.Workers.OnceWorker.Run">
@@ -1117,19 +1181,21 @@
             <param name="sharedData"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type)">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type,Brun.Options.BackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
             <param name="backRunType"></param>
+            <param name="option"></param>
             <returns></returns>
             <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun``1">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun``1(Brun.Options.BackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
             <typeparam name="TBackRun"></typeparam>
+            <param name="option"></param>
             <returns></returns>
         </member>
         <member name="T:Brun.Workers.PlanWorker">

@@ -5,20 +5,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Brun
+namespace Brun.Options
 {
-    public class QueueBackRunOption
+    public class QueueBackRunOption : BackRunOption
     {
         private ConcurrentQueue<string> _queue;
-        public QueueBackRunOption(string id = null)
+        public QueueBackRunOption() : base(null, null)
+        {
+
+        }
+        public QueueBackRunOption(string id, string name) : base(id, name)
         {
             _queue = new ConcurrentQueue<string>();
-            if (id == null)
-            {
-                Id = Guid.NewGuid().ToString();
-            }
         }
-        public string Id { get; set; }
+
+        //public QueueBackRunOption(string id = null)
+        //{
+        //    _queue = new ConcurrentQueue<string>();
+        //    if (id == null)
+        //    {
+        //        Id = Guid.NewGuid().ToString();
+        //    }
+        //}
         public ConcurrentQueue<string> Queue => _queue;
     }
 }

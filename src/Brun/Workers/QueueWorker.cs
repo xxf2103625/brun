@@ -3,6 +3,7 @@ using Brun.Commons;
 using Brun.Contexts;
 using Brun.Enums;
 using Brun.Exceptions;
+using Brun.Options;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -134,6 +135,10 @@ namespace Brun.Workers
         }
         public QueueWorker AddBrun(Type queueBackRunType, QueueBackRunOption option)
         {
+            if (queueBackRunType == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "queueBackRunType can not be null.");
+            if (option == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "QueueBackRunOption can not be null.");
             if (!queueBackRunType.IsSubclassOf(typeof(QueueBackRun)))
             {
                 throw new BrunException(BrunErrorCode.TypeError, $"{queueBackRunType.FullName} can not add to QueueWorker.");
@@ -145,6 +150,10 @@ namespace Brun.Workers
             }
             else
             {
+                if (option.Id == null)
+                    option.Id = Guid.NewGuid().ToString();
+                if (option.Name == null)
+                    option.Name = queueBackRunType.Name;
                 QueueBackRun queueBackRun = (QueueBackRun)BrunTool.CreateInstance(queueBackRunType, option);
                 queueBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(queueBackRun.Id, queueBackRun);

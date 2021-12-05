@@ -12,6 +12,8 @@ namespace Brun.BaskRuns
     /// </summary>
     public interface IBackRun
     {
+        string Id { get; }
+        string Name { get; }
         ConcurrentDictionary<string, string> Data { get; }
         WorkerContext WorkerContext { get; }
 

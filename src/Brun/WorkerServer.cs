@@ -68,6 +68,16 @@ namespace Brun
                 return null;
             }
         }
+        public TWorker GetWorker<TWorker>(string key) where TWorker : class
+        {
+            IWorker worker = worders.FirstOrDefault(m => m.Key == key && m.Value.GetType() == typeof(TWorker))!.Value;
+            if (worker == null)
+            {
+                logger.LogError("can not find active OnceWorker，key:'{0}'", key);
+                return default(TWorker);
+            }
+            return (TWorker)worker;
+        }
         public IList<IWorker> GetAllWorker()
         {
 

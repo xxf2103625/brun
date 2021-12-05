@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,10 @@ namespace BrunTestHelper.BackRuns
 {
     public class CuntomDataBackRun : BackRun
     {
+        public CuntomDataBackRun(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             //string nb = Data["nb"];

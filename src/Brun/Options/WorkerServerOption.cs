@@ -41,6 +41,7 @@ namespace Brun
     {
         None,
         Memory,
+        Store,
         Redis
     }
 }

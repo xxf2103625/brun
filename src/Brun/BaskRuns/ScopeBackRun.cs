@@ -14,6 +14,9 @@ namespace Brun.BaskRuns
     /// </summary>
     public abstract class ScopeBackRun : IBackRun
     {
+        //TODO 添加options
+        public string Id => this.GetType().FullName;
+        public string Name => this.GetType().Name;
         /// <summary>
         /// 原始ServiceProvider
         /// </summary>

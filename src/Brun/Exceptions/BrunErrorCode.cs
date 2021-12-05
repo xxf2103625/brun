@@ -19,5 +19,9 @@ namespace Brun.Exceptions
         /// id/key重复
         /// </summary>
         AllreadyKey,
+        /// <summary>
+        /// 对象不能为null
+        /// </summary>
+        ObjectIsNull
     }
 }

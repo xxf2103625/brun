@@ -75,13 +75,14 @@ export const layout = ({ initialState }) => {
 export const request = {
   requestInterceptors: [
     (url, options) => {
-      //console.log('token:', getToken());
+      //console.log('token:', getToken(), 'options', options);
 
       const headers = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         brun_auth: getToken(),
       };
+      //console.log('requestInterceptors', options, url);
       return {
         url,
         options: { ...options, headers },

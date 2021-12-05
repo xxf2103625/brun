@@ -1,4 +1,6 @@
-﻿using Brun.Models;
+﻿using Brun.BaskRuns;
+using Brun.Models;
+using Brun.Options;
 using Brun.Services;
 using Brun.Workers;
 using StackExchange.Redis;
@@ -54,17 +56,28 @@ namespace Brun.Redis
 
         }
 
-        public async Task<IEnumerable<WorkerInfo>> GetOnceBruns()
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType,BackRunOption option)
         {
-            var list = await _db.SetMembersAsync(CacheKeys.OnceWorkKey);
-            List<WorkerInfo> workers = new List<WorkerInfo>();
-            foreach (var item in list)
-            {
-                var worker = JsonSerializer.Deserialize<WorkerInfo>(item);
-                if (worker != null)
-                    workers.Add(worker);
-            }
-            return workers;
+            throw new NotImplementedException();
+        }
+
+        public  IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
+        {
+            throw new NotImplementedException();
+            //var list = await _db.SetMembersAsync(CacheKeys.OnceWorkKey);
+            //List<WorkerInfo> workers = new List<WorkerInfo>();
+            //foreach (var item in list)
+            //{
+            //    var worker = JsonSerializer.Deserialize<WorkerInfo>(item);
+            //    if (worker != null)
+            //        workers.Add(worker);
+            //}
+            //return workers;
+        }
+
+        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        {
+            throw new NotImplementedException();
         }
     }
 }

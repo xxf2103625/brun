@@ -1,4 +1,5 @@
 ﻿using Brun.BaskRuns;
+using Brun.Options;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,6 +15,11 @@ namespace Brun
     public abstract class BackRun : BackRunServicePrivoder, IBackRun
     {
         private WorkerContext _workerContext;
+        protected BackRunOption option;
+        public BackRun(BackRunOption option)
+        {
+            this.option = option;
+        }
         /// <summary>
         /// 共享的自定义数据，修改时请自己加锁
         /// </summary>
@@ -21,7 +27,8 @@ namespace Brun
 
         public WorkerContext WorkerContext => _workerContext;
 
-        public virtual string Id { get; set; }
+        public string Id => option.Id;
+        public string Name => option.Name;
         /// <summary>
         /// 定义长时间任务时，自己用stoppingToken控制任务尽快结束
         /// </summary>

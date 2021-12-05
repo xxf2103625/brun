@@ -1,4 +1,5 @@
-﻿using Brun.Services;
+﻿using Brun.Models;
+using Brun.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,22 +22,24 @@ namespace BrunUI.Controllers
         }
         //url: /brunapi/backrunfilter/getoncebackrun
         [HttpGet]
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        public List<string> GetOnceBackrun()
+        public List<ValueLabel> GetOnceBackrun()
         {
-            return filterService.GetOnceBackRunTypes().Select(m => m.Name).OrderBy(m => m).ToList();
+            return filterService.GetOnceBackRunTypes().OrderBy(m => m.Name).Select(m =>new ValueLabel(m.FullName,m.Name)).ToList();
         }
-        public List<string> GetTimeBackrun()
+        [HttpGet]
+        public List<ValueLabel> GetTimeBackrun()
         {
-            return filterService.GetTimeBackRunTypes().Select(m => m.Name).OrderBy(m => m).ToList();
+            return filterService.GetTimeBackRunTypes().OrderBy(m=>m.Name).Select(m => new ValueLabel(m.FullName, m.Name)).ToList();
         }
-        public List<string> GetQueueBackrun()
+        [HttpGet]
+        public List<ValueLabel> GetQueueBackrun()
         {
-            return filterService.GetQueueBackRunTypes().Select(m => m.Name).OrderBy(m => m).ToList();
+            return filterService.GetQueueBackRunTypes().OrderBy(m => m.Name).Select(m => new ValueLabel(m.FullName, m.Name)).OrderBy(m => m).ToList();
         }
-        public List<string> GetPlanBackrun()
+        [HttpGet]
+        public List<ValueLabel> GetPlanBackrun()
         {
-            return filterService.GetPlanBackRunTypes().Select(m => m.Name).OrderBy(m => m).ToList();
+            return filterService.GetPlanBackRunTypes().OrderBy(m => m.Name).Select(m => new ValueLabel(m.FullName, m.Name)).ToList();
         }
     }
 }

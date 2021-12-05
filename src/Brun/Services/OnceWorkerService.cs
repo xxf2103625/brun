@@ -1,4 +1,6 @@
-﻿using Brun.Models;
+﻿using Brun.BaskRuns;
+using Brun.Models;
+using Brun.Options;
 using Brun.Workers;
 using System;
 using System.Collections.Generic;
@@ -13,43 +15,36 @@ namespace Brun.Services
     /// </summary>
     public class OnceWorkerService : IOnceWorkerService
     {
-        private WorkerServer _workerServer;
-        IBaseWorkerService<OnceWorker> _baseService;
+        private readonly WorkerServer workerServer;
+        IBaseWorkerService<OnceWorker> baseService;
         public OnceWorkerService(WorkerServer workerServer, IBaseWorkerService<OnceWorker> baseWorkerService)
         {
-            _workerServer = workerServer;
-            _baseService = baseWorkerService;
+            this.workerServer = workerServer;
+            this.baseService = baseWorkerService;
         }
         /// <summary>
         /// 添加OnceWorker
         /// </summary>
-        /// <param name="model"></param>
-        public Task<BrunResultState> AddOnceBrun(WorkerConfigModel model)
+        /// <param name="onceWorker"></param>
+        /// <param name="brunType"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker,Type brunType,BackRunOption option)
         {
-            if (model.Key == null)
-            {
-                model.Key = Guid.NewGuid().ToString();
-            }
-            if (model.Name == null)
-            {
-                model.Name = nameof(OnceWorker);
-            }
-            if (_baseService.ExistWorkerKey(model.Key))
-            {
-                return Task.FromResult(BrunResultState.IdBeUsed);
-            }
-            _baseService.AddWorker(model);
-            return Task.FromResult(BrunResultState.Success);
+            return onceWorker.AddBrun(brunType,option);
         }
-        public Task<IEnumerable<WorkerInfo>> GetOnceBruns()
+        public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
         {
-            var workers = _baseService.GetWorkers().ToList().Select(m => new WorkerInfo()
-            {
-                Key = m.Key,
-                Name = m.Name
-            });
+            return this.baseService.GetBackRuns();
+        }
+        //public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns(int current, int pageSize)
+        //{
+        //    return this.baseService.GetBackRuns().Skip((current-1)*pageSize);
+        //}
+        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        {
+            return this.baseService.GetWorkers().Select(m => new ValueLabel(m.Key,m.Name));
+        }
 
-            return Task.FromResult(workers);
-        }
     }
 }

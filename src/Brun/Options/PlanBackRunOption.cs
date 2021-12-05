@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace Brun.Options
 {
-    public class PlanBackRunOption
+    public class PlanBackRunOption: BackRunOption
     {
-        public PlanBackRunOption()
-        {
-            this.Id = Guid.NewGuid().ToString();
-        }
-        public PlanBackRunOption(PlanTime planTime, string id = null)
+        public PlanBackRunOption(PlanTime planTime):base(null,null)
         {
             this.PlanTime = planTime;
-            if (id != null)
-                this.Id = id;
-            else
-                this.Id = Guid.NewGuid().ToString();
         }
-        public string Id { get; set; }
+        public PlanBackRunOption(PlanTime planTime, string id,string name):base(id,name)
+        {
+            this.PlanTime = planTime;
+        }
         public PlanTime PlanTime { get; set; }
 
     }

@@ -22,8 +22,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddBrunService(options =>
 {
     //options.UseRedis("192.168.1.8");
-    //options.UseInMemory();
-    options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
+    options.UseInMemory();
+    //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
 
     //options.WorkerServer = options =>
     //{

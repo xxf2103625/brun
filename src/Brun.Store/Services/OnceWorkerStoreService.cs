@@ -1,5 +1,7 @@
-﻿using Brun.Commons;
+﻿using Brun.BaskRuns;
+using Brun.Commons;
 using Brun.Models;
+using Brun.Options;
 using Brun.Services;
 using Brun.Store.Entities;
 using Brun.Workers;
@@ -19,21 +21,27 @@ namespace Brun.Store.Services
         {
             this.sqlSugarClient = sqlSugarClient;
         }
-        public Task<BrunResultState> AddOnceBrun(WorkerConfigModel model)
+
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, BackRunOption option)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<WorkerInfo>> GetOnceBruns()
+        public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
         {
-            var list=await sqlSugarClient.Queryable<WorkerEntity>().Where(m=>m.Type==nameof(OnceWorker)).ToListAsync();
-            return list.Select(m => new WorkerInfo()
-            {
-                Key = m.Id,
-                Name= m.Name,
-                TypeName=m.Type
-            }); 
-            //throw new NotImplementedException();
+            //var list=await sqlSugarClient.Queryable<WorkerEntity>().Where(m=>m.Type==nameof(OnceWorker)).ToListAsync();
+            //return list.Select(m => new WorkerInfo()
+            //{
+            //    Key = m.Id,
+            //    Name= m.Name,
+            //    TypeName=m.Type
+            //}); 
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        {
+            throw new NotImplementedException();
         }
     }
 }

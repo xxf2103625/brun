@@ -1,4 +1,5 @@
-﻿using Brun.Models;
+﻿using Brun.BaskRuns;
+using Brun.Models;
 using Brun.Workers;
 using System.Collections.Generic;
 
@@ -16,6 +17,9 @@ namespace Brun.Services
         /// </summary>
         /// <returns></returns>
         IEnumerable<TWorker> GetWorkers();
+
+        TWorker GetWorkerByKey(string key);
+        IEnumerable<KeyValuePair<string, IBackRun>> GetBackRuns();
         /// <summary>
         /// 是否已有key
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,11 @@ namespace BrunTestHelper.BackRuns
     public class SimpleBackRun : BackRun
     {
         public static int SimNb = 0;
+
+        public SimpleBackRun(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
@@ -27,6 +33,11 @@ namespace BrunTestHelper.BackRuns
     public class SimpleLongBackRun : BackRun
     {
         public static int SimNb = 0;
+
+        public SimpleLongBackRun(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
@@ -41,6 +52,10 @@ namespace BrunTestHelper.BackRuns
     }
     public class SimpeManyBackRun : BackRun
     {
+        public SimpeManyBackRun(BackRunOption option) : base(option)
+        {
+        }
+
         public override async Task Run(CancellationToken stoppingToken)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.1));

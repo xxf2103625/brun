@@ -3,6 +3,7 @@ using Brun.Commons;
 using Brun.Contexts;
 using Brun.Enums;
 using Brun.Exceptions;
+using Brun.Options;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -95,6 +96,10 @@ namespace Brun.Workers
         }
         public TimeWorker AddBrun(Type timeBackRunType, TimeBackRunOption option)
         {
+            if (timeBackRunType == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "timeBackRunType can not be null.");
+            if (option == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "TimeBackRunOption can not be null.");
             if (!timeBackRunType.IsSubclassOf(typeof(TimeBackRun)))
             {
                 throw new BrunException( BrunErrorCode.TypeError,$"{timeBackRunType.FullName} can not add to TimeWorker.");
@@ -107,6 +112,10 @@ namespace Brun.Workers
             }
             else
             {
+                if (option.Id == null)
+                    option.Id = Guid.NewGuid().ToString();
+                if (option.Name == null)
+                    option.Name = timeBackRunType.Name;
                 TimeBackRun timeBackRun = (TimeBackRun)BrunTool.CreateInstance(timeBackRunType, option);
                 timeBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(timeBackRun.Id, timeBackRun);

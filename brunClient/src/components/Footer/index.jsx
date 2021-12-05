@@ -2,7 +2,7 @@
 import { DefaultFooter } from '@ant-design/pro-layout';
 
 const Footer = () => {
-  const defaultMessage = 'Brun - dotnet6开源任务调度组件 此前端基于antd pro模板';
+  const defaultMessage = 'Brun - net6开源任务调度组件 前端模板antd pro';
   const currentYear = new Date().getFullYear();
   return (
     <DefaultFooter

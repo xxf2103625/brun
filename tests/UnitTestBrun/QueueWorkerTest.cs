@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using Brun.Workers;
 using BrunTestHelper.QueueBackRuns;
 using Microsoft.Extensions.Hosting;

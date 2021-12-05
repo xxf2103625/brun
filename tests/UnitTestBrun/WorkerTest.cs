@@ -31,7 +31,7 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun));
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun),new Brun.Options.BackRunOption());
                     };
                 });
                 // WorkerBuilder
@@ -735,8 +735,9 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>()
-                        .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                        var worker = workerServer.CreateOnceWorker(new WorkerConfig());
+                        worker.AddBrun<SimpleNumberRun>();
+                        worker.AddBrun<SimpNbDelayBefore>(); worker.AddBrun<SimpNbDelayAfter>();
                     };
                 });
                 //WorkerBuilder
@@ -766,8 +767,10 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>()
-                        .AddBrun<SimpNbDelayBefore>().AddBrun<SimpNbDelayAfter>();
+                        var worker = workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data);
+                        worker.AddBrun<SimpleNumberRun>();
+                        worker.AddBrun<SimpNbDelayBefore>();
+                        worker.AddBrun<SimpNbDelayAfter>();
                     };
                 });
                 //WorkerBuilder

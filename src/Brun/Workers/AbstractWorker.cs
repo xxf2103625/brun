@@ -146,6 +146,14 @@ namespace Brun.Workers
         /// 上下文
         /// </summary>
         public WorkerContext Context => _context;
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public WorkerState State => _context.State;
+        /// <summary>
+        /// 包含的Backrun
+        /// </summary>
+        public ConcurrentDictionary<string, IBackRun> BackRuns => _backRuns;
 
         public string GetData(string key)
         {

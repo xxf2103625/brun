@@ -8,7 +8,7 @@ namespace Brun.Services
 {
     public class BackRunFilterService : IBackRunFilterService
     {
-        private static List<Type> systemBackRun = new List<Type>() { typeof(BackRun), typeof(TimeBackRun), typeof(QueueBackRun), typeof(PlanBackRun) };
+        //private static List<Type> systemBackRun = new List<Type>() { typeof(BackRun), typeof(TimeBackRun), typeof(QueueBackRun), typeof(PlanBackRun) };
         public List<Type> GetBackRunTypes()
         {
             var list = new List<Type>();

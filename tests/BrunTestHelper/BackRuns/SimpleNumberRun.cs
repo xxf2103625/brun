@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpleNumberRun : BackRun
     {
+        public SimpleNumberRun(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
@@ -44,6 +49,11 @@ namespace BrunTestHelper.BackRuns
     public class SimpNbDelayBefore : BackRun
     {
         private static object SimpNbDelayBefore_LOCK = new object();
+
+        public SimpNbDelayBefore(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             Console.WriteLine("计算前的等待...");
@@ -72,6 +82,10 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfter : BackRun
     {
+        public SimpNbDelayAfter(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)
@@ -101,6 +115,10 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayBeforeTask : BackRun
     {
+        public SimpNbDelayBeforeTask(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             Console.WriteLine("SimpNbDelayBeforeTask 计算前的等待...");
@@ -130,6 +148,10 @@ namespace BrunTestHelper.BackRuns
     /// </summary>
     public class SimpNbDelayAfterTask : BackRun
     {
+        public SimpNbDelayAfterTask(BackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             for (int i = 0; i < 100; i++)

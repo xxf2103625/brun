@@ -25,6 +25,10 @@ namespace Brun
         /// </summary>
         WorkerContext Context { get; }
         /// <summary>
+        /// Worker运行装备
+        /// </summary>
+        public Enums.WorkerState State { get; }
+        /// <summary>
         /// 启动
         /// </summary>
         /// <returns></returns>

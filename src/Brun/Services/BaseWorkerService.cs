@@ -1,4 +1,5 @@
-﻿using Brun.Exceptions;
+﻿using Brun.BaskRuns;
+using Brun.Exceptions;
 using Brun.Models;
 using Brun.Workers;
 using System;
@@ -21,17 +22,31 @@ namespace Brun.Services
         }
         public void AddWorker(WorkerConfigModel model)
         {
-            var worker= _workerServer.CreateWorker<TWorker>(new WorkerConfig(model.Key, model.Name));
-            if(_workerServer.Worders.Any(m=>m.Key == model.Key))
+            var worker = _workerServer.CreateWorker<TWorker>(new WorkerConfig(model.Key, model.Name));
+            if (_workerServer.Worders.Any(m => m.Key == model.Key))
             {
                 throw new BrunException(BrunErrorCode.AllreadyKey, "add Worker key existed");
             }
-            _workerServer.Worders.Add(worker.Key,worker);
+            _workerServer.Worders.Add(worker.Key, worker);
             //return BrunResultState.Success;
         }
         public IEnumerable<TWorker> GetWorkers()
         {
-            return _workerServer.Worders.Where(m => m.GetType() == typeof(TWorker)).Cast<TWorker>();
+            return _workerServer.Worders.Where(m => m.Value.GetType() == typeof(TWorker)).Select(m => m.Value).Cast<TWorker>();
+        }
+        public TWorker GetWorkerByKey(string key)
+        {
+            return _workerServer.GetWorker<TWorker>(key);
+        }
+        public IEnumerable<KeyValuePair<string, IBackRun>> GetBackRuns()
+        {
+            foreach (var item in GetWorkers())
+            {
+                foreach (var brun in item.BackRuns)
+                {
+                    yield return brun;
+                }
+            }
         }
         /// <summary>
         /// 是否已有key

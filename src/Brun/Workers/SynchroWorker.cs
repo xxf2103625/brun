@@ -35,10 +35,10 @@ namespace Brun.Workers
             }
             _logger.LogInformation($"SynchroWorker with key '{this.Key}' is init.");
         }
-        public override async Task StartBrun(Type brunType)
+        public override  void StartBrun(Type brunType)
         {
             semaphoreSlim.Wait();
-            await base.StartBrun(brunType);
+            base.StartBrun(brunType);
             semaphoreSlim.Release();
         }
     }

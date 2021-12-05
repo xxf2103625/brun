@@ -13,13 +13,13 @@ namespace Brun
     /// </summary>
     public abstract class PlanBackRun : BackRun
     {
-        private PlanBackRunOption _option;
-        public PlanBackRun(PlanBackRunOption option)
+        //private PlanBackRunOption _option;
+        public PlanBackRun(PlanBackRunOption option) : base(option)
         {
-            _option = option;
+            //_option = option;
         }
-        public PlanBackRunOption Option => _option;
-        public override string Id => _option.Id;
+        public PlanBackRunOption Option => (PlanBackRunOption)option;
+        //public override string Id => _option.Id;
         /// <summary>
         /// 上次执行时间
         /// </summary>
@@ -28,9 +28,9 @@ namespace Brun
         /// 下次执行时间
         /// </summary>
         public DateTimeOffset? NextRunTime { get; set; }
-        public void SetPlanBackRun(PlanBackRunOption option)
-        {
-            this._option = option;
-        }
+        //public void SetPlanBackRun(PlanBackRunOption option)
+        //{
+        //    this._option = option;
+        //}
     }
 }

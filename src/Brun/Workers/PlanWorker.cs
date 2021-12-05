@@ -110,6 +110,10 @@ namespace Brun.Workers
         }
         public PlanWorker AddBrun(Type planBackRunType, PlanBackRunOption option)
         {
+            if (planBackRunType == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "planBackRunType can not be null.");
+            if (option == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, "PlanBackRunOption can not be null.");
             if (!planBackRunType.IsSubclassOf(typeof(PlanBackRun)))
             {
                 throw new BrunException(BrunErrorCode.TypeError, $"{planBackRunType.FullName} can not add to PlanWorker.");
@@ -121,6 +125,10 @@ namespace Brun.Workers
             }
             else
             {
+                if (option.Id == null)
+                    option.Id = Guid.NewGuid().ToString();
+                if (option.Name == null)
+                    option.Name = planBackRunType.Name;
                 PlanBackRun planBackRun = (PlanBackRun)BrunTool.CreateInstance(planBackRunType, option);
                 planBackRun.SetWorkerContext(_context);
                 _backRuns.TryAdd(planBackRun.Id, planBackRun);

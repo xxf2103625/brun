@@ -12,7 +12,7 @@ namespace Brun.Services
     /// <summary>
     /// Worker管理，内存中
     /// </summary>
-    public class WorkerService
+    public class WorkerService : IWorkerService
     {
         private WorkerServer workerServer;
         public WorkerService(WorkerServer workerServer)
@@ -21,7 +21,7 @@ namespace Brun.Services
         }
         public Task<BrunResultState> AddWorker(WorkerConfigModel model, WorkerType workerType)
         {
-            Type type = GetWorkerType(workerType);
+            Type type = Commons.BrunTool.GetWorkerType(workerType);
             if (model.Key == null)
             {
                 model.Key = Guid.NewGuid().ToString();
@@ -36,17 +36,19 @@ namespace Brun.Services
             }
             var worker = workerServer.CreateWorker(type, new WorkerConfig(model.Key, model.Name));
             workerServer.Worders.Add(worker.Key, worker);
+            worker.Start();
             return Task.FromResult(BrunResultState.Success);
         }
-        public Task<List<WorkerInfo>> GetWorkerInfos()
+        public IEnumerable<WorkerInfo> GetWorkerInfos()
         {
             var list = workerServer.Worders.Values.Select(m => new WorkerInfo()
             {
                 Key = m.Key,
                 Name = m.Name,
-                TypeName = m.GetType().Name
-            }).ToList();
-            return Task.FromResult(list);
+                TypeName = m.GetType().Name,
+                State = m.State
+            });
+            return list;
         }
         public void Start(string key)
         {
@@ -72,21 +74,6 @@ namespace Brun.Services
         {
             throw new NotImplementedException();
         }
-        private Type GetWorkerType(WorkerType workerType)
-        {
-            switch (workerType)
-            {
-                case WorkerType.OnceWorker:
-                    return typeof(OnceWorker);
-                case WorkerType.TimeWorker:
-                    return typeof(TimeWorker);
-                case WorkerType.QueueWorker:
-                    return typeof(QueueWorker);
-                case WorkerType.PlanWorker:
-                    return typeof(PlanWorker);
-                default:
-                    throw new Exceptions.BrunException(Exceptions.BrunErrorCode.TypeError, "worker type error");
-            }
-        }
+
     }
 }

@@ -16,6 +16,14 @@ namespace Brun.Models
         /// </summary>
         IdBeUsed = -8,
         /// <summary>
+        /// 找不到指定数据/对象
+        /// </summary>
+        NotFound = -7,
+        /// <summary>
+        /// Worker未运行
+        /// </summary>
+        NotRunning = -6,
+        /// <summary>
         /// 操作成功
         /// </summary>
         Success = 1,
