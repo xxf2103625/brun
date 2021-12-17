@@ -31,7 +31,7 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun),new Brun.Options.BackRunOption());
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun),new Brun.Options.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder

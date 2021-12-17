@@ -36,7 +36,7 @@ namespace Brun
         /// <param name="backRunType">backRun类型</param>
         /// <returns></returns>
         void Run(Type backRunType);
-        BrunResultState AddBrun(Type backRunType, BackRunOption option);
-        BrunResultState AddBrun<TBackRun>(BackRunOption option) where TBackRun : BackRun;
+        BrunResultState AddBrun(Type backRunType, OnceBackRunOption option);
+        BrunResultState AddBrun<TBackRun>(OnceBackRunOption option) where TBackRun : OnceBackRun;
     }
 }

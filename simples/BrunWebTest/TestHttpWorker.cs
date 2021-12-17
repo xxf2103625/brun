@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,23 +11,35 @@ using System.Threading.Tasks;
 
 namespace BrunWebTest
 {
-    public class LogTimeRun : BackRun
+    public class LogTimeRun : OnceBackRun
     {
+        public LogTimeRun(OnceBackRunOption option) : base(option)
+        {
+        }
+
         public override async Task Run(CancellationToken stoppingToken)
         {
             GetRequiredService<ILogger<LogTimeRun>>().LogInformation("{0} this is logTimeRun", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
     }
-    public class ErrorTestRun : BackRun
+    public class ErrorTestRun : OnceBackRun
     {
+        public ErrorTestRun(OnceBackRunOption option) : base(option)
+        {
+        }
+
         public override Task Run(CancellationToken stoppingToken)
         {
             throw new NotImplementedException("测试异常");
         }
     }
-    public class TestHttpWorker : BackRun
+    public class TestHttpWorker : OnceBackRun
     {
+        public TestHttpWorker(OnceBackRunOption option) : base(option)
+        {
+        }
+
         public async override Task Run(CancellationToken stoppingToken)
         {
 

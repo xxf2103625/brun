@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Brun.Options
 {
-    public class BackRunOption
+    public abstract class BackRunOption
     {
-        public BackRunOption() : this(null, null) { }
-        public BackRunOption(string id, string name)
+        public BackRunOption(string id,string name)
         {
             Id = id;
             Name = name;

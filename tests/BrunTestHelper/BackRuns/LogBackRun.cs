@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class LogBackRun : BackRun
+    public class LogBackRun : OnceBackRun
     {
-        public LogBackRun(BackRunOption option) : base(option)
+        public LogBackRun(OnceBackRunOption option) : base(option)
         {
         }
 

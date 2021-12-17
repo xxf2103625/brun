@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrunSimple.Controllers
 {
-    public class BrController : Controller
+    public class BrunController : Controller
     {
         IOnceWorkerService onceWorker;
-        public BrController(IOnceWorkerService onceWorker)
+        public BrunController(IOnceWorkerService onceWorker)
         {
             this.onceWorker = onceWorker;
         }
@@ -15,6 +15,5 @@ namespace BrunSimple.Controllers
             //onceWorker.AddOnceBrun(new Brun.Models.WorkerConfigModel() { Key = "t1", Name = "tName" });
             return Content("Index");
         }
-
     }
 }

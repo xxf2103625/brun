@@ -3,6 +3,7 @@ using Brun.Commons;
 using Brun.Contexts;
 using Brun.Enums;
 using Brun.Exceptions;
+using Brun.Models;
 using Brun.Options;
 using Microsoft.Extensions.Logging;
 using System;
@@ -64,26 +65,11 @@ namespace Brun.Workers
                             TimeBackRun backRun = (TimeBackRun)item.Value;
                             if (backRun.Option.NextTime != null && backRun.Option.NextTime.Value <= DateTime.Now)
                             {
-                                Task.Run(async () =>
-                                {
-                                    BrunContext brunContext = new BrunContext(backRun);
-                                    await Execute(brunContext);
-                                });
+                                BrunContext brunContext = new BrunContext(backRun);
+                                _ = Execute(brunContext);
                                 backRun.Option.NextTime = DateTime.Now.Add(backRun.Option.Cycle);
                             }
                         }
-                        //foreach (var item in TimeOption.CycleTimes)
-                        //{
-                        //    if (item.NextTime != null && item.NextTime.Value <= DateTime.Now)
-                        //    {
-                        //        BrunContext brunContext = new BrunContext(item.BackRun.GetType());
-                        //        Task.Run(async () =>
-                        //        {
-                        //            await Execute(brunContext);
-                        //        });
-                        //        item.NextTime = DateTime.Now.Add(item.Cycle);
-                        //    }
-                        //}
                         Thread.Sleep(5);
                     }
                 }, TaskCreationOptions.LongRunning);
@@ -92,9 +78,9 @@ namespace Brun.Workers
         }
         protected override Task Brun(BrunContext context)
         {
-            return context.BackRun.Run(tokenSource.Token);
+            return ((TimeBackRun)context.BackRun).Run(tokenSource.Token);
         }
-        public TimeWorker AddBrun(Type timeBackRunType, TimeBackRunOption option)
+        public BrunResultState AddBrun(Type timeBackRunType, TimeBackRunOption option)
         {
             if (timeBackRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "timeBackRunType can not be null.");
@@ -102,13 +88,14 @@ namespace Brun.Workers
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "TimeBackRunOption can not be null.");
             if (!timeBackRunType.IsSubclassOf(typeof(TimeBackRun)))
             {
-                throw new BrunException( BrunErrorCode.TypeError,$"{timeBackRunType.FullName} can not add to TimeWorker.");
+                throw new BrunException(BrunErrorCode.TypeError, $"{timeBackRunType.FullName} can not add to TimeWorker.");
             }
 
             if (_backRuns.Any(m => m.Key == option.Id))
             {
                 _logger.LogError("the TimeWorker key:'{0}' has allready added timeBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, timeBackRunType.FullName);
-                return this;
+                //return this;
+                return BrunResultState.IdBeUsed;
             }
             else
             {
@@ -118,10 +105,18 @@ namespace Brun.Workers
                     option.Name = timeBackRunType.Name;
                 TimeBackRun timeBackRun = (TimeBackRun)BrunTool.CreateInstance(timeBackRunType, option);
                 timeBackRun.SetWorkerContext(_context);
-                _backRuns.TryAdd(timeBackRun.Id, timeBackRun);
-                InitPreTimeBackRun(timeBackRun);
-                _logger.LogInformation("the TimeWorker with key:'{0}' added TimeBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, timeBackRunType.FullName);
-                return this;
+                if (_backRuns.TryAdd(timeBackRun.Id, timeBackRun))
+                {
+                    InitPreTimeBackRun(timeBackRun);
+                    _logger.LogInformation("the TimeWorker with key:'{0}' added TimeBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, timeBackRunType.FullName);
+                    //return this;
+                    return BrunResultState.Success;
+                }
+                else
+                {
+                    _logger.LogError("the TimeWorker with key:'{0}' add TimeBackRun by id:'{1}' with type:'{2}' error,_backRuns.TryAdd return false.", this.Key, option.Id, timeBackRunType.FullName);
+                    return BrunResultState.UnKnow;
+                }
             }
         }
         /// <summary>

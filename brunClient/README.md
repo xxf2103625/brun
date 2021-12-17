@@ -1,10 +1,8 @@
-# Ant Design Pro
+# BrunUI 前端
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
+基于 [Ant Design Pro](https://pro.ant.design).
 
-## Environment Prepare
-
-Install `node_modules`:
+## 安装依赖
 
 ```bash
 npm install
@@ -16,42 +14,22 @@ or
 yarn
 ```
 
-## Provided Scripts
-
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
-
-Scripts provided in `package.json`. It's safe to modify or add additional script:
-
-### Start project
+### 运行项目
 
 ```bash
 npm start
 ```
 
-### Build project
+or
+
+```bash
+yarn start
+```
+
+### 生成发布静态文件
 
 ```bash
 npm run build
 ```
 
-### Check code style
-
-```bash
-npm run lint
-```
-
-You can also use script to auto fix some lint error:
-
-```bash
-npm run lint:fix
-```
-
-### Test code
-
-```bash
-npm test
-```
-
-## More
-
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+## 直接修改 app.jsx 中的 url 来匹配后台端口

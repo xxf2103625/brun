@@ -5,20 +5,28 @@ using System.Collections.Concurrent;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//if (Environment.OSVersion.Platform == PlatformID.Unix)
-//{
-//    builder.WebHost.ConfigureKestrel(options =>
-//    {
-//        options.ListenUnixSocket("/tmp/kestrel-test.sock");
-//    });
-//}
+if (Environment.OSVersion.Platform == PlatformID.Unix)
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenUnixSocket("/tmp/kestrel-test.sock");
+    });
+}
 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 
-//builder.Services.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("brun", builder =>
+    {
+        builder.WithOrigins("http://localhost:8000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+    });
+});
 builder.Services.AddBrunService(options =>
 {
     //options.UseRedis("192.168.1.8");
@@ -79,6 +87,7 @@ app.UseStaticFiles();
 app.UseBrunUI();
 
 app.UseRouting();
+app.UseCors("brun");
 app.UseAuthentication();
 app.UseAuthorization();
 

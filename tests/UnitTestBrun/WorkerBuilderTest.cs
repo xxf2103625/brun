@@ -26,7 +26,7 @@ namespace UnitTestBrun
                     options.WorkerServer = workerServer =>
                     {
                         workerServer.CreateOnceWorker(new WorkerConfig(key, name))
-                            .AddBrun(typeof(SimpleBackRun));
+                            .AddBrun(typeof(SimpleBackRun),new Brun.Options.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder.Create<SimpleBackRun>()
@@ -47,7 +47,7 @@ namespace UnitTestBrun
                     options.WorkerServer = workerServer =>
                     {
                         workerServer.CreateOnceWorker(new WorkerConfig())
-                        .AddBrun(typeof(SimpleBackRun));
+                        .AddBrun(typeof(SimpleBackRun),new Brun.Options.OnceBackRunOption());
                     };
                 });
                 //WorkerBuilder.Create<SimpleBackRun>()

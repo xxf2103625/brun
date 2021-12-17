@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 namespace Brun.Workers
 {
     /// <summary>
+    /// //TODO 没什么用，移除
     /// 同步Worker，同一个Worker内，backrun串行运行
     /// </summary>
     public class SynchroWorker : OnceWorker
@@ -42,5 +43,4 @@ namespace Brun.Workers
             semaphoreSlim.Release();
         }
     }
-
 }

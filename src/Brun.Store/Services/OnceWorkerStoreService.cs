@@ -22,7 +22,7 @@ namespace Brun.Store.Services
             this.sqlSugarClient = sqlSugarClient;
         }
 
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, BackRunOption option)
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
             throw new NotImplementedException();
         }
@@ -40,6 +40,11 @@ namespace Brun.Store.Services
         }
 
         public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOnceWorker GetWorker(string key)
         {
             throw new NotImplementedException();
         }

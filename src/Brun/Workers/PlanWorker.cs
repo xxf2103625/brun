@@ -99,7 +99,6 @@ namespace Brun.Workers
         protected override Task Brun(BrunContext context)
         {
             PlanBackRun backrun = (PlanBackRun)context.BackRun;
-            backrun.SetWorkerContext(_context);
             return backrun.Run(tokenSource.Token);
         }
         public override void Dispose()

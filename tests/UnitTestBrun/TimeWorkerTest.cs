@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.Options;
 using BrunTestHelper.BackRuns;
 using BrunTestHelper.QueueBackRuns;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -38,7 +39,7 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime)));
+                        workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime),false));
                     };
                 });
 

@@ -15,12 +15,16 @@ namespace Brun.Services
     /// </summary>
     public class OnceWorkerService : IOnceWorkerService
     {
-        private readonly WorkerServer workerServer;
+        //private readonly WorkerServer workerServer;
         IBaseWorkerService<OnceWorker> baseService;
-        public OnceWorkerService(WorkerServer workerServer, IBaseWorkerService<OnceWorker> baseWorkerService)
+        public OnceWorkerService(IBaseWorkerService<OnceWorker> baseWorkerService)
         {
-            this.workerServer = workerServer;
+            //this.workerServer = workerServer;
             this.baseService = baseWorkerService;
+        }
+        public IOnceWorker GetWorker(string key)
+        {
+            return baseService.GetWorkerByKey(key);
         }
         /// <summary>
         /// 添加OnceWorker
@@ -29,9 +33,9 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker,Type brunType,BackRunOption option)
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
-            return onceWorker.AddBrun(brunType,option);
+            return onceWorker.AddBrun(brunType, option);
         }
         public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
         {
@@ -43,7 +47,7 @@ namespace Brun.Services
         //}
         public IEnumerable<ValueLabel> GetOnceWorkersInfo()
         {
-            return this.baseService.GetWorkers().Select(m => new ValueLabel(m.Key,m.Name));
+            return this.baseService.GetWorkers().Select(m => new ValueLabel(m.Key, m.Name));
         }
 
     }

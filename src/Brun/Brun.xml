@@ -4,22 +4,15 @@
         <name>Brun</name>
     </assembly>
     <members>
-        <member name="T:Brun.BackRun">
+        <member name="T:Brun.BaskRuns.BackRun">
             <summary>
-            包含容器和自定义数据的单次后台任务
+            BackRun基础基类，每种Worker独立分开
             </summary>
         </member>
-        <member name="P:Brun.BackRun.Data">
+        <member name="P:Brun.BaskRuns.BackRun.Data">
             <summary>
             共享的自定义数据，修改时请自己加锁
             </summary>
-        </member>
-        <member name="M:Brun.BackRun.Run(System.Threading.CancellationToken)">
-            <summary>
-            定义长时间任务时，自己用stoppingToken控制任务尽快结束
-            </summary>
-            <param name="stoppingToken">结束信号</param>
-            <returns></returns>
         </member>
         <member name="P:Brun.BaskRuns.BackRunServicePrivoder.ServiceProvider">
             <summary>
@@ -48,8 +41,49 @@
         </member>
         <member name="T:Brun.BaskRuns.IBackRun">
             <summary>
-            所有后台任务的接口,直接继承这个无法使用自定义Data
+            所有后台任务的接口
             </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.Id">
+            <summary>
+            BackRun的Key
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.Name">
+            <summary>
+            BackRun的Name
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.Data">
+            <summary>
+            TODO 是否移入上下文
+            单个Worker实例中的共享数据
+            </summary>
+        </member>
+        <member name="T:Brun.BaskRuns.IQueueRun">
+            <summary>
+            QueueBackRun需要带参数的run
+            </summary>
+        </member>
+        <member name="M:Brun.BaskRuns.IQueueRun.Run(System.String,System.Threading.CancellationToken)">
+            <summary>
+            自己的业务逻辑
+            </summary>
+            <param name="message">传入的消息</param>
+            <param name="stoppingToken">任务结束信号量，当系统正常停止/工作中心停止时会首先发信号，使用该token可以手动停止/取消未完成任务，超时未结束的任务会强制结束</param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.BaskRuns.IRun">
+            <summary>
+            不同类型的Worker可能需要不同的run方法
+            </summary>
+        </member>
+        <member name="M:Brun.BaskRuns.IRun.Run(System.Threading.CancellationToken)">
+            <summary>
+            自己的任务逻辑
+            </summary>
+            <param name="stoppingToken">任务结束信号量，当系统正常停止/工作中心停止时会首先发信号，使用该token可以手动停止/取消未完成任务，超时未结束的任务会强制结束</param>
+            <returns></returns>
         </member>
         <member name="T:Brun.BaskRuns.ScopeBackRun">
             <summary>
@@ -124,6 +158,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Brun.OnceBackRun">
+            <summary>
+            OnceWorker专用的BackRun
+            </summary>
+        </member>
         <member name="T:Brun.PlanBackRun">
             <summary>
             计划时间任务
@@ -152,6 +191,11 @@
             <param name="stoppingToken"></param>
             <returns></returns>
         </member>
+        <member name="P:Brun.QueueBackRun.Queue">
+            <summary>
+            消息队列
+            </summary>
+        </member>
         <member name="M:Brun.Commons.BrunTool.GetReferanceAssemblies">
             <summary>
             获取当前程序域里的程序集
@@ -170,6 +214,22 @@
             获取Worker类型
             </summary>
             <param name="workerType"></param>
+            <returns></returns>
+            <exception cref="T:Brun.Exceptions.BrunException"></exception>
+        </member>
+        <member name="M:Brun.Commons.BrunTool.GetWorkerType(System.Type)">
+            <summary>
+            获取Worker类型枚举
+            </summary>
+            <param name="workerType"></param>
+            <returns></returns>
+            <exception cref="T:Brun.Exceptions.BrunException"></exception>
+        </member>
+        <member name="M:Brun.Commons.BrunTool.GetWorkerType(System.String)">
+            <summary>
+            类型字符串获取Worker类型枚举 OnceWorker/TimeWorker
+            </summary>
+            <param name="workerTypeName"></param>
             <returns></returns>
             <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
@@ -322,14 +382,14 @@
             定义常用结果状态码
             </summary>
         </member>
-        <member name="F:Brun.Models.BrunResultState.IdBeUsed">
+        <member name="F:Brun.Models.BrunResultState.UnKnow">
             <summary>
-            Id被占用
+            未知异常
             </summary>
         </member>
-        <member name="F:Brun.Models.BrunResultState.NotFound">
+        <member name="F:Brun.Models.BrunResultState.Success">
             <summary>
-            找不到指定数据/对象
+            操作成功
             </summary>
         </member>
         <member name="F:Brun.Models.BrunResultState.NotRunning">
@@ -337,9 +397,14 @@
             Worker未运行
             </summary>
         </member>
-        <member name="F:Brun.Models.BrunResultState.Success">
+        <member name="F:Brun.Models.BrunResultState.NotFound">
             <summary>
-            操作成功
+            找不到指定数据/对象
+            </summary>
+        </member>
+        <member name="F:Brun.Models.BrunResultState.IdBeUsed">
+            <summary>
+            Id被占用
             </summary>
         </member>
         <member name="P:Brun.Models.WorkerConfigModel.Key">
@@ -441,17 +506,22 @@
         </member>
         <member name="P:Brun.WorkerServerOption.UserName">
             <summary>
-            UI登录用户名，默认brun
+            UI登录用户名，默认admin
             </summary>
         </member>
         <member name="P:Brun.WorkerServerOption.Password">
             <summary>
-            UI登录密码，默认brun
+            UI登录密码，默认admin
             </summary>
         </member>
         <member name="T:Brun.WorkerStoreType">
             <summary>
             储存类型
+            </summary>
+        </member>
+        <member name="F:Brun.WorkerStoreType.Store">
+            <summary>
+            SqlSugar支持的数据库
             </summary>
         </member>
         <member name="T:Brun.Plan.CronParser">
@@ -996,11 +1066,20 @@
             内存模式管理OnceWorker
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Workers.OnceWorker,System.Type,Brun.Options.BackRunOption)">
+        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Workers.OnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
             <summary>
             添加OnceWorker
             </summary>
             <param name="onceWorker"></param>
+            <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.TimeWorkerService.AddTimeBrun(Brun.Workers.TimeWorker,System.Type,Brun.Options.TimeBackRunOption)">
+            <summary>
+            添加TimeWorker
+            </summary>
+            <param name="timeWorker"></param>
             <param name="brunType"></param>
             <param name="option"></param>
             <returns></returns>
@@ -1089,7 +1168,7 @@
         </member>
         <member name="M:Brun.Workers.AbstractWorker.#ctor(Brun.WorkerConfig)">
             <summary>
-            统一构造函数 TODO 是否移除config？
+            统一构造函数
             </summary>
             <param name="config"></param>
         </member>
@@ -1181,7 +1260,7 @@
             <param name="sharedData"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type,Brun.Options.BackRunOption)">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type,Brun.Options.OnceBackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
@@ -1190,7 +1269,7 @@
             <returns></returns>
             <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun``1(Brun.Options.BackRunOption)">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun``1(Brun.Options.OnceBackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
@@ -1235,7 +1314,7 @@
         </member>
         <member name="M:Brun.Workers.QueueWorker.Enqueue(System.Type,System.String)">
             <summary>
-            指定QueueBackRun类型的消息后台任务
+            指定QueueBackRun类型的消息后台任务，可能多个
             </summary>
             <param name="queueBackRunType"></param>
             <param name="message"></param>
@@ -1244,11 +1323,12 @@
             <summary>
             指定QueueBackRun类型的消息后台任务
             </summary>
-            <param name="queueBackRunTypeFullName"></param>
+            <param name="queueBackRunTypeFullName">包含命名空间的类型名称</param>
             <param name="message"></param>
         </member>
         <member name="T:Brun.Workers.SynchroWorker">
             <summary>
+            //TODO 没什么用，移除
             同步Worker，同一个Worker内，backrun串行运行
             </summary>
         </member>

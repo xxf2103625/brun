@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace BrunTestHelper.BackRuns
 {
 
-    public class DataBackRun : BackRun
+    public class DataBackRun : OnceBackRun
     {
-        public DataBackRun(BackRunOption option) : base(option)
+        public DataBackRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -35,9 +35,9 @@ namespace BrunTestHelper.BackRuns
             return Task.CompletedTask;
         }
     }
-    public class ErrorBackRun4 : BackRun
+    public class ErrorBackRun4 : OnceBackRun
     {
-        public ErrorBackRun4(BackRunOption option) : base(option)
+        public ErrorBackRun4(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -61,9 +61,9 @@ namespace BrunTestHelper.BackRuns
             throw new NotImplementedException("测试异常");
         }
     }
-    public class ErrorBackRun : BackRun
+    public class ErrorBackRun : OnceBackRun
     {
-        public ErrorBackRun(BackRunOption option) : base(option)
+        public ErrorBackRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -87,9 +87,9 @@ namespace BrunTestHelper.BackRuns
             throw new NotImplementedException("测试异常");
         }
     }
-    public class ErrorLongBackRun : BackRun
+    public class ErrorLongBackRun : OnceBackRun
     {
-        public ErrorLongBackRun(BackRunOption option) : base(option)
+        public ErrorLongBackRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -111,9 +111,9 @@ namespace BrunTestHelper.BackRuns
             throw new NotImplementedException("测试异常");
         }
     }
-    public class ErrorBackRun3 : BackRun
+    public class ErrorBackRun3 : OnceBackRun
     {
-        public ErrorBackRun3(BackRunOption option) : base(option)
+        public ErrorBackRun3(OnceBackRunOption option) : base(option)
         {
         }
 

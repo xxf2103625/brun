@@ -26,11 +26,11 @@ namespace Brun
         /// </summary>
         public Action<IServiceCollection> ServicesConfigure { get; set; }
         /// <summary>
-        /// UI登录用户名，默认brun
+        /// UI登录用户名，默认admin
         /// </summary>
         public string UserName { get; set; } = "admin";
         /// <summary>
-        /// UI登录密码，默认brun
+        /// UI登录密码，默认admin
         /// </summary>
         public string Password { get; set; } = "admin";
     }
@@ -41,7 +41,11 @@ namespace Brun
     {
         None,
         Memory,
+        /// <summary>
+        /// SqlSugar支持的数据库
+        /// </summary>
         Store,
-        Redis
+        Redis,
+        MongoDb
     }
 }

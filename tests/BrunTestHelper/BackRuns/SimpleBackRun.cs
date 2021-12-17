@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class SimpleBackRun : BackRun
+    public class SimpleBackRun : OnceBackRun
     {
         public static int SimNb = 0;
 
-        public SimpleBackRun(BackRunOption option) : base(option)
+        public SimpleBackRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -30,11 +30,11 @@ namespace BrunTestHelper.BackRuns
             return Task.CompletedTask;
         }
     }
-    public class SimpleLongBackRun : BackRun
+    public class SimpleLongBackRun : OnceBackRun
     {
         public static int SimNb = 0;
 
-        public SimpleLongBackRun(BackRunOption option) : base(option)
+        public SimpleLongBackRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -50,9 +50,9 @@ namespace BrunTestHelper.BackRuns
             return Task.CompletedTask;
         }
     }
-    public class SimpeManyBackRun : BackRun
+    public class SimpeManyBackRun : OnceBackRun
     {
-        public SimpeManyBackRun(BackRunOption option) : base(option)
+        public SimpeManyBackRun(OnceBackRunOption option) : base(option)
         {
         }
 

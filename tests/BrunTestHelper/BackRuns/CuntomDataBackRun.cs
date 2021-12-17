@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class CuntomDataBackRun : BackRun
+    public class CuntomDataBackRun : OnceBackRun
     {
-        public CuntomDataBackRun(BackRunOption option) : base(option)
+        public CuntomDataBackRun(OnceBackRunOption option) : base(option)
         {
         }
 

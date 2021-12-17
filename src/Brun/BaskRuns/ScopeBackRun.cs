@@ -30,7 +30,6 @@ namespace Brun.BaskRuns
         /// </summary>
         public ConcurrentDictionary<string, string> Data { get; set; }
 
-        public WorkerContext WorkerContext => throw new NotImplementedException();
 
         /// <summary>
         /// 每次会创建一个Scope，ServiceProvider变为Scope内的ServiceProvider，可以理解成类似mvc每个请求的生命周期

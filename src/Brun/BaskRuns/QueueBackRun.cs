@@ -1,6 +1,7 @@
 ﻿using Brun.BaskRuns;
 using Brun.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,16 +13,12 @@ namespace Brun
     /// <summary>
     /// 队列任务基类
     /// </summary>
-    public abstract class QueueBackRun : BackRun
+    public abstract class QueueBackRun : BackRun, IQueueRun
     {
-        //QueueBackRunOption _option;
-        public QueueBackRun(QueueBackRunOption option):base(option)
+        private ConcurrentQueue<string> _queue;
+        public QueueBackRun(QueueBackRunOption option) : base(option)
         {
-            //_option = option;
-        }
-        public override Task Run(CancellationToken stoppingToken)
-        {
-            throw new NotImplementedException("use Run(string message, CancellationToken stoppingToken)");
+            _queue = new ConcurrentQueue<string>();
         }
         /// <summary>
         /// 业务逻辑
@@ -30,8 +27,11 @@ namespace Brun
         /// <param name="stoppingToken"></param>
         /// <returns></returns>
         public abstract Task Run(string message, CancellationToken stoppingToken);
-        //public override string Id => _option.Id;
-        public QueueBackRunOption Option => (QueueBackRunOption)option;
+        /// <summary>
+        /// 消息队列
+        /// </summary>
+        internal ConcurrentQueue<string> Queue => _queue;
+        internal TimeBackRunOption Option => (TimeBackRunOption)option;
     }
 
 }

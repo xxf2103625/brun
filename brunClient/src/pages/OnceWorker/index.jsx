@@ -1,37 +1,58 @@
 import React, { useState, useRef } from 'react';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Input, Drawer, Popconfirm, Tooltip } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import { querylist, addBrun, runBrun } from '@/services/onceWorkerService';
+import styles from './style.less';
 
 const columns = [
   { title: 'ID', dataIndex: 'id', ellipsis: true },
-  { title: '类型', dataIndex: 'typeName' },
-  { title: '工作中心', dataIndex: 'workerName' },
+  { title: '名称', dataIndex: 'name' },
+  {
+    title: '类型',
+    dataIndex: 'typeName',
+    render: (dom, record) => (
+      <Tooltip title={record.typeFullName}>
+        <span>{record.typeName}</span>
+      </Tooltip>
+    ),
+  },
+  {
+    title: '工作中心',
+    dataIndex: 'workerName',
+    render: (dom, record) => (
+      <Tooltip overlayStyle={{ width: '400px' }} title={record.workerKey}>
+        <span>{record.workerName}</span>
+      </Tooltip>
+    ),
+  },
   {
     title: '操作',
     valueType: 'option',
     render: (dom, record) => {
       return [
-        <a
-          onClick={async () => {
-            let r = await runBrun({ workerKey: record.workerKey, brunId: record.id });
-            if (r === 1) {
-              //actionRef.current.reload();
-              message.success('运行成功');
-              //handleCreateModalVisible(false);
-            } else if (r === -7) {
-              message.error('找不到任务');
-            } else {
-              message.error('添加失败');
+        <Popconfirm
+          key="run"
+          title="是否手动运行该任务?"
+          onConfirm={async (e) => {
+            if (e) {
+              let r = await runBrun({ workerKey: record.workerKey, brunId: record.id });
+              if (r === 1) {
+                message.success('运行成功');
+              } else if (r === -7) {
+                message.error('找不到任务');
+              } else {
+                message.error('添加失败');
+              }
             }
           }}
-          key="run"
+          okText="确认"
+          cancelText="取消"
         >
-          运行
-        </a>,
+          <a>运行</a>
+        </Popconfirm>,
         <a key="edit">编辑</a>,
       ];
     },

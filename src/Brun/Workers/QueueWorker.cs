@@ -59,14 +59,11 @@ namespace Brun.Workers
                         foreach (var item in _backRuns)
                         {
                             QueueBackRun backRun = (QueueBackRun)item.Value;
-                            if (backRun.Option.Queue.TryDequeue(out string msg))
+                            if (backRun.Queue.TryDequeue(out string msg))
                             {
-                                Task.Run(async () =>
-                                {
-                                    var context = new BrunContext(item.Value);
-                                    context.Message = msg;
-                                    await Execute(context);
-                                });
+                                var context = new BrunContext(item.Value);
+                                context.Message = msg;
+                                _ = Execute(context);
                             }
                         }
                         Thread.Sleep(5);
@@ -84,7 +81,7 @@ namespace Brun.Workers
         {
             if (this._backRuns.Count > 0)
             {
-                ((QueueBackRun)this._backRuns.First().Value).Option.Queue.Enqueue(message);
+                ((QueueBackRun)this._backRuns.First().Value).Queue.Enqueue(message);
             }
             else
             {
@@ -101,7 +98,7 @@ namespace Brun.Workers
             Enqueue(typeof(TQueueBackRun), message);
         }
         /// <summary>
-        /// 指定QueueBackRun类型的消息后台任务
+        /// 指定QueueBackRun类型的消息后台任务，可能多个
         /// </summary>
         /// <param name="queueBackRunType"></param>
         /// <param name="message"></param>
@@ -109,17 +106,18 @@ namespace Brun.Workers
         {
             if (message == null)
             {
-                _logger.LogWarning("传入的消息体为null，已忽略");
+                _logger.LogWarning($"enqueue message in '{queueBackRunType.Name}' is null, the QueueWorker by key:'{0}' will not execute it.if you want run with empty msg please enqueue ''", this.Key);
+                return;
             }
             _backRuns.Where(m => m.Value.GetType() == queueBackRunType).ToList().ForEach(m =>
                 {
-                    ((QueueBackRun)m.Value).Option.Queue.Enqueue(message);
+                    ((QueueBackRun)m.Value).Queue.Enqueue(message);
                 });
         }
         /// <summary>
         /// 指定QueueBackRun类型的消息后台任务
         /// </summary>
-        /// <param name="queueBackRunTypeFullName"></param>
+        /// <param name="queueBackRunTypeFullName">包含命名空间的类型名称</param>
         /// <param name="message"></param>
         public void Enqueue(string queueBackRunTypeFullName, string message)
         {
@@ -130,7 +128,6 @@ namespace Brun.Workers
         protected override Task Brun(BrunContext context)
         {
             QueueBackRun backrun = (QueueBackRun)context.BackRun;
-            backrun.SetWorkerContext(_context);
             return backrun.Run(context.Message, tokenSource.Token);
         }
         public QueueWorker AddBrun(Type queueBackRunType, QueueBackRunOption option)

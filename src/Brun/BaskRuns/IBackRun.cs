@@ -8,16 +8,22 @@ using System.Threading.Tasks;
 namespace Brun.BaskRuns
 {
     /// <summary>
-    /// 所有后台任务的接口,直接继承这个无法使用自定义Data
+    /// 所有后台任务的接口
     /// </summary>
     public interface IBackRun
     {
+        /// <summary>
+        /// BackRun的Key
+        /// </summary>
         string Id { get; }
+        /// <summary>
+        /// BackRun的Name
+        /// </summary>
         string Name { get; }
+        /// <summary>
+        /// TODO 是否移入上下文
+        /// 单个Worker实例中的共享数据
+        /// </summary>
         ConcurrentDictionary<string, string> Data { get; }
-        WorkerContext WorkerContext { get; }
-
-        Task Run(CancellationToken stoppingToken);
-        void SetWorkerContext(WorkerContext workerContext);
     }
 }

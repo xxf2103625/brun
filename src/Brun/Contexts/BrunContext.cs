@@ -17,13 +17,12 @@ namespace Brun.Contexts
         {
             this._backRun = backRun;
         }
-        [Obsolete("重构移除", false)]
-        public Type BrunType => _backRun.GetType();
         public IBackRun BackRun => _backRun;
         public long StartNb { get; set; }
         public int ExceptNb { get; set; }
         public long EndNb { get; set; }
         public string Message { get; set; }
+        //TODO 每次Run结束释放资源
         public void Dispose()
         {
             throw new NotImplementedException();

@@ -51,7 +51,7 @@ namespace Brun.Workers
         protected object State_LOCK = new object();
         protected ILogger _logger;
         /// <summary>
-        /// 统一构造函数 TODO 是否移除config？
+        /// 统一构造函数
         /// </summary>
         /// <param name="config"></param>
         public AbstractWorker(WorkerConfig config)
@@ -87,15 +87,14 @@ namespace Brun.Workers
         /// <returns></returns>
         protected async Task Execute(BrunContext runContext)
         {
+            if (_context.State != WorkerState.Started)
+            {
+                _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key, runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
+                return;
+            }
             await Observe(runContext, WorkerEvents.StartRun);
             try
             {
-                if (_context.State != WorkerState.Started)
-                {
-                    _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key, runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
-                    return;
-                }
-                //Task brun = Task.Run(async () => await Brun(runContext));
                 Task brun = Brun(runContext);
                 RunningTasks.TryAdd(brun);
                 _ = brun.ContinueWith(t =>

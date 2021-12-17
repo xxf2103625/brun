@@ -25,6 +25,7 @@ namespace Brun.Store.Commons
             using (SqlSugarClient db = new SqlSugarClient(connectionConfig))
             {
                 var isc = db.DbMaintenance.CreateDatabase();
+                db.DbMaintenance.IsAnySystemTablePermissions();
                 db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Store.Entities.WorkerEntity));
                 db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Store.Entities.OnceBrunEntity));
             }

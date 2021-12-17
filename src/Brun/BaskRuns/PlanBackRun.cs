@@ -1,4 +1,5 @@
-﻿using Brun.Options;
+﻿using Brun.BaskRuns;
+using Brun.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,10 @@ namespace Brun
     /// <summary>
     /// 计划时间任务
     /// </summary>
-    public abstract class PlanBackRun : BackRun
+    public abstract class PlanBackRun : BackRun, IRun
     {
-        //private PlanBackRunOption _option;
         public PlanBackRun(PlanBackRunOption option) : base(option)
         {
-            //_option = option;
         }
         public PlanBackRunOption Option => (PlanBackRunOption)option;
         //public override string Id => _option.Id;
@@ -28,6 +27,8 @@ namespace Brun
         /// 下次执行时间
         /// </summary>
         public DateTimeOffset? NextRunTime { get; set; }
+
+        public abstract Task Run(CancellationToken stoppingToken);
         //public void SetPlanBackRun(PlanBackRunOption option)
         //{
         //    this._option = option;

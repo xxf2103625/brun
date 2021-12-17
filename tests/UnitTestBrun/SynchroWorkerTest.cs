@@ -22,8 +22,8 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateSynchroWorker(new WorkerConfig())
-                            .AddBrun(typeof(SimpleNumberRun));
+                        var w = workerServer.CreateSynchroWorker(new WorkerConfig());
+                            w.AddBrun(typeof(SimpleNumberRun),new Brun.Options.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder
@@ -51,7 +51,7 @@ namespace UnitTestBrun
                     options.WorkerServer = workerServer =>
                     {
                         workerServer.CreateSynchroWorker(new WorkerConfig())
-                            .AddBrun(typeof(LogBackRun));
+                            .AddBrun(typeof(LogBackRun),new Brun.Options.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder

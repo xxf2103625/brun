@@ -13,8 +13,9 @@ namespace Brun.Services
     /// </summary>
     public interface IOnceWorkerService
     {
+        IOnceWorker GetWorker(string key);
         //Task<BrunResultState> AddOnceBrun(WorkerConfigModel model);
-        BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, BackRunOption option);
+        BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, OnceBackRunOption option);
         IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns();
         IEnumerable<ValueLabel> GetOnceWorkersInfo();
     }

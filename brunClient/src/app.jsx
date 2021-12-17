@@ -22,6 +22,7 @@ export async function getInitialState() {
       const msg = await queryCurrentUser();
       return msg.data;
     } catch (error) {
+      console.error(error);
       history.push(loginPath);
     }
 
@@ -76,7 +77,7 @@ export const request = {
   requestInterceptors: [
     (url, options) => {
       //console.log('token:', getToken(), 'options', options);
-
+      url = 'http://localhost:5000' + url;
       const headers = {
         'Content-Type': 'application/json',
         Accept: 'application/json',

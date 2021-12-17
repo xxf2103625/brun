@@ -16,9 +16,9 @@ namespace BrunTestHelper.BackRuns
     /// <summary>
     /// 基础测试BackRun
     /// </summary>
-    public class SimpleNumberRun : BackRun
+    public class SimpleNumberRun : OnceBackRun
     {
-        public SimpleNumberRun(BackRunOption option) : base(option)
+        public SimpleNumberRun(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -46,11 +46,11 @@ namespace BrunTestHelper.BackRuns
     /// <summary>
     /// 测试逻辑前等待
     /// </summary>
-    public class SimpNbDelayBefore : BackRun
+    public class SimpNbDelayBefore : OnceBackRun
     {
         private static object SimpNbDelayBefore_LOCK = new object();
 
-        public SimpNbDelayBefore(BackRunOption option) : base(option)
+        public SimpNbDelayBefore(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -80,9 +80,9 @@ namespace BrunTestHelper.BackRuns
     /// <summary>
     /// 测试逻辑后等待
     /// </summary>
-    public class SimpNbDelayAfter : BackRun
+    public class SimpNbDelayAfter : OnceBackRun
     {
-        public SimpNbDelayAfter(BackRunOption option) : base(option)
+        public SimpNbDelayAfter(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -113,9 +113,9 @@ namespace BrunTestHelper.BackRuns
     /// <summary>
     /// 测试逻辑前等待Task
     /// </summary>
-    public class SimpNbDelayBeforeTask : BackRun
+    public class SimpNbDelayBeforeTask : OnceBackRun
     {
-        public SimpNbDelayBeforeTask(BackRunOption option) : base(option)
+        public SimpNbDelayBeforeTask(OnceBackRunOption option) : base(option)
         {
         }
 
@@ -146,9 +146,9 @@ namespace BrunTestHelper.BackRuns
     /// <summary>
     /// 测试逻辑后等待 Task
     /// </summary>
-    public class SimpNbDelayAfterTask : BackRun
+    public class SimpNbDelayAfterTask : OnceBackRun
     {
-        public SimpNbDelayAfterTask(BackRunOption option) : base(option)
+        public SimpNbDelayAfterTask(OnceBackRunOption option) : base(option)
         {
         }
 

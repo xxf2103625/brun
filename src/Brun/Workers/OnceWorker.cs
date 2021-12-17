@@ -65,7 +65,7 @@ namespace Brun.Workers
         }
         protected override async Task Brun(BrunContext context)
         {
-            await context.BackRun.Run(tokenSource.Token);
+            await ((OnceBackRun)context.BackRun).Run(tokenSource.Token);
         }
         public ConcurrentDictionary<string, string> GetData()
         {
@@ -138,7 +138,7 @@ namespace Brun.Workers
         /// <param name="option"></param>
         /// <returns></returns>
         /// <exception cref="BrunException"></exception>
-        public BrunResultState AddBrun(Type backRunType, BackRunOption option)
+        public BrunResultState AddBrun(Type backRunType, OnceBackRunOption option)
         {
             if (backRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "backRunType can not be null.");
@@ -162,7 +162,7 @@ namespace Brun.Workers
                 if (option.Name == null)
                     option.Name = backRunType.Name;
                 IBackRun brun = (IBackRun)BrunTool.CreateInstance(backRunType, option);
-                brun.SetWorkerContext(this._context);
+                ((OnceBackRun)brun).SetWorkerContext(this._context);
                 if (_backRuns.TryAdd(brun.Id, brun))
                 {
                     if (_backRuns.Count == 1)
@@ -184,13 +184,13 @@ namespace Brun.Workers
         /// <typeparam name="TBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        public BrunResultState AddBrun<TBackRun>(BackRunOption option) where TBackRun : BackRun
+        public BrunResultState AddBrun<TBackRun>(OnceBackRunOption option) where TBackRun : OnceBackRun
         {
             return this.AddBrun(typeof(TBackRun), option);
         }
         public BrunResultState AddBrun<TBackRun>() where TBackRun : BackRun
         {
-            return this.AddBrun(typeof(TBackRun), new BackRunOption());
+            return this.AddBrun(typeof(TBackRun), new OnceBackRunOption());
         }
     }
 }

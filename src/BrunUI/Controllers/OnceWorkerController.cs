@@ -27,6 +27,7 @@ namespace BrunUI.Controllers
         [HttpGet]
         public TableResult QueryList(int current, int pageSize)
         {
+            //TODO 移到service里
             int total = onceWorkerService.GetOnceBruns().Count();
             var onceWorkers = baseWorkerService.GetWorkers().ToList();
             int index = 0;
@@ -45,8 +46,10 @@ namespace BrunUI.Controllers
                             Id = onceWorkers[i].BackRuns.ElementAt(n).Value.Id,
                             Name = onceWorkers[i].BackRuns.ElementAt(n).Value.Name,
                             TypeName = onceWorkers[i].BackRuns.ElementAt(n).Value.GetType().Name,
+                            TypeFullName = onceWorkers[i].BackRuns.ElementAt(n).Value.GetType().FullName,
                             WorkerKey = onceWorkers[i].Key,
                             WorkerName = onceWorkers[i].Name
+
                         });
                     }
                     if (index > end)
@@ -73,7 +76,7 @@ namespace BrunUI.Controllers
             Type bType = Brun.Commons.BrunTool.GetTypeByFullName(model.BrunType);
             if (bType == null)
                 return BrunResultState.NotFound;
-            return onceWorker.AddBrun(bType, new Brun.Options.BackRunOption(model.Id, model.Name));
+            return onceWorker.AddBrun(bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
             //return BrunResultState.Success;
         }
         [HttpPost]

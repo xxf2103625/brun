@@ -58,7 +58,7 @@ namespace Brun.Commons
 
             try
             {
-                //卸载得创建新的AppDomain
+                //TODO 卸载程序集需要创建新的AppDomain
                 var ass = Assembly.LoadFile(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName));
                 return (1, ass, "加载成功");
             }
@@ -89,6 +89,12 @@ namespace Brun.Commons
                     throw new Exceptions.BrunException(Exceptions.BrunErrorCode.TypeError, "worker type error");
             }
         }
+        /// <summary>
+        /// 获取Worker类型枚举
+        /// </summary>
+        /// <param name="workerType"></param>
+        /// <returns></returns>
+        /// <exception cref="Exceptions.BrunException"></exception>
         public static WorkerType GetWorkerType(Type workerType)
         {
             if (workerType == null)
@@ -104,20 +110,13 @@ namespace Brun.Commons
             if (workerType == typeof(PlanWorker))
                 return WorkerType.PlanWorker;
             throw new Exceptions.BrunException(Exceptions.BrunErrorCode.TypeError, "worker type error");
-            //switch (workerType)
-            //{
-            //    case typeof(OnceWorker):
-            //        return WorkerType.OnceWorker;
-            //    case WorkerType.TimeWorker:
-            //        return typeof(TimeWorker);
-            //    case WorkerType.QueueWorker:
-            //        return typeof(QueueWorker);
-            //    case WorkerType.PlanWorker:
-            //        return typeof(PlanWorker);
-            //    default:
-            //        throw new Exceptions.BrunException(Exceptions.BrunErrorCode.TypeError, "worker type error");
-            //}
         }
+        /// <summary>
+        /// 类型字符串获取Worker类型枚举 OnceWorker/TimeWorker
+        /// </summary>
+        /// <param name="workerTypeName"></param>
+        /// <returns></returns>
+        /// <exception cref="Exceptions.BrunException"></exception>
         public static WorkerType GetWorkerType(string workerTypeName)
         {
             if (string.IsNullOrEmpty(workerTypeName))

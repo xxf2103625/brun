@@ -1,4 +1,5 @@
 ﻿using Brun;
+using Brun.BaskRuns;
 using Brun.Options;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BrunTestHelper.BackRuns
 {
-    public class AwaitErrorBackRun : BackRun
+    public class AwaitErrorBackRun : OnceBackRun
     {
-        public AwaitErrorBackRun(BackRunOption option) : base(option)
+        public AwaitErrorBackRun(OnceBackRunOption option) : base(option)
         {
         }
 

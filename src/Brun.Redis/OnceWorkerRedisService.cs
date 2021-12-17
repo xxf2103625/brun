@@ -56,7 +56,7 @@ namespace Brun.Redis
 
         }
 
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType,BackRunOption option)
+        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType,OnceBackRunOption option)
         {
             throw new NotImplementedException();
         }
@@ -76,6 +76,11 @@ namespace Brun.Redis
         }
 
         public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOnceWorker GetWorker(string key)
         {
             throw new NotImplementedException();
         }

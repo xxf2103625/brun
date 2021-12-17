@@ -89,7 +89,7 @@ namespace Brun
         }
         public IOnceWorker GetOnceWorker(string key)
         {
-            IWorker worker = worders.FirstOrDefault(m => m.Key == key && m.Value.GetType() == typeof(QueueWorker))!.Value;
+            IWorker worker = worders.FirstOrDefault(m => m.Key == key && m.Value.GetType() == typeof(OnceWorker))!.Value;
             if (worker == null)
             {
                 logger.LogError("can not find active OnceWorker，key:'{0}'", key);
