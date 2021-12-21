@@ -5,13 +5,13 @@ using System.Collections.Concurrent;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (Environment.OSVersion.Platform == PlatformID.Unix)
-{
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ListenUnixSocket("/tmp/kestrel-test.sock");
-    });
-}
+//if (Environment.OSVersion.Platform == PlatformID.Unix)
+//{
+//    builder.WebHost.ConfigureKestrel(options =>
+//    {
+//        options.ListenUnixSocket("/tmp/kestrel-test.sock");
+//    });
+//}
 
 
 // Add services to the container.
@@ -30,8 +30,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddBrunService(options =>
 {
     //options.UseRedis("192.168.1.8");
-    options.UseInMemory();
-    //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
+    //options.UseInMemory();
+    options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
 
     //options.WorkerServer = options =>
     //{

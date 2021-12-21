@@ -26,7 +26,7 @@ namespace Brun.Plan
             _cros = croExpression.Split(' ');
             if (_cros.Length != 5 && _cros.Length != 6)
             {
-                AddError(0, "croExpress length must be 5 or 6.");
+                AddError(0, "croExpression length must be 5 or 6.");
                 return result;
             }
             for (int i = 1; i <= _cros.Length; i++)

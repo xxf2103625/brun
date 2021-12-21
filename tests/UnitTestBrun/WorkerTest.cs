@@ -31,7 +31,7 @@ namespace UnitTestBrun
                 {
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun),new Brun.Options.OnceBackRunOption());
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun), new Brun.Options.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder
@@ -529,140 +529,140 @@ namespace UnitTestBrun
             Assert.AreEqual(1, work.Context.exceptNb);
         }
         public static int SyTest = 0;
-        [TestMethod]
-        public void SynchroWorkerTest()
-        {
-            SimpleBackRun.SimNb = 0;
-            int max = 10;
-            StartHost(m =>
-            {
-                m.AddBrunService(options =>
-                {
-                    options.WorkerServer = workerServer =>
-                    {
-                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
-                    };
-                });
-                //WorkerBuilder.Create<SimpleBackRun>()
-                //    .Build<SynchroWorker>();
-                //.Build();
-            });
-            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
-            for (int i = 0; i < max; i++)
-            {
-                worker.Run();
-            }
-            Console.WriteLine("主线程 WaitForBackRun 之前");
-            Assert.AreEqual(0, SimpleBackRun.SimNb);
-            WaitForBackRun(max);
-            Console.WriteLine("主线程 WaitForBackRun 之后");
-            Assert.AreEqual(max, SimpleBackRun.SimNb);
-        }
-        [TestMethod]
-        public void SynchroWorkerTestLong()
-        {
-            SimpleLongBackRun.SimNb = 0;
-            int max = 10;
-            StartHost(m =>
-            {
-                m.AddBrunService(options =>
-                {
-                    options.WorkerServer = workerServer =>
-                    {
-                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleLongBackRun>();
-                    };
-                });
-                //WorkerBuilder.Create<SimpleLongBackRun>()
-                //    .Build<SynchroWorker>();
-                //.Build();
-            });
-            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
-            for (int i = 0; i < max; i++)
-            {
-                worker.Run();
-            }
-            Console.WriteLine("主线程 WaitForBackRun 之前");
-            Assert.AreEqual(0, SimpleLongBackRun.SimNb);
-            WaitForBackRun(max);
-            Console.WriteLine("主线程 WaitForBackRun 之后");
-            Assert.AreEqual(max, SimpleLongBackRun.SimNb);
-        }
-        [TestMethod]
-        public void SynchroWorkerTestVoid()
-        {
-            SimpleBackRun.SimNb = 0;
-            int max = 10;
-            StartHost(m =>
-            {
-                m.AddBrunService(options =>
-                {
-                    options.WorkerServer = workerServer =>
-                    {
-                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
-                    };
-                });
-                //WorkerBuilder.Create<SimpleBackRun>()
-                //    .Build<SynchroWorker>();
-            });
-            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
-            for (int i = 0; i < max; i++)
-            {
-                worker.Run();
-            }
-            Assert.AreEqual(0, SimpleBackRun.SimNb);
-            WaitForBackRun(max);
-            Assert.AreEqual(max, SimpleBackRun.SimNb);
-        }
-        [TestMethod]
-        public void SynchroWorkerManyTest()
-        {
-            StartHost(m =>
-            {
-                m.AddBrunService(options =>
-                {
-                    options.WorkerServer = workerServer =>
-                    {
-                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
-                    };
-                });
-                //WorkerBuilder.Create<SimpeManyBackRun>()
-                //             .Build<SynchroWorker>();
-            });
-            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
-            for (int i = 0; i < 3; i++)
-            {
-                worker.Run();
-            }
-            WaitForBackRun();
-            Assert.AreEqual(3, worker.Context.endNb);
-        }
-        [TestMethod]
-        public void SynchroWorkerManyDontWaitTestAsync()
-        {
-            StartHost(m =>
-            {
-                m.AddBrunService(options =>
-                {
-                    options.WorkerServer = workerServer =>
-                    {
-                        workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
-                    };
-                });
-                // WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
-                //.BuildOnceWorker();
-            });
-            SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
-            for (int i = 0; i < 3; i++)
-            {
-                worker.Run();
-            }
-            Console.WriteLine($"before start:{worker.Context.startNb},end:{worker.Context.endNb}");
-            Assert.AreEqual(0, worker.Context.startNb);
-            Assert.AreEqual(0, worker.Context.endNb);
-            WaitForBackRun(3);
-            Console.WriteLine($"after start:{worker.Context.startNb},end:{worker.Context.endNb}");
-            Assert.AreEqual(3, worker.Context.endNb);
-        }
+        //[TestMethod]
+        //public void SynchroWorkerTest()
+        //{
+        //    SimpleBackRun.SimNb = 0;
+        //    int max = 10;
+        //    StartHost(m =>
+        //    {
+        //        m.AddBrunService(options =>
+        //        {
+        //            options.WorkerServer = workerServer =>
+        //            {
+        //                workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+        //            };
+        //        });
+        //        //WorkerBuilder.Create<SimpleBackRun>()
+        //        //    .Build<SynchroWorker>();
+        //        //.Build();
+        //    });
+        //    SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
+        //    for (int i = 0; i < max; i++)
+        //    {
+        //        worker.Run();
+        //    }
+        //    Console.WriteLine("主线程 WaitForBackRun 之前");
+        //    Assert.AreEqual(0, SimpleBackRun.SimNb);
+        //    WaitForBackRun(max);
+        //    Console.WriteLine("主线程 WaitForBackRun 之后");
+        //    Assert.AreEqual(max, SimpleBackRun.SimNb);
+        //}
+        //[TestMethod]
+        //public void SynchroWorkerTestLong()
+        //{
+        //    SimpleLongBackRun.SimNb = 0;
+        //    int max = 10;
+        //    StartHost(m =>
+        //    {
+        //        m.AddBrunService(options =>
+        //        {
+        //            options.WorkerServer = workerServer =>
+        //            {
+        //                workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleLongBackRun>();
+        //            };
+        //        });
+        //        //WorkerBuilder.Create<SimpleLongBackRun>()
+        //        //    .Build<SynchroWorker>();
+        //        //.Build();
+        //    });
+        //    SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
+        //    for (int i = 0; i < max; i++)
+        //    {
+        //        worker.Run();
+        //    }
+        //    Console.WriteLine("主线程 WaitForBackRun 之前");
+        //    Assert.AreEqual(0, SimpleLongBackRun.SimNb);
+        //    WaitForBackRun(max);
+        //    Console.WriteLine("主线程 WaitForBackRun 之后");
+        //    Assert.AreEqual(max, SimpleLongBackRun.SimNb);
+        //}
+        //[TestMethod]
+        //public void SynchroWorkerTestVoid()
+        //{
+        //    SimpleBackRun.SimNb = 0;
+        //    int max = 10;
+        //    StartHost(m =>
+        //    {
+        //        m.AddBrunService(options =>
+        //        {
+        //            options.WorkerServer = workerServer =>
+        //            {
+        //                workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpleBackRun>();
+        //            };
+        //        });
+        //        //WorkerBuilder.Create<SimpleBackRun>()
+        //        //    .Build<SynchroWorker>();
+        //    });
+        //    SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
+        //    for (int i = 0; i < max; i++)
+        //    {
+        //        worker.Run();
+        //    }
+        //    Assert.AreEqual(0, SimpleBackRun.SimNb);
+        //    WaitForBackRun(max);
+        //    Assert.AreEqual(max, SimpleBackRun.SimNb);
+        //}
+        //[TestMethod]
+        //public void SynchroWorkerManyTest()
+        //{
+        //    StartHost(m =>
+        //    {
+        //        m.AddBrunService(options =>
+        //        {
+        //            options.WorkerServer = workerServer =>
+        //            {
+        //                workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+        //            };
+        //        });
+        //        //WorkerBuilder.Create<SimpeManyBackRun>()
+        //        //             .Build<SynchroWorker>();
+        //    });
+        //    SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        worker.Run();
+        //    }
+        //    WaitForBackRun();
+        //    Assert.AreEqual(3, worker.Context.endNb);
+        //}
+        //[TestMethod]
+        //public void SynchroWorkerManyDontWaitTestAsync()
+        //{
+        //    StartHost(m =>
+        //    {
+        //        m.AddBrunService(options =>
+        //        {
+        //            options.WorkerServer = workerServer =>
+        //            {
+        //                workerServer.CreateSynchroWorker(new WorkerConfig()).AddBrun<SimpeManyBackRun>();
+        //            };
+        //        });
+        //        // WorkerBuilder.Create<SimpeManyBackRun>().SetWorkerType(typeof(SynchroWorker))
+        //        //.BuildOnceWorker();
+        //    });
+        //    SynchroWorker worker = (SynchroWorker)GetWorkerByName(nameof(SynchroWorker)).First();
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        worker.Run();
+        //    }
+        //    Console.WriteLine($"before start:{worker.Context.startNb},end:{worker.Context.endNb}");
+        //    Assert.AreEqual(0, worker.Context.startNb);
+        //    Assert.AreEqual(0, worker.Context.endNb);
+        //    WaitForBackRun(3);
+        //    Console.WriteLine($"after start:{worker.Context.startNb},end:{worker.Context.endNb}");
+        //    Assert.AreEqual(3, worker.Context.endNb);
+        //}
         [TestMethod]
         public void CuntomDataTest()
         {
@@ -713,6 +713,7 @@ namespace UnitTestBrun
                 //    .BuildOnceWorker();
             });
             IOnceWorker worker = GetOnceWorkerByName(nameof(OnceWorker)).First();
+            
             for (int i = 0; i < 1; i++)
             {
                 worker.Run();

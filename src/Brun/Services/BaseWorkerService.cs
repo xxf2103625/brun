@@ -20,24 +20,28 @@ namespace Brun.Services
         {
             _workerServer = workerServer;
         }
+        [Obsolete("移除",true)]
         public void AddWorker(WorkerConfigModel model)
         {
-            var worker = _workerServer.CreateWorker<TWorker>(new WorkerConfig(model.Key, model.Name));
             if (_workerServer.Worders.Any(m => m.Key == model.Key))
             {
-                throw new BrunException(BrunErrorCode.AllreadyKey, "add Worker key existed");
+                throw new BrunException(BrunErrorCode.AllreadyKey, $"add Worker error allready has key '{model.Key}'");
             }
+            TWorker worker = Commons.BrunTool.CreateInstance<TWorker>(new WorkerConfig(model.Key, model.Name));
             _workerServer.Worders.Add(worker.Key, worker);
             //return BrunResultState.Success;
         }
+        [Obsolete("移除", true)]
         public IEnumerable<TWorker> GetWorkers()
         {
             return _workerServer.Worders.Where(m => m.Value.GetType() == typeof(TWorker)).Select(m => m.Value).Cast<TWorker>();
         }
+        [Obsolete("移除", true)]
         public TWorker GetWorkerByKey(string key)
         {
             return _workerServer.GetWorker<TWorker>(key);
         }
+        [Obsolete("移除", true)]
         public IEnumerable<KeyValuePair<string, IBackRun>> GetBackRuns()
         {
             foreach (var item in GetWorkers())

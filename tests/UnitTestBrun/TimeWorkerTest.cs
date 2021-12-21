@@ -37,9 +37,10 @@ namespace UnitTestBrun
                 string key = nameof(TestTimeWorker);
                 services.AddBrunService(options =>
                 {
+                    //options.UseInMemory();
                     options.WorkerServer = workerServer =>
                     {
-                        workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime),false));
+                        workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime), false));
                     };
                 });
 
@@ -50,7 +51,8 @@ namespace UnitTestBrun
                 //   ;
                 //services.AddBrunService();
             });
-            IWorker woker = WorkerServer.Instance.GetWorker(key);
+            IWorker woker = GetWorkerByKey(key);
+            woker.Start();
             Assert.AreEqual(0, woker.Context.startNb);
             Assert.AreEqual(0, woker.Context.exceptNb);
             Assert.AreEqual(0, woker.Context.endNb);

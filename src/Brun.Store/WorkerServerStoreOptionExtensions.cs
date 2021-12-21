@@ -35,9 +35,9 @@ namespace Brun
                 //var descriptor =new ServiceDescriptor(typeof(),typeof(),ServiceLifetime.Scoped);
                 //services.Replace()
 
-                services.AddTransient<SqlSugarClient>(m => new SqlSugarClient(connectionConfig));
-
-                services.AddScoped<IOnceWorkerService, OnceWorkerStoreService>();
+                services.AddScoped<SqlSugarClient>(m => new SqlSugarClient(connectionConfig));
+                services.AddScoped<IWorkerService,StoreWorkerService>();
+                services.AddScoped<IOnceWorkerService, StoreOnceWorkerService>();
             };
             return workerServerOption;
         }

@@ -14,15 +14,15 @@ using System.Threading.Tasks;
 
 namespace Brun.Store.Services
 {
-    public class OnceWorkerStoreService : IOnceWorkerService
+    public class StoreOnceWorkerService :  IOnceWorkerService
     {
         SqlSugarClient sqlSugarClient;
-        public OnceWorkerStoreService( SqlSugarClient sqlSugarClient)
+        public StoreOnceWorkerService(SqlSugarClient sqlSugarClient) 
         {
             this.sqlSugarClient = sqlSugarClient;
         }
 
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, OnceBackRunOption option)
+        public BrunResultState AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
             throw new NotImplementedException();
         }

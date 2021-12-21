@@ -15,8 +15,7 @@ namespace Brun
             workerServerOption.StoreType = WorkerStoreType.Memory;
             workerServerOption.ServicesConfigure = services =>
             {
-                //TODO 初始化加载持久化内的程序集
-                Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
+                
                 services.AddScoped<IWorkerService, WorkerService>();
                 services.AddScoped<IOnceWorkerService, OnceWorkerService>();
             };

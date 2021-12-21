@@ -5,7 +5,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import { querylist, addWorker } from '@/services/workerService';
-import { workerTypes } from '@/utils/utils';
+import { workerTypes, brunResultState } from '@/utils/utils';
 
 const stateEnum = {
   0: { text: '等待启动', status: 'Default' },
@@ -45,10 +45,8 @@ const worker = () => {
             actionRef.current.reload();
             message.success('添加成功');
             handleCreateModalVisible(false);
-          } else if (r === -8) {
-            message.error('Key重复');
           } else {
-            message.error('添加失败');
+            message.error(brunResultState[r]);
           }
         }}
       />

@@ -10,7 +10,7 @@ namespace Brun.Enums
     public enum WorkerState
     {
         /// <summary>
-        /// 默认状态
+        /// 未激活
         /// </summary>
         Default,
         /// <summary>

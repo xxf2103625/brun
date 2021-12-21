@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace Brun.BaskRuns
 {
     /// <summary>
+    /// //TODO 移除ScopeBackRun
     /// 每次运行在Ioc的Scope中，可以理解成类似mvc每个请求的生命周期
     /// </summary>
     public abstract class ScopeBackRun : IBackRun

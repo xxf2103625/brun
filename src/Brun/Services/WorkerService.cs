@@ -1,9 +1,11 @@
 ﻿using Brun.Enums;
+using Brun.Exceptions;
 using Brun.Models;
 using Brun.Workers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,66 +16,98 @@ namespace Brun.Services
     /// </summary>
     public class WorkerService : IWorkerService
     {
-        private WorkerServer workerServer;
+        protected WorkerServer workerServer;
         public WorkerService(WorkerServer workerServer)
         {
             this.workerServer = workerServer;
         }
-        public Task<BrunResultState> AddWorker(WorkerConfigModel model, WorkerType workerType)
+        public virtual Task<IWorker> AddWorker(WorkerConfig model, Type workerType)
         {
-            Type type = Commons.BrunTool.GetWorkerType(workerType);
-            if (model.Key == null)
-            {
-                model.Key = Guid.NewGuid().ToString();
-            }
-            if (model.Name == null)
-            {
-                model.Name = type.Name;
-            }
             if (workerServer.Worders.ContainsKey(model.Key))
             {
-                return Task.FromResult(BrunResultState.IdBeUsed);
+                throw new BrunException(BrunErrorCode.AllreadyKey, $"worker key '{model.Key}' duplicate");
             }
-            var worker = workerServer.CreateWorker(type, new WorkerConfig(model.Key, model.Name));
+            IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, new WorkerConfig(model.Key, model.Name));
             workerServer.Worders.Add(worker.Key, worker);
-            worker.Start();
-            return Task.FromResult(BrunResultState.Success);
+            return Task.FromResult(worker);
         }
-        public IEnumerable<WorkerInfo> GetWorkerInfos()
+        public virtual async Task<IWorker> AddWorkerAndStart(WorkerConfig model, Type workerType)
         {
-            var list = workerServer.Worders.Values.Select(m => new WorkerInfo()
+            var worker = await AddWorker(model, workerType);
+            this.Start(model.Key);
+            return worker;
+        }
+        public virtual Task<IWorker> GetWorkerByKey(string key)
+        {
+            if (workerServer.Worders.ContainsKey(key))
+            {
+                return Task.FromResult(workerServer.Worders[key]);
+            }
+            else
+            {
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find worker by key:'{key}'");
+            }
+        }
+        public virtual Task<IEnumerable<IWorker>> GetWorkerByName(string name)
+        {
+            return Task.FromResult(workerServer.Worders.Values.Where(x => x.Name == name));
+        }
+        public virtual Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize)
+        {
+            var list = workerServer.Worders.Values.OrderBy(m => m.Name).Skip(pageSize * (current - 1)).Take(pageSize).Select(m => new WorkerInfo()
             {
                 Key = m.Key,
                 Name = m.Name,
                 TypeName = m.GetType().Name,
                 State = m.State
             });
-            return list;
+            return Task.FromResult((list, workerServer.Worders.Count));
         }
-        public void Start(string key)
+        public virtual void Start(string key)
         {
-            throw new NotImplementedException();
+            if (workerServer.Worders.TryGetValue(key, out IWorker worker))
+            {
+                worker.Start();
+            }
+            else
+            {
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"worker start error,can not find key:'{key}'");
+            }
+
         }
-        public void StartByName(string name)
+        public virtual void StartAll()
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < workerServer.Worders.Values.Count; i++)
+            {
+                workerServer.Worders.Values.ElementAt(i).Start();
+            }
         }
-        public void StartAll()
+        public virtual void Stop(string key)
         {
-            throw new NotImplementedException();
-        }
-        public void Stop(string key)
-        {
-            throw new NotImplementedException();
-        }
-        public void StopByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-        public void StopAll()
-        {
-            throw new NotImplementedException();
+            if (workerServer.Worders.TryGetValue(key, out IWorker worker))
+            {
+                worker.Stop();
+            }
+            else
+            {
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"worker start error,can not find key:'{key}'");
+            }
         }
 
+        public virtual void StopAll()
+        {
+            for (int i = 0; i < workerServer.Worders.Values.Count; i++)
+            {
+                workerServer.Worders.Values.ElementAt(i).Stop();
+            }
+        }
+        public virtual void StartByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual void StopByName(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -31,6 +31,7 @@ namespace Brun.Commons
             });
             return type;
         }
+
         /// <summary>
         /// 获取当前程序域里的程序集
         /// </summary>
@@ -87,6 +88,27 @@ namespace Brun.Commons
                     return typeof(PlanWorker);
                 default:
                     throw new Exceptions.BrunException(Exceptions.BrunErrorCode.TypeError, "worker type error");
+            }
+        }
+        /// <summary>
+        /// 获取Worker类型,OnceWorker/TimeWorker
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public static Type GetTypeByWorkerName(string typeName)
+        {
+            switch (typeName)
+            {
+                case nameof(OnceWorker):
+                    return typeof(OnceWorker);
+                case nameof(TimeWorker):
+                    return typeof(TimeWorker);
+                case nameof(QueueWorker):
+                    return typeof(QueueWorker);
+                case nameof(PlanWorker):
+                    return typeof(PlanWorker);
+                default:
+                    return null;
             }
         }
         /// <summary>

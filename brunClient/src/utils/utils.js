@@ -16,3 +16,11 @@ export const workerTypes = [
   { value: 2, label: '消息任务' },
   { value: 3, label: '计划任务' },
 ];
+
+export const brunResultState = {
+  0: '未知异常',
+  1: '操作成功',
+  6: 'Worker未运行',
+  7: '找不到指定数据',
+  8: 'Key重复',
+};

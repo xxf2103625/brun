@@ -56,7 +56,7 @@ namespace Brun.Redis
 
         }
 
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType,OnceBackRunOption option)
+        public BrunResultState AddOnceBrun(IOnceWorker onceWorker, Type brunType,OnceBackRunOption option)
         {
             throw new NotImplementedException();
         }

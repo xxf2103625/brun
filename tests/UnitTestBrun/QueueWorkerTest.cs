@@ -32,6 +32,7 @@ namespace UnitTestBrun
                 });
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
+            worker.Start();
             for (int i = 0; i < 100; i++)
             {
                 worker.Enqueue<LogQueueBackRun>($"测试消息:{i}");
@@ -70,6 +71,7 @@ namespace UnitTestBrun
                 //services.AddBrunService();
             });
             IQueueWorker worker = WorkerServer.Instance.GetQueueWorker(key);
+            worker.Start();
             for (int i = 0; i < 1; i++)
             {
                 worker.Enqueue($"测试消息:{i}");

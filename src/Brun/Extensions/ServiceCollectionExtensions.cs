@@ -29,10 +29,11 @@ namespace Brun
             else
             {
                 workerServerOptions.Invoke(option);
-                //if (option.StoreType == WorkerStoreType.None)
-                //{
-                //    option.StoreType = WorkerStoreType.Memory;
-                //}
+                //没有配置持久化时使用内存模式
+                if (option.StoreType == WorkerStoreType.None)
+                {
+                    option.UseInMemory();
+                }
             }
             if (option.ServicesConfigure != null)
             {
@@ -40,6 +41,10 @@ namespace Brun
                 option.ServicesConfigure(services);
             }
             worker.Option = option;
+
+            //TODO 初始化加载未包含的程序集
+            Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
+
             services.AddSingleton<WorkerServer>(m => worker);
             services.AddSingleton(typeof(IBaseWorkerService<>), typeof(BaseWorkerService<>));
             services.AddSingleton<IBackRunFilterService, BackRunFilterService>();

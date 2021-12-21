@@ -3,6 +3,8 @@ using Brun.Contexts;
 using Brun.Enums;
 using Brun.Observers;
 using Brun.Options;
+using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -77,7 +79,14 @@ namespace Brun.Workers
         /// <returns></returns>
         public virtual void Start()
         {
-            _context.State = WorkerState.Started;
+            using(var scope= ServiceProvider.CreateScope())
+            {
+                IWorkerService workerService = scope.ServiceProvider.GetRequiredService<IWorkerService>();
+                workerService.Start(this.Key);
+            }
+            //IWorkerService workerService = ServiceProvider.GetRequiredService<IWorkerService>();
+            //workerService.Start(this.Key);
+            //_context.State = WorkerState.Started;
             _logger.LogInformation("the {0} key:'{1}' is started", GetType().Name, _context.Key);
         }
         /// <summary>

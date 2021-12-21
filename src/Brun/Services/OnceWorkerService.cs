@@ -33,7 +33,7 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public BrunResultState AddOnceBrun(OnceWorker onceWorker, Type brunType, OnceBackRunOption option)
+        public BrunResultState AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
             return onceWorker.AddBrun(brunType, option);
         }

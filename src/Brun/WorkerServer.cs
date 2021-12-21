@@ -107,7 +107,7 @@ namespace Brun
             return (IQueueWorker)worker;
         }
         /// <summary>
-        /// 启动Brun
+        /// 启动Brun Server
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="stoppingToken"></param>
@@ -116,10 +116,6 @@ namespace Brun
             ServiceConfigure(serviceProvider);
             logger.LogInformation("WorkerServer is Started");
             startTime = DateTime.Now;
-            foreach (var item in worders)
-            {
-                item.Value.Start();
-            }
             stoppingToken.Register(() => Stop());
         }
         private void ServiceConfigure(IServiceProvider serviceProvider)
@@ -167,16 +163,6 @@ namespace Brun
                     }
                 }
                 return _workerServer;
-            }
-        }
-        /// <summary>
-        /// 清理单例，单元测试专用
-        /// </summary>
-        public static void ClearInstance()
-        {
-            lock (serverCreate_LOCK)
-            {
-                _workerServer = null;
             }
         }
     }

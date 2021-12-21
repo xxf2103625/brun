@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Brun.Services
 {
-    public class BrunBackgroundService : IHostedService, IDisposable
+    public class BrunBackgroundService : IHostedService
     {
         readonly ILogger<BrunBackgroundService> _logger;
         private CancellationTokenSource _stoppingCts;
@@ -25,6 +25,7 @@ namespace Brun.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("BrunBackgroundService startting...");
             // Create linked token to allow cancelling executing task from provided token
             _stoppingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -41,7 +42,7 @@ namespace Brun.Services
 
         private Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("BrunBackgroundService startting...");
+            //_logger.LogInformation("BrunBackgroundService startting...");
             //var workerServer = (WorkerServer)_serviceProvider.GetRequiredService(typeof(WorkerServer));
             workerServer.SetServiceProvider(_serviceProvider);
             workerServer.SetLogFactory(loggerFactory);
@@ -50,6 +51,7 @@ namespace Brun.Services
                 workerServer.Option.WorkerServer.Invoke(workerServer);
             }
             workerServer.Start(_serviceProvider, stoppingToken);
+            _logger.LogInformation("BrunBackgroundService is started");
             return Task.CompletedTask;
         }
 
@@ -67,16 +69,17 @@ namespace Brun.Services
                 // Signal cancellation to the executing method
                 _stoppingCts.Cancel();
             }
+            catch (Exception)
+            {
+                throw;
+            }
             finally
             {
+                _logger.LogInformation("BrunBackgroundService finally stopping...");
                 // Wait until the task completes or the stop token triggers
                 await Task.WhenAny(_executeTask, Task.Delay(Timeout.Infinite, cancellationToken)).ConfigureAwait(false);
+                _logger.LogInformation("BrunBackgroundService is stopped.");
             }
-        }
-        public void Dispose()
-        {
-            _logger.LogInformation("BrunBackgroundService disposing...");
-            _stoppingCts?.Cancel();
         }
     }
 }

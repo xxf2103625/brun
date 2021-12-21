@@ -9,7 +9,7 @@ namespace Brun.Exceptions
     /// <summary>
     /// Brun异常码
     /// </summary>
-    internal enum BrunErrorCode
+    public enum BrunErrorCode
     {
         /// <summary>
         /// 类型异常
@@ -20,8 +20,20 @@ namespace Brun.Exceptions
         /// </summary>
         AllreadyKey,
         /// <summary>
+        /// 不包含指定key
+        /// </summary>
+        NotFoundKey,
+        /// <summary>
         /// 对象不能为null
         /// </summary>
-        ObjectIsNull
+        ObjectIsNull,
+        /// <summary>
+        /// 内存服务异常
+        /// </summary>
+        MemoryServiceError,
+        /// <summary>
+        /// Store服务异常
+        /// </summary>
+        StoreServiceError,
     }
 }

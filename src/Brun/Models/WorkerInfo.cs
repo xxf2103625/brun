@@ -46,6 +46,6 @@ namespace Brun.Models
         /// <summary>
         /// Worker状态
         /// </summary>
-        public WorkerState State { get; internal set; }
+        public WorkerState State { get; set; }
     }
 }

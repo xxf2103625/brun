@@ -1,4 +1,6 @@
-﻿using Brun.Models;
+﻿using Brun;
+using Brun.Commons;
+using Brun.Models;
 using Brun.Services;
 using BrunUI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,17 +22,29 @@ namespace BrunUI.Controllers
         [HttpPost]
         public async Task<BrunResultState> AddWorker(WorkerModel model)
         {
-
-            return await workerService.AddWorker(new WorkerConfigModel() { Key = model.Key, Name = model.Name }, model.WorkerType);
+            Type type = BrunTool.GetWorkerType(model.WorkerType);
+            if (model.Key == null)
+            {
+                model.Key = Guid.NewGuid().ToString();
+            }
+            if (model.Name == null)
+            {
+                model.Name = type.Name;
+            }
+            var wk = await workerService.AddWorker(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
+            if (wk != null)
+                return BrunResultState.Success;
+            else
+                return BrunResultState.UnKnow;
         }
         [HttpGet]
-        public TableResult GetWorkers(int current, int pageSize)
+        public async Task<TableResult> GetWorkers(int current, int pageSize)
         {
-            var data = workerService.GetWorkerInfos().OrderBy(m => m.Name).Skip(pageSize * (current - 1)).Take(pageSize).ToList();
+            var data = await workerService.GetWorkerInfos(current, pageSize);
             return new TableResult()
             {
-                Data = data,
-                Total = workerService.GetWorkerInfos().Count(),
+                Data = data.Item1,
+                Total = data.Item2,
                 Success = true
             };
         }

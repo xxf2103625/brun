@@ -54,6 +54,7 @@ namespace UnitTestBrun
                 //.Build();
             });
             IWorker work = GetWorkerByName(nameof(Brun.Workers.OnceWorker)).First();
+            work.Start();
             Assert.IsNotNull(work.Key);
             Assert.AreEqual("OnceWorker", work.Name);
         }

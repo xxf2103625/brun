@@ -151,7 +151,9 @@ namespace Brun.Workers
             }
             if (!string.IsNullOrEmpty(option.Id) && _backRuns.ContainsKey(option.Id))
             {
-                //已包含,返回已有对象
+                //已包含
+                //throw new BrunException(BrunErrorCode.AllreadyKey, $"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
+
                 _logger.LogWarning($"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
                 return BrunResultState.IdBeUsed;
             }
@@ -170,7 +172,7 @@ namespace Brun.Workers
                         this.defuatBackRun = brun;
                     }
                     _logger.LogInformation("the OnceWorker with key:'{0}' added BackRun:'{1}'.", this.Key, backRunType.FullName);
-                    return BrunResultState.Success;
+                    return  BrunResultState.Success;
                 }
                 else
                 {

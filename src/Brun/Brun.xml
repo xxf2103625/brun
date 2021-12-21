@@ -87,6 +87,7 @@
         </member>
         <member name="T:Brun.BaskRuns.ScopeBackRun">
             <summary>
+            //TODO 移除ScopeBackRun
             每次运行在Ioc的Scope中，可以理解成类似mvc每个请求的生命周期
             </summary>
         </member>
@@ -217,6 +218,13 @@
             <returns></returns>
             <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
+        <member name="M:Brun.Commons.BrunTool.GetTypeByWorkerName(System.String)">
+            <summary>
+            获取Worker类型,OnceWorker/TimeWorker
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Commons.BrunTool.GetWorkerType(System.Type)">
             <summary>
             获取Worker类型枚举
@@ -281,7 +289,7 @@
         </member>
         <member name="F:Brun.Enums.WorkerState.Default">
             <summary>
-            默认状态
+            未激活
             </summary>
         </member>
         <member name="F:Brun.Enums.WorkerState.Started">
@@ -309,9 +317,24 @@
             id/key重复
             </summary>
         </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.NotFoundKey">
+            <summary>
+            不包含指定key
+            </summary>
+        </member>
         <member name="F:Brun.Exceptions.BrunErrorCode.ObjectIsNull">
             <summary>
             对象不能为null
+            </summary>
+        </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.MemoryServiceError">
+            <summary>
+            内存服务异常
+            </summary>
+        </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.StoreServiceError">
+            <summary>
+            Store服务异常
             </summary>
         </member>
         <member name="T:Brun.Exceptions.BrunException">
@@ -330,14 +353,6 @@
             </summary>
             <param name="services"></param>
             <param name="workerServerOptions"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.WorkerServerExtenstions.CreateOnceWorker(Brun.WorkerServer,Brun.WorkerConfig)">
-            <summary>
-            创建OnceWorker
-            </summary>
-            <param name="workerServer"></param>
-            <param name="config"></param>
             <returns></returns>
         </member>
         <member name="T:Brun.IWorker">
@@ -362,7 +377,7 @@
         </member>
         <member name="P:Brun.IWorker.State">
             <summary>
-            Worker运行装备
+            Worker运行状态
             </summary>
         </member>
         <member name="M:Brun.IWorker.Start">
@@ -1061,12 +1076,28 @@
             管理OnceWorker
             </summary>
         </member>
+        <member name="M:Brun.Services.IWorkerService.AddWorker(Brun.WorkerConfig,System.Type)">
+            <summary>
+            添加worker
+            </summary>
+            <param name="model"></param>
+            <param name="workerType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IWorkerService.AddWorkerAndStart(Brun.WorkerConfig,System.Type)">
+            <summary>
+            添加worker并运行
+            </summary>
+            <param name="model"></param>
+            <param name="workerType"></param>
+            <returns></returns>
+        </member>
         <member name="T:Brun.Services.OnceWorkerService">
             <summary>
             内存模式管理OnceWorker
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.Workers.OnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
             <summary>
             添加OnceWorker
             </summary>
@@ -1116,7 +1147,7 @@
         </member>
         <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
-            启动Brun
+            启动Brun Server
             </summary>
             <param name="serviceProvider"></param>
             <param name="stoppingToken"></param>
@@ -1124,11 +1155,6 @@
         <member name="P:Brun.WorkerServer.Instance">
             <summary>
             进程单例
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerServer.ClearInstance">
-            <summary>
-            清理单例，单元测试专用
             </summary>
         </member>
         <member name="T:Brun.Workers.AbstractWorker">
@@ -1325,12 +1351,6 @@
             </summary>
             <param name="queueBackRunTypeFullName">包含命名空间的类型名称</param>
             <param name="message"></param>
-        </member>
-        <member name="T:Brun.Workers.SynchroWorker">
-            <summary>
-            //TODO 没什么用，移除
-            同步Worker，同一个Worker内，backrun串行运行
-            </summary>
         </member>
         <member name="T:Brun.Workers.TimeWorker">
             <summary>

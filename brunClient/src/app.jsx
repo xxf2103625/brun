@@ -7,6 +7,7 @@ import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 import { getToken } from '@/utils/utils';
+import { message } from 'antd';
 /** 获取用户信息比较慢的时候会展示一个 loading */
 
 export const initialStateConfig = {
@@ -72,7 +73,7 @@ export const layout = ({ initialState }) => {
     ...initialState?.settings,
   };
 };
-//const { initialState } = useModel('@@initialState');
+
 export const request = {
   requestInterceptors: [
     (url, options) => {
@@ -97,4 +98,24 @@ export const request = {
   //     console.log('A after');
   //   },
   // ],
+  // responseInterceptors: [
+  //   (response, options) => {
+  //     console.log(response);
+  //     if (!response.ok) {
+  //       message.error(response.statusText);
+  //       return response;
+  //     } else {
+  //       return response;
+  //     }
+  //   },
+  // ],
+  // errorConfig: {
+  //   adaptor: (resData) => {
+  //     return {
+  //       ...resData,
+  //       success: resData.success,
+  //       errorMessage: resData.errorMessage,
+  //     };
+  //   },
+  // },
 };

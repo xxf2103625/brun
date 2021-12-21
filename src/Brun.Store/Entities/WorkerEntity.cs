@@ -21,9 +21,13 @@ namespace Brun.Store.Entities
         public string Type { get; set; }
         public string Name { get; set; }
         /// <summary>
+        /// Worker运行状态
+        /// </summary>
+        public Enums.WorkerState State { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
-        [SugarColumn(ColumnDataType ="time with time zone")]
-        public DateTimeOffset Ct { get; set; } = DateTimeOffset.Now;
+        //[SugarColumn(ColumnDataType ="timestamp without time zone")]
+        public DateTime Ct { get; set; } = DateTime.Now;
     }
 }

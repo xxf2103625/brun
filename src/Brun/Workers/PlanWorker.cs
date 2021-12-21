@@ -85,10 +85,10 @@ namespace Brun.Workers
                                  _logger.LogWarning("the {0} in PlanWorker with id:'{1}' nextRunTime is null,delete this PlanWorker.", backRun.GetType(), backRun.Id);
                                  //执行一次 下一轮会移除
                              }
-                             Task.Run(async () =>
+                             Task.Run(() =>
                              {
                                  BrunContext brunContext = new BrunContext(backRun);
-                                 await Execute(brunContext);
+                                 _ = Execute(brunContext);
                              });
                          }
                      }
