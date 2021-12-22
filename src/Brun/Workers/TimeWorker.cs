@@ -40,12 +40,7 @@ namespace Brun.Workers
                 this._config.Name = nameof(TimeWorker);
             }
         }
-
-        /// <summary>
-        /// 启动Worker
-        /// </summary>
-        /// <returns></returns>
-        public override void Start()
+        internal override void ProtectStart()
         {
             if (_context.State == WorkerState.Started)
             {
@@ -56,7 +51,7 @@ namespace Brun.Workers
             {
                 _context.State = WorkerState.Started;
                 //TODO 减少不必要的多线程开销
-                Task.Factory.StartNew(() =>
+                Task.Factory.StartNew((Action)(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested && _context.State == WorkerState.Started)
                     {
@@ -65,14 +60,22 @@ namespace Brun.Workers
                             TimeBackRun backRun = (TimeBackRun)item.Value;
                             if (backRun.Option.NextTime != null && backRun.Option.NextTime.Value <= DateTime.Now)
                             {
-                                BrunContext brunContext = new BrunContext(backRun);
-                                _ = Execute(brunContext);
+                                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
+                                //BrunContext brunContext = new BrunContext(backRun);
+                                //_ = Execute(brunContext);
+                                base.taskFactory.StartNew(() =>
+                                {
+                                    BrunContext brunContext = new BrunContext(backRun);
+                                    _ = Execute(brunContext);
+                                });
+                                _logger.LogInformation($"TimeWorker with key '{this.Key}' is executing,backrun name:'{backRun.Name}',id:'{item.Key}'.");
                                 backRun.Option.NextTime = DateTime.Now.Add(backRun.Option.Cycle);
                             }
                         }
                         Thread.Sleep(5);
                     }
-                }, TaskCreationOptions.LongRunning);
+                }), TaskCreationOptions.LongRunning)
+                    .ContinueWith(t => { _context.State = WorkerState.Default; });
                 _logger.LogInformation("the {0} key:{1} is started.", GetType().Name, _context.Key);
             }
         }

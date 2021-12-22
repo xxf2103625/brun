@@ -24,35 +24,36 @@ namespace Brun.Redis
         }
         public async Task<BrunResultState> AddOnceBrun(WorkerConfigModel model)
         {
-            if (model.Key == null)
-            {
-                model.Key = Guid.NewGuid().ToString();
-            }
-            if (model.Name == null)
-            {
-                model.Name = nameof(OnceWorker);
-            }
-            WorkerInfo entity = new WorkerInfo()
-            {
-                Key = model.Key,
-                Name = model.Name
-            };
-            string onceWorkerKey = CacheKeys.OnceWorkKey;
-            RedisValue[]? list = await _db.SetMembersAsync(onceWorkerKey);
-            if (list != null && list.Any(m => JsonSerializer.Deserialize<WorkerInfo>(m)?.Key == model.Key))
-            {
-                //已有
-                return BrunResultState.IdBeUsed;
-            }
-            _baseService.AddWorker(model);
-            if (await _db.SetAddAsync(onceWorkerKey, JsonSerializer.Serialize(entity)))
-            {
-                return BrunResultState.Success;
-            }
-            else
-            {
-                throw new Exception("未知异常,redis插入数据失败");
-            }
+            throw new NotImplementedException();
+            //if (model.Key == null)
+            //{
+            //    model.Key = Guid.NewGuid().ToString();
+            //}
+            //if (model.Name == null)
+            //{
+            //    model.Name = nameof(OnceWorker);
+            //}
+            //WorkerInfo entity = new WorkerInfo()
+            //{
+            //    Key = model.Key,
+            //    Name = model.Name
+            //};
+            //string onceWorkerKey = CacheKeys.OnceWorkKey;
+            //RedisValue[]? list = await _db.SetMembersAsync(onceWorkerKey);
+            //if (list != null && list.Any(m => JsonSerializer.Deserialize<WorkerInfo>(m)?.Key == model.Key))
+            //{
+            //    //已有
+            //    return BrunResultState.IdBeUsed;
+            //}
+            //_baseService.AddWorker(model);
+            //if (await _db.SetAddAsync(onceWorkerKey, JsonSerializer.Serialize(entity)))
+            //{
+            //    return BrunResultState.Success;
+            //}
+            //else
+            //{
+            //    throw new Exception("未知异常,redis插入数据失败");
+            //}
 
         }
 

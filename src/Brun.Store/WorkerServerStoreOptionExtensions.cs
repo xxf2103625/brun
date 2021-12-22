@@ -15,12 +15,11 @@ namespace Brun
         /// <param name="connectionString"></param>
         /// <param name="dbType"></param>
         /// <returns></returns>
-        //TODO 是否再次封装，
         public static WorkerServerOption UseStore(this WorkerServerOption workerServerOption, string connectionString, DbType dbType)
         {
             //TODO 检测数据库，创建数据库等
             DatabaseHelper.ExistDatabase(connectionString, dbType);
-            //TODO 初始化加载持久化内的程序集
+            //TODO 初始化加载其它程序集
             Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
 
             SqlSugar.ConnectionConfig connectionConfig = new ConnectionConfig()
@@ -36,7 +35,7 @@ namespace Brun
                 //services.Replace()
 
                 services.AddScoped<SqlSugarClient>(m => new SqlSugarClient(connectionConfig));
-                services.AddScoped<IWorkerService,StoreWorkerService>();
+                services.AddScoped<IWorkerService, StoreWorkerService>();
                 services.AddScoped<IOnceWorkerService, StoreOnceWorkerService>();
             };
             return workerServerOption;

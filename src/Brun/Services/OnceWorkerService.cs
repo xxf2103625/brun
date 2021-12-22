@@ -17,14 +17,17 @@ namespace Brun.Services
     {
         //private readonly WorkerServer workerServer;
         IBaseWorkerService<OnceWorker> baseService;
-        public OnceWorkerService(IBaseWorkerService<OnceWorker> baseWorkerService)
+        IWorkerService workerService;
+        public OnceWorkerService(IWorkerService workerService, IBaseWorkerService<OnceWorker> baseWorkerService)
         {
             //this.workerServer = workerServer;
             this.baseService = baseWorkerService;
+            this.workerService = workerService;
         }
         public IOnceWorker GetWorker(string key)
         {
-            return baseService.GetWorkerByKey(key);
+            return (IOnceWorker)workerService.GetWorkerByKey(key);
+            //return baseService.GetWorkerByKey(key);
         }
         /// <summary>
         /// 添加OnceWorker
@@ -47,7 +50,8 @@ namespace Brun.Services
         //}
         public IEnumerable<ValueLabel> GetOnceWorkersInfo()
         {
-            return this.baseService.GetWorkers().Select(m => new ValueLabel(m.Key, m.Name));
+            throw new NotImplementedException();
+            //return this.baseService.GetWorkers().Select(m => new ValueLabel(m.Key, m.Name));
         }
 
     }

@@ -23,6 +23,8 @@ namespace UnitTestBrun
         protected IHost host;
         CancellationToken cancellationToken;
         CancellationTokenSource tokenSource;
+        IWorkerService workerService;
+        IServiceScope scope;
         private object LOCK = new object();
         [TestInitialize]
         public void InitAsync()
@@ -40,22 +42,24 @@ namespace UnitTestBrun
                 })
                 .Build();
             host.Start();
+            scope = host.Services.CreateScope();
+            workerService = scope.ServiceProvider.GetRequiredService<IWorkerService>();
         }
         protected IWorker GetWorkerByKey(string key)
         {
-            var workerService = host.Services.GetRequiredService<IWorkerService>();
+            //var workerService = host.Services.GetRequiredService<IWorkerService>();
             return workerService.GetWorkerByKey(key).Result;
             //return WorkerServer.Instance.GetWorker(key);
         }
         public IEnumerable<IWorker> GetWorkerByName(string name)
         {
-            var workerService = host.Services.GetRequiredService<IWorkerService>();
+            //var workerService = host.Services.GetRequiredService<IWorkerService>();
             return workerService.GetWorkerByName(name).Result;
             //return WorkerServer.Instance.GetWokerByName(name);
         }
         public IEnumerable<IOnceWorker> GetOnceWorkerByName(string name)
         {
-            var workerService = host.Services.GetRequiredService<IWorkerService>();
+            //var workerService = host.Services.GetRequiredService<IWorkerService>();
             return workerService.GetWorkerByName(name).Result.Cast<IOnceWorker>();
             //return WorkerServer.Instance.GetWokerByName(name).Cast<IOnceWorker>();
         }
@@ -69,11 +73,11 @@ namespace UnitTestBrun
             Console.WriteLine("WaitForBackRun 开始");
             WorkerServer server = WorkerServer.Instance;
             Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.GetAllWorker().Any(m => m.Context.endNb < m.Context.startNb) || (server.GetAllWorker().First().Context.RunningTasks.Count != 0))
+            while (server.Worders.Values.Any(m => m.Context.endNb < m.Context.startNb) || (server.Worders.Values.First().Context.RunningTasks.Count != 0))
             {
                 Thread.Sleep(50);
             }
-            while (runCount > 0 && server.GetAllWorker().Any(m => m.Context.endNb < runCount))
+            while (runCount > 0 && server.Worders.Values.Any(m => m.Context.endNb < runCount))
             {
                 Thread.Sleep(50);
             }
@@ -95,6 +99,7 @@ namespace UnitTestBrun
             Console.WriteLine("host is null? {0}", host == null);
             if (host != null)
             {
+                scope?.Dispose();
                 Task task = host.StopAsync(cancellationToken);
                 await task.ContinueWith(t =>
                 {

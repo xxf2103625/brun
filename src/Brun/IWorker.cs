@@ -1,4 +1,6 @@
-﻿using Brun.Workers;
+﻿using Brun.BaskRuns;
+using Brun.Enums;
+using Brun.Workers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,7 +29,8 @@ namespace Brun
         /// <summary>
         /// Worker运行状态
         /// </summary>
-        public Enums.WorkerState State { get; }
+        WorkerState State { get; }
+        ConcurrentDictionary<string, IBackRun> BackRuns { get; }
         /// <summary>
         /// 启动
         /// </summary>

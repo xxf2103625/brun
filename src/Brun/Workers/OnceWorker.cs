@@ -1,6 +1,7 @@
 ﻿using Brun.BaskRuns;
 using Brun.Commons;
 using Brun.Contexts;
+using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Models;
 using Brun.Options;
@@ -18,7 +19,6 @@ namespace Brun.Workers
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
-
         private IBackRun defuatBackRun = null;
         public OnceWorker(WorkerConfig config) : base(config)
         {
@@ -37,16 +37,25 @@ namespace Brun.Workers
             }
             _logger.LogInformation($"OnceWorker with key '{this.Key}' is init.");
         }
+        /// <summary>
+        /// 内存对象start，对外隐藏
+        /// </summary>
+        internal override void ProtectStart()
+        {
+            _context.State = WorkerState.Started;
+            _logger.LogInformation("the {0} key:'{1}' is started", GetType().Name, _context.Key);
+        }
+
         public void Run(string id)
         {
             if (_backRuns.TryGetValue(id, out IBackRun backRun))
             {
-                Task.Run(async () =>
-                {
-                    await Execute(new BrunContext(backRun));
-                });
+                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
+                //_ = Execute(new BrunContext(backRun));
 
-                _logger.LogInformation($"OnceWorker with key '{this.Key}' is executed.");
+                base.taskFactory.StartNew(() => Execute(new BrunContext(backRun)));
+
+                _logger.LogInformation($"OnceWorker with key '{this.Key}' is executing,backrun name:'{backRun.Name}',id:'{id}'.");
             }
             else
             {
@@ -90,7 +99,6 @@ namespace Brun.Workers
         {
             Run(typeof(TBackRun));
         }
-
         public void Run(Type backRunType)
         {
             StartBrun(backRunType);
@@ -172,7 +180,7 @@ namespace Brun.Workers
                         this.defuatBackRun = brun;
                     }
                     _logger.LogInformation("the OnceWorker with key:'{0}' added BackRun:'{1}'.", this.Key, backRunType.FullName);
-                    return  BrunResultState.Success;
+                    return BrunResultState.Success;
                 }
                 else
                 {

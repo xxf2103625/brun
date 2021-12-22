@@ -20,7 +20,7 @@ namespace UnitTestBrun
         {
             StartHost(services =>
             {
-
+                services.AddBrunService();
             });
             DateTimeOffset offset1 = DateTime.Now;
             DateTimeOffset offset2 = DateTime.UtcNow;
@@ -52,7 +52,6 @@ namespace UnitTestBrun
                 //services.AddBrunService();
             });
             IWorker woker = GetWorkerByKey(key);
-            woker.Start();
             Assert.AreEqual(0, woker.Context.startNb);
             Assert.AreEqual(0, woker.Context.exceptNb);
             Assert.AreEqual(0, woker.Context.endNb);

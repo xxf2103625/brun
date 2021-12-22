@@ -33,8 +33,8 @@ namespace UnitTestBrun.WorkerObservers
                     };
                 });
             });
-            var onceWorkerService=(Brun.Services.IOnceWorkerService) host.Services.GetService(typeof(Brun.Services.IOnceWorkerService));
-            IOnceWorker worker = WorkerServer.Instance.GetOnceWorker(key);
+            //var workerService=(Brun.Services.IOnceWorkerService) host.Services.GetService(typeof(Brun.Services.IWorkerService));
+            IOnceWorker worker = (IOnceWorker)GetWorkerByKey(key);
             //Brun.BaskRuns.IBackRun worker =onceWorkerService.().First(m => m.Key == key).Value;
             worker.Run();
             WaitForBackRun();

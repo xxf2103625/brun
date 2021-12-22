@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace Brun.BaskRuns
 {
-    public abstract class ScopeBackRunServicePrivoder
+    /// <summary>
+    /// //TODO 是否需要封装ServiceProvider操作
+    /// </summary>
+    public abstract class IocBackRunServicePrivoder
     {
         /// <summary>
-        /// Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
+        /// Host注册的服务，跟asp.net一样使用，只是Scope注册的要自己创建Scope
         /// </summary>
         protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
         /// <summary>

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Brun.Services
 {
     /// <summary>
-    /// Worker管理，内存中
+    /// Worker管理，内存中对象操作
     /// </summary>
     public class WorkerService : IWorkerService
     {
@@ -27,7 +27,7 @@ namespace Brun.Services
             {
                 throw new BrunException(BrunErrorCode.AllreadyKey, $"worker key '{model.Key}' duplicate");
             }
-            IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, new WorkerConfig(model.Key, model.Name));
+            IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, model);
             workerServer.Worders.Add(worker.Key, worker);
             return Task.FromResult(worker);
         }
@@ -67,7 +67,7 @@ namespace Brun.Services
         {
             if (workerServer.Worders.TryGetValue(key, out IWorker worker))
             {
-                worker.Start();
+                ((AbstractWorker)worker).ProtectStart();
             }
             else
             {
@@ -79,14 +79,14 @@ namespace Brun.Services
         {
             for (int i = 0; i < workerServer.Worders.Values.Count; i++)
             {
-                workerServer.Worders.Values.ElementAt(i).Start();
+                ((AbstractWorker)workerServer.Worders.Values.ElementAt(i)).ProtectStart();
             }
         }
         public virtual void Stop(string key)
         {
             if (workerServer.Worders.TryGetValue(key, out IWorker worker))
             {
-                worker.Stop();
+                ((AbstractWorker)worker).ProtectStop();
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Brun.Services
         {
             for (int i = 0; i < workerServer.Worders.Values.Count; i++)
             {
-                workerServer.Worders.Values.ElementAt(i).Stop();
+                ((AbstractWorker)workerServer.Worders.Values.ElementAt(i)).ProtectStop();
             }
         }
         public virtual void StartByName(string name)

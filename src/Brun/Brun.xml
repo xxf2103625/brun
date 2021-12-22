@@ -85,75 +85,31 @@
             <param name="stoppingToken">任务结束信号量，当系统正常停止/工作中心停止时会首先发信号，使用该token可以手动停止/取消未完成任务，超时未结束的任务会强制结束</param>
             <returns></returns>
         </member>
-        <member name="T:Brun.BaskRuns.ScopeBackRun">
+        <member name="T:Brun.BaskRuns.IocBackRunServicePrivoder">
             <summary>
-            //TODO 移除ScopeBackRun
-            每次运行在Ioc的Scope中，可以理解成类似mvc每个请求的生命周期
+            //TODO 是否需要封装ServiceProvider操作
             </summary>
         </member>
-        <member name="P:Brun.BaskRuns.ScopeBackRun.BaseServiceProvider">
+        <member name="P:Brun.BaskRuns.IocBackRunServicePrivoder.ServiceProvider">
             <summary>
-            原始ServiceProvider
+            Host注册的服务，跟asp.net一样使用，只是Scope注册的要自己创建Scope
             </summary>
         </member>
-        <member name="F:Brun.BaskRuns.ScopeBackRun.ServiceProvider">
+        <member name="M:Brun.BaskRuns.IocBackRunServicePrivoder.GetRequiredService``1">
             <summary>
-            Scope内的ServiceProvider
-            </summary>
-        </member>
-        <member name="P:Brun.BaskRuns.ScopeBackRun.Data">
-            <summary>
-            每次运行共享的自定义数据，修改请自己加锁
-            </summary>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRun.RunInScope(System.Threading.CancellationToken)">
-            <summary>
-            每次会创建一个Scope，ServiceProvider变为Scope内的ServiceProvider，可以理解成类似mvc每个请求的生命周期
-            </summary>
-            <param name="stoppingToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRun.Run(System.Threading.CancellationToken)">
-            <summary>
-            运行入口
-            </summary>
-            <param name="stoppingToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRun.GetRequiredService``1">
-            <summary>
-            获取Ioc注入的Service,找不到会异常，可以获取所有Ioc的Service
+            获取Ioc注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.IocBackRunServicePrivoder.NewScope"/>里获取
             </summary>
             <typeparam name="TService"></typeparam>
             <returns></returns>
         </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRun.GetService``1">
+        <member name="M:Brun.BaskRuns.IocBackRunServicePrivoder.GetService``1">
             <summary>
-            获取Ioc注入的Service,可能返回null，可以获取所有Ioc的Service
+            获取Ioc注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.IocBackRunServicePrivoder.NewScope"/>里获取
             </summary>
             <typeparam name="TService"></typeparam>
             <returns></returns>
         </member>
-        <member name="P:Brun.BaskRuns.ScopeBackRunServicePrivoder.ServiceProvider">
-            <summary>
-            Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
-            </summary>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.GetRequiredService``1">
-            <summary>
-            获取Ioc注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope"/>里获取
-            </summary>
-            <typeparam name="TService"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.GetService``1">
-            <summary>
-            获取Ioc注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope"/>里获取
-            </summary>
-            <typeparam name="TService"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.ScopeBackRunServicePrivoder.NewScope">
+        <member name="M:Brun.BaskRuns.IocBackRunServicePrivoder.NewScope">
             <summary>
             创建一个Scope来自己管理Scoped服务的生存周期，单例和瞬时的服务不需要用这个
             </summary>
@@ -502,6 +458,11 @@
         <member name="T:Brun.WorkerServerOption">
             <summary>
             WorkerServer配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServerOption.WorkerServer">
+            <summary>
+            WorkerServer的配置
             </summary>
         </member>
         <member name="P:Brun.WorkerServerOption.StoreType">
@@ -1045,32 +1006,6 @@
             封装Brun实例对象常用操作
             </summary>
         </member>
-        <member name="M:Brun.Services.BaseWorkerService`1.ExistWorkerKey(System.String)">
-            <summary>
-            是否已有key
-            </summary>
-            <param name="key"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Services.IBaseWorkerService`1.AddWorker(Brun.Models.WorkerConfigModel)">
-            <summary>
-            添加worker
-            </summary>
-            <param name="model"></param>
-        </member>
-        <member name="M:Brun.Services.IBaseWorkerService`1.GetWorkers">
-            <summary>
-            获取worker
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Services.IBaseWorkerService`1.ExistWorkerKey(System.String)">
-            <summary>
-            是否已有key
-            </summary>
-            <param name="key"></param>
-            <returns></returns>
-        </member>
         <member name="T:Brun.Services.IOnceWorkerService">
             <summary>
             管理OnceWorker
@@ -1117,12 +1052,17 @@
         </member>
         <member name="T:Brun.Services.WorkerService">
             <summary>
-            Worker管理，内存中
+            Worker管理，内存中对象操作
             </summary>
         </member>
         <member name="T:Brun.WorkerServer">
             <summary>
             进程单例，暂时只考虑单机运行
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Option">
+            <summary>
+            配置
             </summary>
         </member>
         <member name="P:Brun.WorkerServer.ServerConfig">
@@ -1132,12 +1072,12 @@
         </member>
         <member name="P:Brun.WorkerServer.Worders">
             <summary>
-            所有运行中的worker
+            所有运行中的worker，不要直接操作这个
             </summary>
         </member>
         <member name="P:Brun.WorkerServer.ServiceProvider">
             <summary>
-            服务容器
+            IOC容器
             </summary>
         </member>
         <member name="P:Brun.WorkerServer.LoggerFactory">
@@ -1145,12 +1085,39 @@
             日志工厂
             </summary>
         </member>
-        <member name="M:Brun.WorkerServer.Start(System.IServiceProvider,System.Threading.CancellationToken)">
+        <member name="P:Brun.WorkerServer.StartTime">
+            <summary>
+            WorkerServer在本次进程中的 启动时间
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.PlanTimeParser">
+            <summary>
+            计划时间计算器，暂时只实现了Cro表达式.
+            TODO Cron表达式解析及计算
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.Init(System.IServiceProvider)">
+            <summary>
+            必须配置初始化
+            </summary>
+            <param name="serviceProvider">Ioc容器</param>
+        </member>
+        <member name="M:Brun.WorkerServer.SetLogFactory(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            可选，自定义日志工厂
+            </summary>
+            <param name="loggerFactory"></param>
+        </member>
+        <member name="M:Brun.WorkerServer.Start(System.Threading.CancellationToken)">
             <summary>
             启动Brun Server
             </summary>
-            <param name="serviceProvider"></param>
             <param name="stoppingToken"></param>
+        </member>
+        <member name="M:Brun.WorkerServer.Stop">
+            <summary>
+            结束Brun Server
+            </summary>
         </member>
         <member name="P:Brun.WorkerServer.Instance">
             <summary>
@@ -1198,6 +1165,11 @@
             </summary>
             <param name="config"></param>
         </member>
+        <member name="M:Brun.Workers.AbstractWorker.ProtectStart">
+            <summary>
+            内存对象start，对外隐藏
+            </summary>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Start">
             <summary>
             启动
@@ -1218,6 +1190,11 @@
             <param name="context"></param>
             <returns></returns>
         </member>
+        <member name="M:Brun.Workers.AbstractWorker.ProtectStop">
+            <summary>
+            内存对象Stop，对外隐藏
+            </summary>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Stop">
             <summary>
             停止
@@ -1231,6 +1208,16 @@
             <param name="brunContext"></param>
             <param name="workerEvents"></param>
             <returns></returns>
+        </member>
+        <member name="P:Brun.Workers.AbstractWorker.Key">
+            <summary>
+            工作中心的Key/Id
+            </summary>
+        </member>
+        <member name="P:Brun.Workers.AbstractWorker.Name">
+            <summary>
+            工作中心名称
+            </summary>
         </member>
         <member name="P:Brun.Workers.AbstractWorker.Context">
             <summary>
@@ -1252,6 +1239,11 @@
             正在运行的任务
             </summary>
         </member>
+        <member name="P:Brun.Workers.AbstractWorker.ServiceProvider">
+            <summary>
+            Ioc容器
+            </summary>
+        </member>
         <member name="M:Brun.Workers.AbstractWorker.Dispose">
             <summary>
             释放单个Worker
@@ -1260,6 +1252,11 @@
         <member name="T:Brun.Workers.OnceWorker">
             <summary>
             基础Worker，每次执行一次
+            </summary>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.ProtectStart">
+            <summary>
+            内存对象start，对外隐藏
             </summary>
         </member>
         <member name="M:Brun.Workers.OnceWorker.StartBrun(System.Type)">
@@ -1319,7 +1316,7 @@
             </summary>
             <param name="config"></param>
         </member>
-        <member name="M:Brun.Workers.QueueWorker.Start">
+        <member name="M:Brun.Workers.QueueWorker.ProtectStart">
             <summary>
             启动监听线程
             </summary>
@@ -1363,12 +1360,6 @@
             
             </summary>
             <param name="config"></param>
-        </member>
-        <member name="M:Brun.Workers.TimeWorker.Start">
-            <summary>
-            启动Worker
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:Brun.Workers.TimeWorker.InitPreTimeBackRun(Brun.TimeBackRun)">
             <summary>

@@ -3,6 +3,7 @@ using BrunUI.Auths;
 using BrunUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,11 @@ namespace BrunUI.Controllers
     public class UserController : BaseBrunController
     {
         private WorkerServer _workerServer;
-        public UserController(WorkerServer workerServer)
+        IOptionsMonitor<BrunAuthenticationSchemeOptions> authOptions;
+        public UserController(WorkerServer workerServer, IOptionsMonitor<BrunAuthenticationSchemeOptions> brunAuthenticationSchemeOptions)
         {
             _workerServer = workerServer;
+            this.authOptions = brunAuthenticationSchemeOptions;
         }
         /// <summary>
         /// Burn登录
@@ -33,7 +36,20 @@ namespace BrunUI.Controllers
             HttpContext.Items.TryGetValue("BrunUser", out object? testName);
             string? t = (string?)testName;
             //Console.WriteLine(t);
-            if (model.UserName != _workerServer.Option.UserName || model.Password != _workerServer.Option.Password)
+            //if (model.UserName != _workerServer.Option.UserName || model.Password != _workerServer.Option.Password)
+            //{
+            //    //账号或密码错误
+            //    return new LoginResult()
+            //    {
+            //        Msg = "用户名或密码错误",
+            //        Status = "error",
+            //    };
+            //}
+            if (authOptions == null)
+            {
+                throw new Exception("_brunAuthenticationSchemeOptions == null");
+            }
+            if (authOptions.CurrentValue.UserName != model.UserName || authOptions.CurrentValue.Password != model.Password)
             {
                 //账号或密码错误
                 return new LoginResult()

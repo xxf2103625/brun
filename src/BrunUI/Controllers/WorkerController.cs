@@ -31,7 +31,7 @@ namespace BrunUI.Controllers
             {
                 model.Name = type.Name;
             }
-            var wk = await workerService.AddWorker(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
+            var wk = await workerService.AddWorkerAndStart(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
             if (wk != null)
                 return BrunResultState.Success;
             else

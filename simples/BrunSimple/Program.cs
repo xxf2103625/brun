@@ -30,8 +30,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddBrunService(options =>
 {
     //options.UseRedis("192.168.1.8");
-    //options.UseInMemory();
-    options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
+    options.UseInMemory();
+    //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
 
     //options.WorkerServer = options =>
     //{
@@ -54,17 +54,12 @@ builder.Services.AddBrunService(options =>
     //    //配置计划任务
     //    options.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
     //};
-}).AddBrunUI(options =>
+}).AddBrunUI(authoptions =>
 {
-    options.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
-    options.CheckUser = (userName, pwd) =>
-    {
-        if (userName == "admin" && pwd == "admin")
-        {
-            return true;
-        }
-        return false;
-    };
+    authoptions.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
+    authoptions.UserName = "brun";
+    authoptions.Password = "admin";
+    //或者appsetting中配置选项，key：BrunAuthenticationScheme，文档：https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#use-ioptionssnapshot-to-read-updated-data
 });
 
 var app = builder.Build();
@@ -77,7 +72,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    //app.UseHttpLogging();
+    app.UseHttpLogging();
 }
 
 app.UseStaticFiles();

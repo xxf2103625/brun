@@ -1,4 +1,6 @@
-﻿using Brun.Workers;
+﻿using Brun.Services;
+using Brun.Workers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +10,9 @@ using System.Threading.Tasks;
 namespace Brun
 {
     /// <summary>
-    /// Test
+    /// Test专用
     /// </summary>
-    public static class WorkerServerExtenstions
+    public static class WorkerServerExtenstionsForMemoryTest
     {
         /// <summary>
         /// 创建OnceWorker
@@ -21,37 +23,34 @@ namespace Brun
         /// <returns></returns>
         public static OnceWorker CreateOnceWorker(this WorkerServer workerServer, WorkerConfig config, bool startNow = true)
         {
-            var worker = new OnceWorker(config);
-            workerServer.Worders.Add(worker.Key, worker);
-            return worker;
+            return CreateWorker<OnceWorker>(workerServer, config);
         }
         public static QueueWorker CreateQueueWorker(this WorkerServer workerServer, WorkerConfig config, bool startNow = true)
         {
-            var worker = new QueueWorker(config);
-            workerServer.Worders.Add(worker.Key, worker);
-            return worker;
+            return CreateWorker<QueueWorker>(workerServer, config);
         }
         public static TimeWorker CreateTimeWorker(this WorkerServer workerServer, WorkerConfig config, bool startNow = true)
         {
-            var worker = new TimeWorker(config);
-            workerServer.Worders.Add(worker.Key, worker);
-            return worker;
+            return CreateWorker<TimeWorker>(workerServer, config);
         }
 
         public static PlanWorker CreatePlanTimeWorker(this WorkerServer workerServer, WorkerConfig config, bool startNow = true)
         {
-            var worker = new PlanWorker(config);
-            workerServer.Worders.Add(worker.Key, worker);
-            return worker;
+            return CreateWorker<PlanWorker>(workerServer, config);
         }
         public static TWorker CreateWorker<TWorker>(this WorkerServer workerServer, WorkerConfig config) where TWorker : AbstractWorker
         {
-            var worker = Commons.BrunTool.CreateInstance<TWorker>(config);
-            return worker;
+            return (TWorker)CreateWorker(workerServer, typeof(TWorker), config);
         }
         public static IWorker CreateWorker(this WorkerServer workerServer, Type workerType, WorkerConfig config)
         {
-            var worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, config);
+            if (config.Key == null)
+                config.Key = Guid.NewGuid().ToString();
+            if (config.Name == null)
+                config.Name = workerType.Name;
+            var workerService = workerServer.ServiceProvider.GetRequiredService<IWorkerService>();
+            var worker = workerService.AddWorker(config, workerType).Result;
+            worker.Start();
             return worker;
         }
     }

@@ -33,7 +33,8 @@ namespace UnitTestBrun
                 //.SetNameTagKey(name, tag, key)
                 //.Build();
             });
-            IWorker work = WorkerServer.Instance.GetWorker(key);
+            
+            IWorker work = GetWorkerByKey(key);
             Assert.AreEqual(key, work.Key);
             Assert.AreEqual(name, work.Name);
         }
@@ -54,7 +55,6 @@ namespace UnitTestBrun
                 //.Build();
             });
             IWorker work = GetWorkerByName(nameof(Brun.Workers.OnceWorker)).First();
-            work.Start();
             Assert.IsNotNull(work.Key);
             Assert.AreEqual("OnceWorker", work.Name);
         }

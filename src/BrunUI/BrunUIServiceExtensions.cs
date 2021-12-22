@@ -12,10 +12,8 @@ namespace BrunUI
     {
         public static IServiceCollection AddBrunUI(this IServiceCollection services, Action<BrunAuthenticationSchemeOptions>? configrureOptions = null)
         {
-            services.AddAuthentication().AddScheme<BrunAuthenticationSchemeOptions, BrunAuthenticationHandler>("Brun", options =>
-            {
-                configrureOptions?.Invoke(options);
-            });
+            services.Configure<BrunAuthenticationSchemeOptions>(configrureOptions);
+            services.AddAuthentication().AddScheme<BrunAuthenticationSchemeOptions, BrunAuthenticationHandler>("Brun", configrureOptions);//configrureOptions在仅BrunAuthenticationHandler中生效
             return services;
         }
     }

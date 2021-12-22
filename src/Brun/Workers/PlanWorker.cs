@@ -39,7 +39,7 @@ namespace Brun.Workers
             }
         }
 
-        public override void Start()
+        internal override void ProtectStart()
         {
             if (_context.State == WorkerState.Started)
             {
@@ -85,16 +85,21 @@ namespace Brun.Workers
                                  _logger.LogWarning("the {0} in PlanWorker with id:'{1}' nextRunTime is null,delete this PlanWorker.", backRun.GetType(), backRun.Id);
                                  //执行一次 下一轮会移除
                              }
-                             Task.Run(() =>
+                             //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
+                             //BrunContext brunContext = new BrunContext(backRun);
+                             //_ = Execute(brunContext);
+                             base.taskFactory.StartNew(() =>
                              {
                                  BrunContext brunContext = new BrunContext(backRun);
                                  _ = Execute(brunContext);
                              });
+                             _logger.LogInformation($"PlanWorker with key '{this.Key}' is executing,backrun name:'{backRun.Name}',id:'{item.Key}'.");
                          }
                      }
                      Thread.Sleep(5);
                  }
-             }, creationOptions: TaskCreationOptions.LongRunning);
+             }, creationOptions: TaskCreationOptions.LongRunning)
+                .ContinueWith(t => { _context.State = WorkerState.Default; });
         }
         protected override Task Brun(BrunContext context)
         {

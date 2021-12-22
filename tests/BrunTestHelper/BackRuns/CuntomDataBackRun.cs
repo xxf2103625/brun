@@ -15,7 +15,7 @@ namespace BrunTestHelper.BackRuns
         {
         }
 
-        public override Task Run(CancellationToken stoppingToken)
+        public override async Task Run(CancellationToken stoppingToken)
         {
             //string nb = Data["nb"];
             //nb = (int.Parse(nb) + 1).ToString();
@@ -25,8 +25,9 @@ namespace BrunTestHelper.BackRuns
                 Console.WriteLine($"nb:{Data["nb"]}");
             }
             GetRequiredService<ILogger<CuntomDataBackRun>>().LogInformation("Thread.Id:" + Thread.CurrentThread.ManagedThreadId);
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-            return Task.CompletedTask;
+            //Thread.Sleep(TimeSpan.FromSeconds(1));
+            await Task.Delay(1000);
+            //return Task.CompletedTask;
         }
     }
 }

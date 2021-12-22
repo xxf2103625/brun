@@ -330,8 +330,8 @@ namespace UnitTestBrun
             }
             Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
             //TODO 批量单元测试时 >0
+            //Assert.AreEqual(0, work.Context.startNb);
             Assert.AreNotEqual(max, work.Context.startNb);
-            Assert.AreEqual(0, work.Context.exceptNb);
             Assert.AreEqual(0, work.Context.exceptNb);
             WaitForBackRun(100);
             Console.WriteLine($"after start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");

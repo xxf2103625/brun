@@ -33,9 +33,9 @@ namespace BrunUI.Auths
                     if (token.Length > 0)
                     {
                         var user = AesTokenHelper.GetUser(token, _options.CurrentValue.BrunSimpleTokenKey);
-                        if (user != null && _options.CurrentValue.CheckUser != null)
+                        if (user != null)
                         {
-                            if (_options.CurrentValue.CheckUser(user.UserName, user.Password))
+                            if (_options.CurrentValue.UserName == user.UserName && _options.CurrentValue.Password == user.Password)
                             {
                                 var identity = new ClaimsIdentity(authenticationType: "Brun", claims: new List<Claim>()
                                 {
@@ -66,17 +66,9 @@ namespace BrunUI.Auths
         /// Brun简单Token认证的密钥，必须32位，aes对称加密，不要泄露
         /// </summary>
         public string BrunSimpleTokenKey { get; set; } = "mvyyybozkaairhpfwmievusfmjndhzcg";
-        /// <summary>
-        /// t1:用户名，t2：密码，返回true表示用户名和密码正确，默认admin,admin
-        /// </summary>
-        public Func<string, string, bool>? CheckUser { get; set; } = (userName, password) =>
-          {
-              if (userName == "admin" && password == "admin")
-              {
-                  return true;
-              }
-              return false;
-          };
+
+        public string UserName { get; set; } = "admin";
+        public string Password { get; set; } = "admin";
     }
     public enum BrunAuthType
     {

@@ -21,16 +21,10 @@ namespace Brun.Workers
     /// </summary>
     public abstract class AbstractWorker : IWorker
     {
-        public string Key => _config.Key;
-        public string Name => _config.Name;
         /// <summary>
         /// 包含的Backrun
         /// </summary>
         protected ConcurrentDictionary<string, IBackRun> _backRuns;
-        ///// <summary>
-        ///// 选项
-        ///// </summary>
-        //protected WorkerOption _option;
         /// <summary>
         /// 配置
         /// </summary>
@@ -59,11 +53,7 @@ namespace Brun.Workers
         public AbstractWorker(WorkerConfig config)
         {
             if (WorkerServer.Instance.ServiceProvider != null)
-            {
                 _logger = WorkerServer.Instance.LoggerFactory.CreateLogger(this.GetType());
-            }
-
-            //_option = option;
             _config = config;
             _context = new WorkerContext(config);
             _backRuns = new ConcurrentDictionary<string, IBackRun>();
@@ -74,20 +64,21 @@ namespace Brun.Workers
             _context.RunningTasks = RunningTasks;
         }
         /// <summary>
+        /// 内存对象start，对外隐藏
+        /// </summary>
+        internal abstract void ProtectStart();
+        /// <summary>
         /// 启动
         /// </summary>
         /// <returns></returns>
-        public virtual void Start()
+        public void Start()
         {
-            using(var scope= ServiceProvider.CreateScope())
+            //转移到注册的服务来处理，方便持久化扩展
+            using (var scope = ServiceProvider.CreateScope())
             {
                 IWorkerService workerService = scope.ServiceProvider.GetRequiredService<IWorkerService>();
                 workerService.Start(this.Key);
             }
-            //IWorkerService workerService = ServiceProvider.GetRequiredService<IWorkerService>();
-            //workerService.Start(this.Key);
-            //_context.State = WorkerState.Started;
-            _logger.LogInformation("the {0} key:'{1}' is started", GetType().Name, _context.Key);
         }
         /// <summary>
         /// 统一流程控制
@@ -129,13 +120,24 @@ namespace Brun.Workers
         /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
         /// <summary>
-        /// 停止
+        /// 内存对象Stop，对外隐藏
         /// </summary>
-        /// <returns></returns>
-        public virtual void Stop()
+        internal virtual void ProtectStop()
         {
             _context.State = WorkerState.Stoped;
             _logger.LogInformation("the {0} key:{1} is stoped", GetType().Name, _context.Key);
+        }
+        /// <summary>
+        /// 停止
+        /// </summary>
+        /// <returns></returns>
+        public void Stop()
+        {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var workerService = scope.ServiceProvider.GetRequiredService<IWorkerService>();
+                workerService.Stop(this.Key);
+            }
         }
         /// <summary>
         /// 添加拦截器
@@ -150,19 +152,6 @@ namespace Brun.Workers
                 await observer.Todo(_context, brunContext);
             }
         }
-        /// <summary>
-        /// 上下文
-        /// </summary>
-        public WorkerContext Context => _context;
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public WorkerState State => _context.State;
-        /// <summary>
-        /// 包含的Backrun
-        /// </summary>
-        public ConcurrentDictionary<string, IBackRun> BackRuns => _backRuns;
-
         public string GetData(string key)
         {
             if (_context.Items == null)
@@ -176,12 +165,33 @@ namespace Brun.Workers
                 return null;
         }
         /// <summary>
+        /// 工作中心的Key/Id
+        /// </summary>
+        public string Key => _config.Key;
+        /// <summary>
+        /// 工作中心名称
+        /// </summary>
+        public string Name => _config.Name;
+        /// <summary>
+        /// 上下文
+        /// </summary>
+        public WorkerContext Context => _context;
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public WorkerState State => _context.State;
+        /// <summary>
+        /// 包含的Backrun
+        /// </summary>
+        public ConcurrentDictionary<string, IBackRun> BackRuns => _backRuns;
+        /// <summary>
         /// 正在运行的任务
         /// </summary>
         public BlockingCollection<Task> RunningTasks { get; private set; }
+        /// <summary>
+        /// Ioc容器
+        /// </summary>
         protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
-        protected ILoggerFactory LoggerFactory => (ILoggerFactory)ServiceProvider.GetService(typeof(ILoggerFactory));
-        public TaskFactory TaskFactory => taskFactory;
         /// <summary>
         /// 释放单个Worker
         /// </summary>

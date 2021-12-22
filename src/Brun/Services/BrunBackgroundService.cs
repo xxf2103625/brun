@@ -43,14 +43,12 @@ namespace Brun.Services
         private Task ExecuteAsync(CancellationToken stoppingToken)
         {
             //_logger.LogInformation("BrunBackgroundService startting...");
-            //var workerServer = (WorkerServer)_serviceProvider.GetRequiredService(typeof(WorkerServer));
-            workerServer.SetServiceProvider(_serviceProvider);
-            workerServer.SetLogFactory(loggerFactory);
+            workerServer.Init(_serviceProvider);
             if (workerServer.Option.WorkerServer != null)
             {
                 workerServer.Option.WorkerServer.Invoke(workerServer);
             }
-            workerServer.Start(_serviceProvider, stoppingToken);
+            workerServer.Start(stoppingToken);
             _logger.LogInformation("BrunBackgroundService is started");
             return Task.CompletedTask;
         }

@@ -12,6 +12,9 @@ namespace Brun
     /// </summary>
     public class WorkerServerOption
     {
+        /// <summary>
+        /// WorkerServer的配置
+        /// </summary>
         public Action<WorkerServer> WorkerServer { get; set; }
         /// <summary>
         /// 储存类型
