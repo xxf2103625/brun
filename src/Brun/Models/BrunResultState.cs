@@ -20,6 +20,10 @@ namespace Brun.Models
         /// </summary>
         Success = 1,
         /// <summary>
+        /// 操作失败
+        /// </summary>
+        Error = 2,
+        /// <summary>
         /// Worker未运行
         /// </summary>
         NotRunning = 6,

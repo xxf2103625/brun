@@ -363,6 +363,11 @@
             操作成功
             </summary>
         </member>
+        <member name="F:Brun.Models.BrunResultState.Error">
+            <summary>
+            操作失败
+            </summary>
+        </member>
         <member name="F:Brun.Models.BrunResultState.NotRunning">
             <summary>
             Worker未运行
@@ -1006,7 +1011,7 @@
             封装Brun实例对象常用操作
             </summary>
         </member>
-        <member name="T:Brun.Services.IOnceWorkerService">
+        <member name="T:Brun.Services.IOnceBrunService">
             <summary>
             管理OnceWorker
             </summary>
@@ -1027,21 +1032,21 @@
             <param name="workerType"></param>
             <returns></returns>
         </member>
-        <member name="T:Brun.Services.OnceWorkerService">
+        <member name="T:Brun.Services.OnceBrunService">
             <summary>
-            内存模式管理OnceWorker
+            内存模式管理OnceBrun
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceWorkerService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Services.OnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
             <summary>
-            添加OnceWorker
+            添加OnceBrun
             </summary>
             <param name="onceWorker"></param>
             <param name="brunType"></param>
             <param name="option"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.Services.TimeWorkerService.AddTimeBrun(Brun.Workers.TimeWorker,System.Type,Brun.Options.TimeBackRunOption)">
+        <member name="M:Brun.Services.TimeBrunService.AddTimeBrun(Brun.Workers.TimeWorker,System.Type,Brun.Options.TimeBackRunOption)">
             <summary>
             添加TimeWorker
             </summary>

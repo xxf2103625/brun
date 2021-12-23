@@ -1,6 +1,5 @@
 ﻿using Brun;
 using Brun.Services;
-using BrunTestHelper.BackRuns;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +16,6 @@ namespace UnitTestBrun
     /// <summary>
     /// 测试Host托管的后台任务基类
     /// </summary>
-
     public abstract class BaseHostTest
     {
         protected IHost host;

@@ -12,7 +12,7 @@ namespace BrunUI.Models
     public class TableResult
     {
         public TableResult() { }
-        public TableResult(object data, int total, bool success)
+        public TableResult(object data, int total, bool success = true)
         {
             Data = data;
             Total = total;

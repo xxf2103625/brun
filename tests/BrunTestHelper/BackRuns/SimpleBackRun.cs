@@ -45,7 +45,7 @@ namespace BrunTestHelper.BackRuns
             lock (SharedLock.Nb_LOCK)
             {
                 SimNb++;
-                Console.WriteLine($"SimNb:{SimNb}");
+                Console.WriteLine($"SimpleLongBackRun:SimNb:{SimNb}");
             }
             return Task.CompletedTask;
         }

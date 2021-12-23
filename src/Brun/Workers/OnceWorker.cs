@@ -146,7 +146,7 @@ namespace Brun.Workers
         /// <param name="option"></param>
         /// <returns></returns>
         /// <exception cref="BrunException"></exception>
-        public BrunResultState AddBrun(Type backRunType, OnceBackRunOption option)
+        public OnceBackRun AddBrun(Type backRunType, OnceBackRunOption option)
         {
             if (backRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "backRunType can not be null.");
@@ -163,7 +163,7 @@ namespace Brun.Workers
                 //throw new BrunException(BrunErrorCode.AllreadyKey, $"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
 
                 _logger.LogWarning($"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
-                return BrunResultState.IdBeUsed;
+                throw new BrunException(BrunErrorCode.AllreadyKey, "the once backRun key is allready in system");
             }
             else
             {
@@ -171,8 +171,8 @@ namespace Brun.Workers
                     option.Id = Guid.NewGuid().ToString();
                 if (option.Name == null)
                     option.Name = backRunType.Name;
-                IBackRun brun = (IBackRun)BrunTool.CreateInstance(backRunType, option);
-                ((OnceBackRun)brun).SetWorkerContext(this._context);
+                OnceBackRun brun = (OnceBackRun)(IBackRun)BrunTool.CreateInstance(backRunType, option);
+                brun.SetWorkerContext(this._context);
                 if (_backRuns.TryAdd(brun.Id, brun))
                 {
                     if (_backRuns.Count == 1)
@@ -180,7 +180,7 @@ namespace Brun.Workers
                         this.defuatBackRun = brun;
                     }
                     _logger.LogInformation("the OnceWorker with key:'{0}' added BackRun:'{1}'.", this.Key, backRunType.FullName);
-                    return BrunResultState.Success;
+                    return brun;
                 }
                 else
                 {
@@ -194,11 +194,11 @@ namespace Brun.Workers
         /// <typeparam name="TBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        public BrunResultState AddBrun<TBackRun>(OnceBackRunOption option) where TBackRun : OnceBackRun
+        public OnceBackRun AddBrun<TBackRun>(OnceBackRunOption option) where TBackRun : OnceBackRun
         {
             return this.AddBrun(typeof(TBackRun), option);
         }
-        public BrunResultState AddBrun<TBackRun>() where TBackRun : BackRun
+        public OnceBackRun AddBrun<TBackRun>() where TBackRun : OnceBackRun
         {
             return this.AddBrun(typeof(TBackRun), new OnceBackRunOption());
         }

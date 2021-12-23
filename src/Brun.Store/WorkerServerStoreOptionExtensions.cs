@@ -36,7 +36,7 @@ namespace Brun
 
                 services.AddScoped<SqlSugarClient>(m => new SqlSugarClient(connectionConfig));
                 services.AddScoped<IWorkerService, StoreWorkerService>();
-                services.AddScoped<IOnceWorkerService, StoreOnceWorkerService>();
+                //services.AddScoped<IOnceBrunService, StoreOnceWorkerService>();
             };
             return workerServerOption;
         }

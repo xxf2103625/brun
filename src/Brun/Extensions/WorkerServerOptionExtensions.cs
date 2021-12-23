@@ -17,7 +17,7 @@ namespace Brun
             {
                 
                 services.AddScoped<IWorkerService, WorkerService>();
-                services.AddScoped<IOnceWorkerService, OnceWorkerService>();
+                services.AddScoped<IOnceBrunService, OnceBrunService>();
             };
             return workerServerOption;
         }

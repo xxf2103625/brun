@@ -5,8 +5,8 @@ namespace BrunSimple.Controllers
 {
     public class BrunController : Controller
     {
-        IOnceWorkerService onceWorker;
-        public BrunController(IOnceWorkerService onceWorker)
+        IOnceBrunService onceWorker;
+        public BrunController(IOnceBrunService onceWorker)
         {
             this.onceWorker = onceWorker;
         }

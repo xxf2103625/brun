@@ -13,6 +13,7 @@ namespace Brun.Services
     /// <summary>
     /// 封装Brun实例对象常用操作
     /// </summary>
+    [Obsolete]
     public class BaseWorkerService<TWorker> : IBaseWorkerService<TWorker> where TWorker : AbstractWorker
     {
         private WorkerServer _workerServer;

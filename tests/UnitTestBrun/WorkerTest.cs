@@ -12,13 +12,6 @@ using System.Threading.Tasks;
 
 namespace UnitTestBrun
 {
-    /*
-     * 结论
-     *BackRun内部有await ：await work.Run()会回到主线程。 work.Run()：调用线程直接往后执行。
-     *BackRun内部返回Task.CompletedTask：不论await work.Run(),还是work.Run()，调用线程都会等待
-     *work.Run()，强制线程池执行，并丢弃子线程信息，主线程都不会等待
-     *当BackRun中有await时，使用work.Run()不要await 才和Run()效果一样
-     */
     [TestClass]
     public class WorkerTest : BaseHostTest
     {
@@ -713,7 +706,7 @@ namespace UnitTestBrun
                 //    .BuildOnceWorker();
             });
             IOnceWorker worker = GetOnceWorkerByName(nameof(OnceWorker)).First();
-            
+
             for (int i = 0; i < 1; i++)
             {
                 worker.Run();

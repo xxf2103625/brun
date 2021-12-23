@@ -23,7 +23,7 @@ namespace Brun
                 //services.Replace()
 
                 services.AddSingleton<ConnectionMultiplexer>(m => ConnectionMultiplexer.Connect(connString));
-                services.AddScoped<IOnceWorkerService, OnceWorkerRedisService>();
+                //services.AddScoped<IOnceBrunService, OnceWorkerRedisService>();
             };
             return workerServerOption;
         }

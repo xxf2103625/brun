@@ -57,7 +57,7 @@ builder.Services.AddBrunService(options =>
 }).AddBrunUI(authoptions =>
 {
     authoptions.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
-    authoptions.UserName = "brun";
+    authoptions.UserName = "admin";
     authoptions.Password = "admin";
     //或者appsetting中配置选项，key：BrunAuthenticationScheme，文档：https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#use-ioptionssnapshot-to-read-updated-data
 });

@@ -10,12 +10,10 @@ using System.Threading.Tasks;
 
 namespace Brun.Services
 {
-    public class TimeWorkerService
+    public class TimeBrunService
     {
-        IBaseWorkerService<TimeWorker> baseService;
-        public TimeWorkerService(IBaseWorkerService<TimeWorker> baseWorkerService)
+        public TimeBrunService()
         {
-            this.baseService = baseWorkerService;
         }
         /// <summary>
         /// 添加TimeWorker
@@ -30,7 +28,7 @@ namespace Brun.Services
         }
         public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
         {
-            return this.baseService.GetBackRuns();
+            throw new NotImplementedException();
         }
     }
 }

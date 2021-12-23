@@ -25,6 +25,8 @@ namespace Brun.Services
         Task<IWorker> GetWorkerByKey(string key);
         Task<IEnumerable<IWorker>> GetWorkerByName(string name);
         Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize);
+        Task<IEnumerable<IWorker>> GetAllWorkers();
+        Task<IEnumerable<IWorker>> GetAllOnceWorkers();
         void Start(string key);
         void StartAll();
         void StartByName(string name);

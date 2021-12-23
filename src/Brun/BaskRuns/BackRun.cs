@@ -26,7 +26,7 @@ namespace Brun.BaskRuns
         public ConcurrentDictionary<string, string> Data => _workerContext.Items;
         public string Id => option.Id;
         public string Name => option.Name;
-        internal WorkerContext WorkerContext => _workerContext;
+        public WorkerContext WorkerContext => _workerContext;
         internal void SetWorkerContext(WorkerContext workerContext)
         {
             this._workerContext = workerContext;

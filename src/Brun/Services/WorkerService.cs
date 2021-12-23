@@ -63,6 +63,22 @@ namespace Brun.Services
             });
             return Task.FromResult((list, workerServer.Worders.Count));
         }
+        public virtual Task<IEnumerable<IWorker>> GetAllWorkers()
+        {
+            return Task.FromResult(workerServer.Worders.Values.AsEnumerable());
+        }
+        public virtual Task<IEnumerable<IWorker>> GetAllOnceWorkers()
+        {
+            return Task.FromResult(workerServer.Worders.Values.Where(m=>m.GetType()==typeof(OnceWorker)).AsEnumerable());
+        }
+        public virtual Task<IEnumerable<IWorker>> GetAllTimeWorkers()
+        {
+            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker)).AsEnumerable());
+        }
+        public virtual Task<IEnumerable<IWorker>> GetQueueTimeWorkers()
+        {
+            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(QueueWorker)).AsEnumerable());
+        }
         public virtual void Start(string key)
         {
             if (workerServer.Worders.TryGetValue(key, out IWorker worker))

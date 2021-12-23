@@ -11,12 +11,11 @@ namespace Brun.Services
     /// <summary>
     /// 管理OnceWorker
     /// </summary>
-    public interface IOnceWorkerService
+    public interface IOnceBrunService
     {
-        IOnceWorker GetWorker(string key);
         //Task<BrunResultState> AddOnceBrun(WorkerConfigModel model);
-        BrunResultState AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
-        IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns();
-        IEnumerable<ValueLabel> GetOnceWorkersInfo();
+        Task<OnceBackRun> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
+        Task<IEnumerable<KeyValuePair<string, IBackRun>>> GetOnceBruns();
+        IEnumerable<ValueLabel> GetAllUserOnceBruns();
     }
 }
