@@ -16,16 +16,21 @@ namespace Brun.Services
     /// </summary>
     public class OnceBrunService : IOnceBrunService
     {
-        //private readonly WorkerServer workerServer;
-        //IBaseWorkerService<OnceWorker> baseService;
         IWorkerService workerService;
         IBackRunFilterService backRunFilterService;
         public OnceBrunService(IWorkerService workerService, IBackRunFilterService backRunFilterService)
         {
-            //this.workerServer = workerServer;
-            //this.baseService = baseWorkerService;
             this.workerService = workerService;
             this.backRunFilterService = backRunFilterService;
+        }
+        public async Task<OnceBackRun> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option)
+        {
+            if (brunType == null)
+                throw new BrunException(BrunErrorCode.ObjectIsNull, $"add once brun error,OnceBackrun Type is null");
+            var worker = await workerService.GetOnceWorker(onceWorkerId);
+            if (worker == null)
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"add once brun error,can not find OnceWorker by key:'{onceWorkerId}'");
+            return worker.AddBrun(brunType, option);
         }
         /// <summary>
         /// 添加OnceBrun

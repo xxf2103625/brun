@@ -41,12 +41,7 @@ namespace BrunUI.Controllers
         public async Task<TableResult> GetWorkers(int current, int pageSize)
         {
             var data = await workerService.GetWorkerInfos(current, pageSize);
-            return new TableResult()
-            {
-                Data = data.Item1,
-                Total = data.Item2,
-                Success = true
-            };
+            return new TableResult(data.Item1, data.Item2);
         }
     }
 }

@@ -238,6 +238,21 @@
             OnceWorker共享数据
             </summary>
         </member>
+        <member name="T:Brun.Enums.BackRunState">
+            <summary>
+            是否添加到了Worker，主要在持久化中用，可能数据库中有但程序集找不到对象类型
+            </summary>
+        </member>
+        <member name="F:Brun.Enums.BackRunState.Online">
+            <summary>
+            在线
+            </summary>
+        </member>
+        <member name="F:Brun.Enums.BackRunState.Offline">
+            <summary>
+            离线
+            </summary>
+        </member>
         <member name="T:Brun.Enums.WorkerState">
             <summary>
             Worker状态
@@ -1016,6 +1031,36 @@
             管理OnceWorker
             </summary>
         </member>
+        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(System.String,System.Type,Brun.Options.OnceBackRunOption)">
+            <summary>
+            添加OnceBrun
+            </summary>
+            <param name="onceWorkerId"></param>
+            <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
+            <summary>
+            添加OnceBrun
+            </summary>
+            <param name="onceWorker"></param>
+            <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IOnceBrunService.GetOnceBruns">
+            <summary>
+            获取所有已配置的OnceBrun
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IOnceBrunService.GetAllUserOnceBruns">
+            <summary>
+            获取所有可用的OnceBrun
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Brun.Services.IWorkerService.AddWorker(Brun.WorkerConfig,System.Type)">
             <summary>
             添加worker
@@ -1030,6 +1075,20 @@
             </summary>
             <param name="model"></param>
             <param name="workerType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IWorkerService.GetWorkerByKey(System.String)">
+            <summary>
+            获取Worker
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IWorkerService.GetOnceWorker(System.String)">
+            <summary>
+            获取OnceWorker
+            </summary>
+            <param name="key"></param>
             <returns></returns>
         </member>
         <member name="T:Brun.Services.OnceBrunService">

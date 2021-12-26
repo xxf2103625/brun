@@ -15,15 +15,15 @@ using System.Threading.Tasks;
 namespace BrunUI.Controllers
 {
     /// <summary>
-    /// 瞬时任务相关接口
-    /// url: /brunapi/onceworker/{action=Index}/{id?}
+    /// 瞬时任务相关接口 TODO 重命名 OnceBrunController
+    /// url: /brunapi/oncebrun/{action=Index}/{id?}
     /// </summary>
-    public class OnceWorkerController : BaseBrunController
+    public class OnceBrunController : BaseBrunController
     {
         IOnceBrunService onceBrunService;
         //IBaseWorkerService<OnceWorker> baseWorkerService;
         IWorkerService workerService;
-        public OnceWorkerController(IOnceBrunService onceBrunService, IWorkerService workerService)
+        public OnceBrunController(IOnceBrunService onceBrunService, IWorkerService workerService)
         {
             this.onceBrunService = onceBrunService;
             //this.baseWorkerService = baseWorkerService;
@@ -47,11 +47,8 @@ namespace BrunUI.Controllers
         [HttpPost]
         public async Task<BrunResultState> AddBrun(BrunCreateModel model)
         {
-            var worker = await workerService.GetWorkerByKey(model.WorkerKey);
-            if (worker == null || worker.GetType() != typeof(OnceWorker))
-                return BrunResultState.NotFound;
             var bType = BrunTool.GetTypeByFullName(model.BrunType);
-            var onceBrun = onceBrunService.AddOnceBrun((IOnceWorker)worker, bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
+            OnceBackRun? onceBrun =await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
             if (onceBrun == null)
                 return BrunResultState.Error;
             else

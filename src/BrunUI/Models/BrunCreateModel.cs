@@ -10,7 +10,7 @@ namespace BrunUI.Models
     {
         public string? Id { get; set; }
         public string? Name { get; set; }
-        public string WorkerKey { get; set; }
-        public string BrunType { get; set; }
+        public string? WorkerKey { get; set; }
+        public string? BrunType { get; set; }
     }
 }

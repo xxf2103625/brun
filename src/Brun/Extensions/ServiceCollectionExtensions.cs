@@ -46,7 +46,6 @@ namespace Brun
             Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
 
             services.AddSingleton<WorkerServer>(m => worker);
-            services.AddSingleton(typeof(IBaseWorkerService<>), typeof(BaseWorkerService<>));
             services.AddSingleton<IBackRunFilterService, BackRunFilterService>();
             services.AddHostedService<BrunBackgroundService>();
             return services;

@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { request } from 'umi';
-/** 获取瞬时任务列表 GET /brunapi/onceworker */
+/** 获取瞬时任务列表 GET /brunapi/oncebrun */
 
 export async function querylist(params, options) {
-  return await request('/brunapi/onceworker/querylist', {
+  return await request('/brunapi/oncebrun/querylist', {
     method: 'GET',
     ...(options || {}),
     params,
@@ -11,15 +11,17 @@ export async function querylist(params, options) {
 }
 
 export async function addBrun(data, options) {
-  return await request('/brunapi/onceworker/addbrun', {
+  return await request('/brunapi/oncebrun/addbrun', {
     method: 'POST',
     ...(options || {}),
     data: data,
   });
 }
-
+/**
+ * 获取所有OnceWorker实例供选择一个
+ */
 export async function getOnceWorkerList() {
-  let list = await request('/brunapi/onceworker/getonceworkersinfo', {
+  let list = await request('/brunapi/oncebrun/getonceworkersinfo', {
     method: 'GET',
   });
   let r = [];
@@ -30,7 +32,7 @@ export async function getOnceWorkerList() {
 }
 
 export async function runBrun(data, options) {
-  return await request('/brunapi/onceworker/run', {
+  return await request('/brunapi/oncebrun/run', {
     method: 'POST',
     ...(options || {}),
     data: data,

@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Brun.Enums;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,16 @@ namespace Brun.Store.Entities
     {
         [SugarColumn(IsPrimaryKey = true)]
         //[ColumnDescription()]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         /// <summary>
         /// Worker类型，字符串OnceWorker/TimeWorker...
         /// </summary>
-        public string Type { get; set; }
-        public string Name { get; set; }
+        public string? Type { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Worker运行状态
         /// </summary>
-        public Enums.WorkerState State { get; set; }
+        public WorkerState State { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

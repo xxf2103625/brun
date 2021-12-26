@@ -8,7 +8,7 @@ namespace BrunUI.Models
 {
     public class BrunKeyModel
     {
-        public string WorkerKey { get; set; }
-        public string BrunId { get; set; }
+        public string? WorkerKey { get; set; }
+        public string? BrunId { get; set; }
     }
 }

@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
-import { querylist, addBrun, runBrun } from '@/services/onceWorkerService';
+import { querylist, addBrun, runBrun } from '@/services/onceBrunService';
 import styles from './style.less';
 
 const columns = [
@@ -35,23 +35,23 @@ const columns = [
       return [
         <Popconfirm
           key="run"
-          title="是否手动运行该任务?"
+          title="是否手动执行该任务?"
           onConfirm={async (e) => {
             if (e) {
               let r = await runBrun({ workerKey: record.workerKey, brunId: record.id });
               if (r === 1) {
-                message.success('运行成功');
+                message.success('触发成功，任务将在后台执行');
               } else if (r === -7) {
                 message.error('找不到任务');
               } else {
-                message.error('添加失败');
+                message.error('操作失败');
               }
             }
           }}
           okText="确认"
           cancelText="取消"
         >
-          <a>运行</a>
+          <a>执行</a>
         </Popconfirm>,
         <a key="edit">编辑</a>,
       ];

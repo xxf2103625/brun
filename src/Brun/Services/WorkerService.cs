@@ -48,6 +48,20 @@ namespace Brun.Services
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find worker by key:'{key}'");
             }
         }
+        public virtual async Task<IOnceWorker> GetOnceWorker(string key)
+        {
+            var worker = await GetWorkerByKey(key);
+            if (worker.GetType() != typeof(OnceWorker))
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"the worker by key:'{key}' is not OnceWorker");
+            return (IOnceWorker)worker;
+        }
+        public virtual async Task<IQueueWorker> GetQueueWorker(string key)
+        {
+            var worker = await GetWorkerByKey(key);
+            if (worker.GetType() != typeof(QueueWorker))
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"the worker by key:'{key}' is not QueueWorker");
+            return (IQueueWorker)worker;
+        }
         public virtual Task<IEnumerable<IWorker>> GetWorkerByName(string name)
         {
             return Task.FromResult(workerServer.Worders.Values.Where(x => x.Name == name));
@@ -69,7 +83,7 @@ namespace Brun.Services
         }
         public virtual Task<IEnumerable<IWorker>> GetAllOnceWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(m=>m.GetType()==typeof(OnceWorker)).AsEnumerable());
+            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).AsEnumerable());
         }
         public virtual Task<IEnumerable<IWorker>> GetAllTimeWorkers()
         {

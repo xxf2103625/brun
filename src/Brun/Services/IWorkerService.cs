@@ -22,7 +22,19 @@ namespace Brun.Services
         /// <param name="workerType"></param>
         /// <returns></returns>
         Task<IWorker> AddWorkerAndStart(WorkerConfig model, Type workerType);
+        /// <summary>
+        /// 获取Worker
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         Task<IWorker> GetWorkerByKey(string key);
+        /// <summary>
+        /// 获取OnceWorker
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task<IOnceWorker> GetOnceWorker(string key);
+        Task<IQueueWorker> GetQueueWorker(string key);
         Task<IEnumerable<IWorker>> GetWorkerByName(string name);
         Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize);
         Task<IEnumerable<IWorker>> GetAllWorkers();
