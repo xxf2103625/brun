@@ -38,7 +38,7 @@ namespace UnitTestBrun
                 services.AddBrunService(options =>
                 {
                     //options.UseInMemory();
-                    options.WorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = workerServer =>
                     {
                         workerServer.CreateTimeWorker(new WorkerConfig(key, "")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(sleepTime), false));
                     };

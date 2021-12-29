@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Brun.Workers
 {
     /// <summary>
-    /// 基础Worker，每次执行一次
+    /// 瞬时任务执行器，调用一次执行一次
     /// </summary>
     public class OnceWorker : AbstractWorker, IOnceWorker
     {
@@ -45,12 +45,11 @@ namespace Brun.Workers
             _context.State = WorkerState.Started;
             _logger.LogInformation("the {0} key:'{1}' is started", GetType().Name, _context.Key);
         }
-
         public void Run(string id)
         {
             if (_backRuns.TryGetValue(id, out IBackRun backRun))
             {
-                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
+                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会优化成同步模式
                 //_ = Execute(new BrunContext(backRun));
 
                 base.taskFactory.StartNew(() => Execute(new BrunContext(backRun)));
@@ -59,17 +58,8 @@ namespace Brun.Workers
             }
             else
             {
-                _logger.LogError("OnceWorker can not find backrun by id '{0}'", id);
-            }
-        }
-        /// <summary> 
-        /// 开始执行Execute //TODO 以id为基础
-        /// </summary>
-        public virtual void StartBrun(Type brunType)
-        {
-            foreach (var item in _backRuns.Values.Where(m => m.GetType() == brunType))
-            {
-                Run(item.Id);
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"OnceWorker can not find backrun by id '{id}'");
+                //_logger.LogError("OnceWorker can not find backrun by id '{0}'", id);
             }
         }
         protected override async Task Brun(BrunContext context)
@@ -95,13 +85,16 @@ namespace Brun.Workers
             }
         }
 
-        public void Run<TBackRun>()
+        public void Run<TBackRun>() where TBackRun : OnceBackRun
         {
             Run(typeof(TBackRun));
         }
         public void Run(Type backRunType)
         {
-            StartBrun(backRunType);
+            foreach (var item in _backRuns.Values.Where(m => m.GetType() == backRunType))
+            {
+                Run(item.Id);
+            }
         }
         public T GetData<T>(string key)
         {
@@ -146,16 +139,18 @@ namespace Brun.Workers
         /// <param name="option"></param>
         /// <returns></returns>
         /// <exception cref="BrunException"></exception>
-        public OnceBackRun AddBrun(Type backRunType, OnceBackRunOption option)
+        public OnceBackRun AddBrun(Type backRunType, OnceBackRunOption option = null)
         {
+            //TODO 迁移到服务，支持持久化
             if (backRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "backRunType can not be null.");
             if (option == null)
-                throw new BrunException(BrunErrorCode.ObjectIsNull, "BackRunOption can not be null.");
+                option = new OnceBackRunOption();
+            //throw new BrunException(BrunErrorCode.ObjectIsNull, "BackRunOption can not be null.");
             //_logger.LogDebug($"the OnceWorker with key:'{this.Key}' is adding '{backRunType.FullName}'");
-            if (!backRunType.IsSubclassOf(typeof(BackRun)))
+            if (!backRunType.IsSubclassOf(typeof(OnceBackRun)))
             {
-                throw new BrunException(BrunErrorCode.TypeError, $"{backRunType.FullName} can not add to OnceWorker.");
+                throw new BrunException(BrunErrorCode.TypeError, $"{backRunType.FullName} can not add to OnceWorker,must be SubclassOf OnceBackRun");
             }
             if (!string.IsNullOrEmpty(option.Id) && _backRuns.ContainsKey(option.Id))
             {
@@ -194,13 +189,12 @@ namespace Brun.Workers
         /// <typeparam name="TBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        public OnceBackRun AddBrun<TBackRun>(OnceBackRunOption option) where TBackRun : OnceBackRun
+        public OnceBackRun AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun
         {
-            return this.AddBrun(typeof(TBackRun), option);
-        }
-        public OnceBackRun AddBrun<TBackRun>() where TBackRun : OnceBackRun
-        {
-            return this.AddBrun(typeof(TBackRun), new OnceBackRunOption());
+            if (option == null)
+                return this.AddBrun(typeof(TBackRun), new OnceBackRunOption());
+            else
+                return this.AddBrun(typeof(TBackRun), option);
         }
     }
 }

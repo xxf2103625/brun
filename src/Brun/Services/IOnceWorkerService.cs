@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Brun.Services
 {
     /// <summary>
-    /// 管理OnceWorker
+    /// 管理OnceBackRun的接口
     /// </summary>
     public interface IOnceBrunService
     {
@@ -29,6 +29,19 @@ namespace Brun.Services
         /// <param name="option"></param>
         /// <returns></returns>
         Task<OnceBackRun> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
+        /// <summary>
+        /// 执行指定Worker中指定Id的OnceBackrun
+        /// </summary>
+        /// <param name="workerId"></param>
+        /// <param name="onceBackRunId"></param>
+        /// <returns></returns>
+        Task Run(string workerId, string onceBackRunId);
+        /// <summary>
+        /// 执行指定Id的OnceBackRun（多一步查询worker）
+        /// </summary>
+        /// <param name="onceBackRunId"></param>
+        /// <returns></returns>
+        Task Run(string onceBackRunId);
         /// <summary>
         /// 获取所有已配置的OnceBrun
         /// </summary>

@@ -17,11 +17,9 @@ namespace BrunUI.Controllers
     /// </summary>
     public class UserController : BaseBrunController
     {
-        private WorkerServer _workerServer;
         IOptionsMonitor<BrunAuthenticationSchemeOptions> authOptions;
-        public UserController(WorkerServer workerServer, IOptionsMonitor<BrunAuthenticationSchemeOptions> brunAuthenticationSchemeOptions)
+        public UserController(IOptionsMonitor<BrunAuthenticationSchemeOptions> brunAuthenticationSchemeOptions)
         {
-            _workerServer = workerServer;
             this.authOptions = brunAuthenticationSchemeOptions;
         }
         /// <summary>

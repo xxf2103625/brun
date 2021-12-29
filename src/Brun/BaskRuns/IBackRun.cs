@@ -25,5 +25,6 @@ namespace Brun.BaskRuns
         /// 单个Worker实例中的共享数据
         /// </summary>
         ConcurrentDictionary<string, string> Data { get; }
+        WorkerContext WorkerContext { get; }
     }
 }

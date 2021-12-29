@@ -27,7 +27,7 @@ namespace Brun.Services
         {
             if (brunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, $"add once brun error,OnceBackrun Type is null");
-            var worker = await workerService.GetOnceWorker(onceWorkerId);
+            var worker = await workerService.GetOnceWorkerByKey(onceWorkerId);
             if (worker == null)
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"add once brun error,can not find OnceWorker by key:'{onceWorkerId}'");
             return worker.AddBrun(brunType, option);
@@ -43,11 +43,31 @@ namespace Brun.Services
         {
             return Task.FromResult(onceWorker.AddBrun(brunType, option));
         }
+        public async Task Run(string onceBackRunId)
+        {
+            IEnumerable<IOnceWorker> workers = await workerService.GetAllOnceWorkers();
+            foreach (OnceWorker worker in workers)
+            {
+                if (worker.BackRuns.ContainsKey(onceBackRunId))
+                {
+                    worker.Run(onceBackRunId);
+                    return;
+                }
+            }
+            throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find online OnceBackRun by id:'{onceBackRunId}'");
+        }
+        public async Task Run(string workerId, string onceBackRunId)
+        {
+            IOnceWorker worker = await workerService.GetOnceWorkerByKey(workerId);
+            if (worker == null)
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find OnceWorker by key:'{workerId}'");
+            worker.Run(onceBackRunId);
+        }
         public async Task<IEnumerable<KeyValuePair<string, IBackRun>>> GetOnceBruns()
         {
             var result = new List<KeyValuePair<string, IBackRun>>();
-            var workers = await workerService.GetAllWorkers();
-            foreach (var item in workers)
+            var workers = await workerService.GetAllOnceWorkers();
+            foreach (OnceWorker item in workers)
             {
                 foreach (var brun in item.BackRuns)
                 {
@@ -56,14 +76,15 @@ namespace Brun.Services
             }
             return result;
         }
-        //public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns(int current, int pageSize)
-        //{
-        //    return this.baseService.GetBackRuns().Skip((current-1)*pageSize);
-        //}
+        /// <summary>
+        /// 获取当前程序所有可用的OnceBrun，供前端选择
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ValueLabel> GetAllUserOnceBruns()
         {
-            return backRunFilterService.GetBackRunTypes().Select(m => new ValueLabel(m.FullName, m.Name));
+            return backRunFilterService.GetOnceBackRunTypes().Select(m => new ValueLabel(m.FullName, m.Name));
         }
+
 
     }
 }

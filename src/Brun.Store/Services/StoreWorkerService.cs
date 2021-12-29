@@ -4,6 +4,7 @@ using Brun.Exceptions;
 using Brun.Models;
 using Brun.Services;
 using Brun.Store.Entities;
+using Brun.Workers;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Brun.Store.Services
             this.db = sqlSugarClient;
         }
         /// <summary>
-        /// 已存在数据库，启动时初始化内存对象
+        /// //TODO 已存在数据库，启动时初始化内存对象+单元测试
         /// </summary>
         /// <returns></returns>
         public async Task<BrunResultState> ReStartInit()
@@ -43,28 +44,31 @@ namespace Brun.Store.Services
             }
             throw new BrunException(BrunErrorCode.ObjectIsNull, $"the worker type in db '' is not supported");
         }
-        public override async Task<IWorker> AddWorker(WorkerConfig model, Type workerType)
+        public override async Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true)
         {
             try
             {
                 db.BeginTran();
-                bool hasWorker = await db.Queryable<WorkerEntity>().AnyAsync(m => m.Id == model.Key);
+                bool hasWorker = await db.Queryable<WorkerEntity>().AnyAsync(m => m.Id == config.Key);
                 if (hasWorker)
-                    throw new BrunException(BrunErrorCode.AllreadyKey, $"store worker allready has key '{model.Key}'");
+                    throw new BrunException(BrunErrorCode.AllreadyKey, $"store worker allready has key '{config.Key}'");
                 WorkerEntity entity = new WorkerEntity();
-                entity.Id = model.Key;
-                entity.Name = model.Name;
+                entity.Id = config.Key;
+                entity.Name = config.Name;
                 entity.Type = workerType.Name;
                 entity.State = WorkerState.Started;
                 int dbr = await db.Insertable(entity).ExecuteCommandAsync();
                 if (dbr == 0)
                     throw new BrunException(BrunErrorCode.StoreServiceError, "store add worker return 0");
-                var br = await base.AddWorker(model, workerType);
-                if (br == null)
+                //调用基类内存操作,autoStart=false,避免重复Start
+                IWorker baseResult = await base.AddWorker(config, workerType, false);
+                if (baseResult == null)
                     throw new BrunException(BrunErrorCode.MemoryServiceError, "memory add worker is not success");
                 else
                     db.CommitTran();
-                return br;
+                if (autoStart)
+                    this.Start(baseResult.Key);
+                return baseResult;
             }
             catch (Exception)
             {
@@ -76,11 +80,26 @@ namespace Brun.Store.Services
                 db.Dispose();
             }
         }
-        public override async Task<IWorker> AddWorkerAndStart(WorkerConfig model, Type workerType)
+
+        public override async Task<TWorker> AddWorker<TWorker>(WorkerConfig config, bool autoStart = true)
         {
-            var worker = await this.AddWorker(model, workerType);
-            this.Start(model.Key);
-            return worker;
+            return (TWorker)(await AddWorker(config, typeof(TWorker), autoStart));
+        }
+        public override async Task<IOnceWorker> AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
+        {
+            return await AddWorker<OnceWorker>(workerConfig, autoStart);
+        }
+        public override async Task<ITimeWorker> AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
+        {
+            return await AddWorker<TimeWorker>(workerConfig, autoStart);
+        }
+        public override async Task<IQueueWorker> AddQueueWorker(WorkerConfig config, bool autoStart = true)
+        {
+            return await AddWorker<QueueWorker>(config, autoStart);
+        }
+        public override async Task<IPlanWorker> AddPlanWorker(WorkerConfig config, bool autoStart = true)
+        {
+            return await AddWorker<PlanWorker>(config, autoStart);
         }
         public override async Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize)
         {

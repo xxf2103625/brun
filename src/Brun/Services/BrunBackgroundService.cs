@@ -44,12 +44,21 @@ namespace Brun.Services
         {
             //_logger.LogInformation("BrunBackgroundService startting...");
             workerServer.Init(_serviceProvider);
-            if (workerServer.Option.WorkerServer != null)
+            //Start之前的Server配置
+            if (workerServer.Option.ConfigreWorkerServer != null)
             {
-                workerServer.Option.WorkerServer.Invoke(workerServer);
+                workerServer.Option.ConfigreWorkerServer.Invoke(workerServer);
             }
             workerServer.Start(stoppingToken);
             _logger.LogInformation("BrunBackgroundService is started");
+            //Start之后配置初始化BackRun
+            if (workerServer.Option.InitWorkers != null)
+            {
+                using(var scope = _serviceProvider.CreateScope())
+                {
+                    workerServer.Option.InitWorkers.Invoke(scope.ServiceProvider.GetRequiredService<IWorkerService>());
+                }
+            }
             return Task.CompletedTask;
         }
 

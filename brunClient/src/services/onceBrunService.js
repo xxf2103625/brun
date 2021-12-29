@@ -30,11 +30,23 @@ export async function getOnceWorkerList() {
   });
   return r;
 }
-
+/**
+ * 运行单个BackRun
+ * @param {*} data
+ * @param {*} options
+ * @returns
+ */
 export async function runBrun(data, options) {
   return await request('/brunapi/oncebrun/run', {
     method: 'POST',
     ...(options || {}),
     data: data,
+  });
+}
+
+export async function getbrundetailnumber(params) {
+  return await request('/brunapi/oncebrun/getbrundetailnumber', {
+    method: 'GET',
+    params,
   });
 }

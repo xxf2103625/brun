@@ -21,21 +21,37 @@ namespace Brun.Services
         {
             this.workerServer = workerServer;
         }
-        public virtual Task<IWorker> AddWorker(WorkerConfig model, Type workerType)
+        public virtual Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true)
         {
-            if (workerServer.Worders.ContainsKey(model.Key))
+            if (workerServer.Worders.ContainsKey(config.Key))
             {
-                throw new BrunException(BrunErrorCode.AllreadyKey, $"worker key '{model.Key}' duplicate");
+                throw new BrunException(BrunErrorCode.AllreadyKey, $"worker key '{config.Key}' duplicate");
             }
-            IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, model);
+            IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, config);
             workerServer.Worders.Add(worker.Key, worker);
+            if (autoStart)
+                this.Start(worker.Key);
             return Task.FromResult(worker);
         }
-        public virtual async Task<IWorker> AddWorkerAndStart(WorkerConfig model, Type workerType)
+        public virtual async Task<TWorker> AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker
         {
-            var worker = await AddWorker(model, workerType);
-            this.Start(model.Key);
-            return worker;
+            return (TWorker)(await AddWorker(config, typeof(TWorker), autoStart));
+        }
+        public virtual async Task<IOnceWorker> AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
+        {
+            return await AddWorker<OnceWorker>(workerConfig, autoStart);
+        }
+        public virtual async Task<ITimeWorker> AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
+        {
+            return await AddWorker<TimeWorker>(workerConfig, autoStart);
+        }
+        public virtual async Task<IQueueWorker> AddQueueWorker(WorkerConfig config, bool autoStart = true)
+        {
+            return await AddWorker<QueueWorker>(config, autoStart);
+        }
+        public virtual async Task<IPlanWorker> AddPlanWorker(WorkerConfig config, bool autoStart = true)
+        {
+            return await AddWorker<PlanWorker>(config, autoStart);
         }
         public virtual Task<IWorker> GetWorkerByKey(string key)
         {
@@ -48,7 +64,7 @@ namespace Brun.Services
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find worker by key:'{key}'");
             }
         }
-        public virtual async Task<IOnceWorker> GetOnceWorker(string key)
+        public virtual async Task<IOnceWorker> GetOnceWorkerByKey(string key)
         {
             var worker = await GetWorkerByKey(key);
             if (worker.GetType() != typeof(OnceWorker))
@@ -81,9 +97,9 @@ namespace Brun.Services
         {
             return Task.FromResult(workerServer.Worders.Values.AsEnumerable());
         }
-        public virtual Task<IEnumerable<IWorker>> GetAllOnceWorkers()
+        public virtual Task<IEnumerable<OnceWorker>> GetAllOnceWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).AsEnumerable());
+            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).Cast<OnceWorker>().AsEnumerable());
         }
         public virtual Task<IEnumerable<IWorker>> GetAllTimeWorkers()
         {

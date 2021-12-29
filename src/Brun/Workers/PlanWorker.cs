@@ -17,7 +17,7 @@ namespace Brun.Workers
     /// <summary>
     /// 在计划时间执行的Worker
     /// </summary>
-    public class PlanWorker : AbstractWorker, IPlanTimeWorker
+    public class PlanWorker : AbstractWorker, IPlanWorker
     {
         //计算计划时间的工具类
         private PlanTimeComputer planTimeComputer;

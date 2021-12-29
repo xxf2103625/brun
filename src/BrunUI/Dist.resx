@@ -122,7 +122,7 @@
     <value>Resources\favicon.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="index.html" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\index.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\index.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="logo.svg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\logo.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -131,7 +131,7 @@
     <value>Resources\pro_icon.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="umi.css" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\umi.css;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+    <value>Resources\umi.css;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="umi.js" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\umi.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

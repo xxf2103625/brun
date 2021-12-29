@@ -13,11 +13,16 @@ namespace Brun
     public class WorkerConfig
     {
         private List<WorkerObserver> observers = new List<WorkerObserver>();
-        public WorkerConfig()
-        {
-            Init();
-        }
-        public WorkerConfig(string key,string name)
+        /// <summary>
+        /// 持久化模式用代码初始化时别用这个,每次会随机Id创建新的Worker
+        /// </summary>
+        public WorkerConfig() : this(null, null) { }
+        /// <summary>
+        /// 持久化模式用代码初始化时请保证key不要改变，不然每次启动程序会创建新的Worker
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="name"></param>
+        public WorkerConfig(string key, string name)
         {
             this.Key = key;
             this.Name = name;
@@ -25,6 +30,8 @@ namespace Brun
         }
         public void Init()
         {
+            if (this.Key == null)
+                this.Key = Guid.NewGuid().ToString();
             AddWorkerObserver(new List<WorkerObserver>()
             {
                 new WorkerStartRunObserver(),
@@ -34,6 +41,9 @@ namespace Brun
         }
         public string Key { get; set; }
         public string Name { get; set; }
+        /// <summary>
+        /// 内存中保存的最大异常数量
+        /// </summary>
         public int WorkerContextMaxExcept { get; set; } = 10;
         public void AddWorkerObserver(WorkerObserver workerObserver)
         {
@@ -49,8 +59,7 @@ namespace Brun
         }
         public IEnumerable<WorkerObserver> GetObservers(WorkerEvents eventName)
         {
-            var list = observers.Where(m => m.Evt == eventName);
-            return list;
+            return observers.Where(m => m.Evt == eventName);
         }
         public TimeSpan TimeWaitForBrun { get; set; } = TimeSpan.FromSeconds(2);
     }

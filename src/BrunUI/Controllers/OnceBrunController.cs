@@ -21,13 +21,13 @@ namespace BrunUI.Controllers
     public class OnceBrunController : BaseBrunController
     {
         IOnceBrunService onceBrunService;
-        //IBaseWorkerService<OnceWorker> baseWorkerService;
         IWorkerService workerService;
-        public OnceBrunController(IOnceBrunService onceBrunService, IWorkerService workerService)
+        IBackRunDetailService backRunDetailService;
+        public OnceBrunController(IOnceBrunService onceBrunService, IWorkerService workerService, IBackRunDetailService backRunDetailService)
         {
             this.onceBrunService = onceBrunService;
-            //this.baseWorkerService = baseWorkerService;
             this.workerService = workerService;
+            this.backRunDetailService = backRunDetailService;
         }
         [HttpGet]
         public async Task<TableResult> QueryList(int current, int pageSize)
@@ -48,7 +48,7 @@ namespace BrunUI.Controllers
         public async Task<BrunResultState> AddBrun(BrunCreateModel model)
         {
             var bType = BrunTool.GetTypeByFullName(model.BrunType);
-            OnceBackRun? onceBrun =await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
+            OnceBackRun? onceBrun = await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
             if (onceBrun == null)
                 return BrunResultState.Error;
             else
@@ -57,14 +57,7 @@ namespace BrunUI.Controllers
         [HttpPost]
         public async Task<BrunResultState> Run(BrunKeyModel model)
         {
-            if (string.IsNullOrEmpty(model.BrunId))
-                return BrunResultState.NotFound;
-            var onceWorker = (OnceWorker)(await this.workerService.GetWorkerByKey(model.WorkerKey));
-            if (onceWorker == null)
-                return BrunResultState.NotFound;
-            if (onceWorker.State != Brun.Enums.WorkerState.Started)
-                return BrunResultState.NotRunning;
-            onceWorker.Run(model.BrunId);
+            await onceBrunService.Run(model.BrunId);
             return BrunResultState.Success;
         }
         /// <summary>
@@ -76,6 +69,11 @@ namespace BrunUI.Controllers
         {
             var workers = await workerService.GetAllOnceWorkers();
             return workers.Select(m => new ValueLabel(m.Key, m.Name));
+        }
+        [HttpGet]
+        public async Task<BackRunContextNumberModel> GetBrunDetailNumber(string brunId)
+        {
+            return await backRunDetailService.GetBackRunDetailNumber(brunId);
         }
     }
 }

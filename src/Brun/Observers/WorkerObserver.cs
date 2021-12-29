@@ -1,5 +1,6 @@
 ﻿using Brun.Contexts;
 using Brun.Enums;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,9 @@ namespace Brun.Observers
     /// </summary>
     public abstract class WorkerObserver
     {
+        /// <summary>
+        /// 对象实例内的锁
+        /// </summary>
         protected object Observer_LOCK = new object();
         /// <summary>
         /// 构造函数，指定拦截的位置和顺序
@@ -25,7 +29,7 @@ namespace Brun.Observers
         }
         public WorkerEvents Evt { get; }
         public int Order { get; }
-        public abstract Task Todo(WorkerContext _context, BrunContext brunContext);
+        public abstract Task Todo(BrunContext brunContext);
 
     }
 }

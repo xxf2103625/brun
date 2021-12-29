@@ -14,34 +14,28 @@ namespace Brun
         private WorkerConfig _config;
         //元数据，用于后期持久化
         //private IDictionary<string, object> meta;
-        //BackRun自定义的数据
-        //private ConcurrentDictionary<string, string> items;
-        //异常堆栈
-        private IList<Exception> exceptions;
-        //BackRun开始运行计数
+
+        /// <summary>
+        /// BackRun开始运行计数
+        /// </summary>
         public long startNb = 0;
-        //BackRun结束运行计数，异常也算结束
+        /// <summary>
+        /// BackRun结束运行计数，异常也算结束
+        /// </summary>
         public long endNb = 0;
-        //BackRun运行异常计数
+        /// <summary>
+        /// BackRun运行异常计数
+        /// </summary>
         public int exceptNb = 0;
 
         public WorkerContext(WorkerConfig config)
         {
-            //_option = workerOption;
             _config = config;
             Init();
         }
         private void Init()
         {
             this.Items = new ConcurrentDictionary<string, string>();
-            //if (_option.Data == null)
-            //{
-            //    items = new ConcurrentDictionary<string, string>();
-            //}
-            //else
-            //{
-            //    items = _option.Data;
-            //}
         }
         /// <summary>
         /// Worker唯一标识
@@ -52,22 +46,6 @@ namespace Brun
         /// </summary>
         public string Name => _config.Name;
         /// <summary>
-        /// BackRun运行异常列表，默认最多储存10个
-        /// </summary>
-        public IList<Exception> Exceptions => exceptions;
-        /// <summary>
-        /// 添加run异常事件
-        /// </summary>
-        /// <param name="ex"></param>
-        public void ExceptFromRun(Exception ex)
-        {
-            if (exceptions == null)
-                exceptions = new List<Exception>();
-            if (exceptions.Count >= _config.WorkerContextMaxExcept)
-                exceptions.RemoveAt(0);
-            exceptions.Add(ex);
-        }
-        /// <summary>
         /// Worker状态
         /// </summary>
         public WorkerState State { get; set; }
@@ -76,11 +54,14 @@ namespace Brun
         /// </summary>
         public ConcurrentDictionary<string, string> Items { get; set; }
         public IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
+        public ILoggerFactory LoggerFactory => WorkerServer.Instance.LoggerFactory;
+        /// <summary>
+        /// 当前Worker中正在运行BackRun的Task集合
+        /// </summary>
         public BlockingCollection<Task> RunningTasks { get; set; }
         public void Dispose()
         {
             Items?.Clear();
-            exceptions?.Clear();
         }
     }
 }

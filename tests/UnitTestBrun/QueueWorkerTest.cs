@@ -25,7 +25,7 @@ namespace UnitTestBrun
                 string key = nameof(TestExcept);
                 services.AddBrunService(options =>
                 {
-                    options.WorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = workerServer =>
                     {
                         workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };
@@ -57,7 +57,7 @@ namespace UnitTestBrun
                 string key = nameof(TestStartAndStopAsync);
                 services.AddBrunService(options =>
                 {
-                    options.WorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = workerServer =>
                     {
                         workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };

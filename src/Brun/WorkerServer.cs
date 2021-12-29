@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Brun.Workers;
 using Brun.Services;
 using Brun.Exceptions;
+using System.IO;
 
 namespace Brun
 {
@@ -91,8 +92,11 @@ namespace Brun
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "the Ioc ServiceProvider is null,plz use Init() to set it");
             startTime = DateTime.Now;
             logger.LogInformation("WorkerServer is Started");
+            if (Option.CreateLinuxPidFile)
+                CreatePidFile();
             stoppingToken.Register(() => Stop());
         }
+
         /// <summary>
         /// 结束Brun Server
         /// </summary>
@@ -105,7 +109,45 @@ namespace Brun
                 item.Value.Dispose();
             }
             this.worders.Clear();
+            if (Option.CreateLinuxPidFile)
+                DeletePidFile();
             logger?.LogDebug("WorkerServer is Stoped");
+        }
+        /// <summary>
+        /// 创建Linux下Pid文件
+        /// </summary>
+        private void CreatePidFile()
+        {
+            if (Environment.OSVersion.Platform == System.PlatformID.Unix)
+            {
+                int pid = System.Diagnostics.Process.GetCurrentProcess().Id;
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName + ".pid");
+                logger.LogInformation($"auto create Process pid file to:'{filePath}'.");
+                byte[] buffer = System.Text.UTF8Encoding.UTF8.GetBytes(pid.ToString());
+                FileStream pidfile = File.Create(filePath, buffer.Length, FileOptions.Asynchronous);
+                pidfile.Write(buffer, 0, buffer.Length);
+                pidfile.Flush(true);
+            }
+        }
+        /// <summary>
+        /// 删除Linux下Pid文件
+        /// </summary>
+        private void DeletePidFile()
+        {
+            if (Environment.OSVersion.Platform == System.PlatformID.Unix)
+            {
+                int pid = System.Diagnostics.Process.GetCurrentProcess().Id;
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName + ".pid");
+                logger.LogInformation($"delete Process pid file,path:'{filePath}'.");
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("delete Process pid error,message:'{0}'", ex.Message);
+                }
+            }
         }
         /// <summary>
         /// 进程单例

@@ -22,7 +22,7 @@ namespace UnitTestBrun.WorkerObservers
                 string key = nameof(Test);
                 services.AddBrunService(options =>
                 {
-                    options.WorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = workerServer =>
                     {
                         var config = new WorkerConfig(key, "name");
                         config.AddWorkerObserver(new List<Brun.Observers.WorkerObserver>()

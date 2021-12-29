@@ -1,27 +1,61 @@
 ﻿using Brun.Enums;
 using Brun.Models;
+using Brun.Workers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Brun.Services
 {
+    /// <summary>
+    /// 所有Worker的操作接口
+    /// </summary>
     public interface IWorkerService
     {
         /// <summary>
         /// 添加worker
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="config"></param>
         /// <param name="workerType"></param>
+        /// <param name="autoStart"></param>
         /// <returns></returns>
-        Task<IWorker> AddWorker(WorkerConfig model, Type workerType);
+        Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true);
         /// <summary>
-        /// 添加worker并运行
+        /// 添加worker
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="workerType"></param>
+        /// <typeparam name="TWorker"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="autoStart"></param>
         /// <returns></returns>
-        Task<IWorker> AddWorkerAndStart(WorkerConfig model, Type workerType);
+        Task<TWorker> AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker;
+        /// <summary>
+        /// 添加OnceWorker
+        /// </summary>
+        /// <param name="workerConfig"></param>
+        /// <param name="autoStart">默认立即Start</param>
+        /// <returns></returns>
+        Task<IOnceWorker> AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true);
+        /// <summary>
+        /// 添加TimeWorker
+        /// </summary>
+        /// <param name="workerConfig"></param>
+        /// <param name="autoStart">默认立即Start</param>
+        /// <returns></returns>
+        Task<ITimeWorker> AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true);
+        /// <summary>
+        /// 添加QueueWorker
+        /// </summary>
+        /// <param name="workerConfig"></param>
+        /// <param name="autoStart"></param>
+        /// <returns></returns>
+        Task<IQueueWorker> AddQueueWorker(WorkerConfig workerConfig, bool autoStart = true);
+        /// <summary>
+        /// 添加PlanWorker
+        /// </summary>
+        /// <param name="workerConfig"></param>
+        /// <param name="autoStart"></param>
+        /// <returns></returns>
+        Task<IPlanWorker> AddPlanWorker(WorkerConfig workerConfig, bool autoStart = true);
         /// <summary>
         /// 获取Worker
         /// </summary>
@@ -33,12 +67,12 @@ namespace Brun.Services
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Task<IOnceWorker> GetOnceWorker(string key);
+        Task<IOnceWorker> GetOnceWorkerByKey(string key);
         Task<IQueueWorker> GetQueueWorker(string key);
         Task<IEnumerable<IWorker>> GetWorkerByName(string name);
         Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize);
         Task<IEnumerable<IWorker>> GetAllWorkers();
-        Task<IEnumerable<IWorker>> GetAllOnceWorkers();
+        Task<IEnumerable<OnceWorker>> GetAllOnceWorkers();
         void Start(string key);
         void StartAll();
         void StartByName(string name);

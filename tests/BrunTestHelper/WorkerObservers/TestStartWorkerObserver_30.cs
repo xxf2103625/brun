@@ -18,13 +18,13 @@ namespace BrunTestHelper.WorkerObservers
         {
         }
 
-        public override async Task Todo(WorkerContext _context, BrunContext brunContext)
+        public override async Task Todo(BrunContext brunContext)
         {
-            var log = _context.ServiceProvider.GetRequiredService<ILogger<TestStartWorkerObserver_30>>();
+            var log = brunContext.WorkerContext.ServiceProvider.GetRequiredService<ILogger<TestStartWorkerObserver_30>>();
             log.LogInformation("TestStartWorkerObserver_30 Order:{0},Time:{1}.", this.Order, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss FFFF"));
             lock (Observer_LOCK)
             {
-                _context.Items["Order"] = "30";
+                brunContext.WorkerContext.Items["Order"] = "30";
             }
             await Task.Delay(TimeSpan.FromSeconds(0.1));
         }

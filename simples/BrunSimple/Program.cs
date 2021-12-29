@@ -2,6 +2,7 @@ using Brun;
 using BrunUI;
 using BrunTestHelper.BackRuns;
 using System.Collections.Concurrent;
+using Brun.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,27 +34,16 @@ builder.Services.AddBrunService(options =>
     options.UseInMemory();
     //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
 
-    //options.WorkerServer = options =>
-    //{
-    //    //配置瞬时任务
-    //    options.CreateOnceWorker(new WorkerConfig()
-    //    {
-    //        Key = "t1",
-    //        Name = "name1",
-    //    }).AddData(new ConcurrentDictionary<string, string>()).AddBrun<LogBackRun>();
+    options.InitWorkers = async workerService =>
+    {
+        IOnceWorker onceworker = await workerService.AddOnceWorker(new WorkerConfig("once_1", ""));
+        var queueWorker = await workerService.AddQueueWorker(new WorkerConfig("queue_1", ""));
+        var timeWorker = await workerService.AddTimeWorker(new WorkerConfig());
+        var planWorker = await workerService.AddPlanWorker(new WorkerConfig());
 
-    //    //配置循环任务
-    //    options.CreateTimeWorker(new WorkerConfig("time_1", "time_name")).AddBrun(typeof(BrunTestHelper.LogTimeBackRun), new TimeBackRunOption(TimeSpan.FromSeconds(10)));
-
-    //    //配置消息任务
-    //    options.CreateQueueWorker(new WorkerConfig("q_1", "q_name")).AddBrun(typeof(BrunTestHelper.QueueBackRuns.LogQueueBackRun), new QueueBackRunOption()
-    //    {
-    //        Id = Guid.NewGuid().ToString()
-    //    });
-
-    //    //配置计划任务
-    //    options.CreatePlanTimeWorker(new WorkerConfig("p_1", "p_name")).AddBrun(typeof(BrunTestHelper.LogPlanBackRun), new Brun.Options.PlanBackRunOption() { PlanTime = new Brun.Plan.PlanTime("0/5 * * * *") });
-    //};
+        //TODO AddBrun迁移到Service 支持持久化
+        onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new Brun.Options.OnceBackRunOption("onceB_1", "onceB_Name"));
+    };
 }).AddBrunUI(authoptions =>
 {
     authoptions.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
@@ -72,7 +62,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseHttpLogging();
+    //app.UseHttpLogging();
 }
 
 app.UseStaticFiles();

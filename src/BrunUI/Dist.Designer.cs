@@ -129,7 +129,7 @@ namespace BrunUI {
         }
         
         /// <summary>
-        ///   查找类似 (function(){var S2={9321:function(b,y,e){&quot;use strict&quot;;e.r(y),e.d(y,{blue:function(){return yr},cyan:function(){return qt},geekblue:function(){return kr},generate:function(){return ft},gold:function(){return he},green:function(){return Zt},grey:function(){return Xr},lime:function(){return Pt},magenta:function(){return Ft},orange:function(){return be},presetDarkPalettes:function(){return Ut},presetPalettes:function(){return Tt},presetPrimaryColors:function(){return Nt},purple:function(){return St},red:functio [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找类似 (function(){var fC={9321:function(E,b,e){&quot;use strict&quot;;e.r(b),e.d(b,{blue:function(){return vt},cyan:function(){return Xe},geekblue:function(){return bt},generate:function(){return qe},gold:function(){return fe},green:function(){return It},grey:function(){return rn},lime:function(){return et},magenta:function(){return Me},orange:function(){return ue},presetDarkPalettes:function(){return jt},presetPalettes:function(){return dt},presetPrimaryColors:function(){return Et},purple:function(){return ot},red:functio [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string umi_js {
             get {

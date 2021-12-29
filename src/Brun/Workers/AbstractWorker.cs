@@ -54,6 +54,10 @@ namespace Brun.Workers
         {
             if (WorkerServer.Instance.ServiceProvider != null)
                 _logger = WorkerServer.Instance.LoggerFactory.CreateLogger(this.GetType());
+            if (config.Key == null)
+                config.Key = Guid.NewGuid().ToString();
+            if (config.Name == null)
+                config.Name = this.GetType().Name;
             _config = config;
             _context = new WorkerContext(config);
             _backRuns = new ConcurrentDictionary<string, IBackRun>();
@@ -105,7 +109,7 @@ namespace Brun.Workers
             }
             catch (Exception ex)
             {
-                _context.ExceptFromRun(ex);
+                runContext.Exception = ex;
                 await Observe(runContext, WorkerEvents.Except);
             }
             finally
@@ -149,7 +153,7 @@ namespace Brun.Workers
         {
             foreach (WorkerObserver observer in _config.GetObservers(workerEvents).OrderBy(m => m.Order))
             {
-                await observer.Todo(_context, brunContext);
+                await observer.Todo(brunContext);
             }
         }
         public string GetData(string key)

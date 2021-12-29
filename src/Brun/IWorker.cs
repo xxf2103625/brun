@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Brun
 {
     /// <summary>
-    /// 工作中心，每个实例会常驻进程
+    /// 工作中心，每个实例会常驻内存
     /// </summary>
     public interface IWorker : IDisposable
     {

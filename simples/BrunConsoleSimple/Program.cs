@@ -76,6 +76,7 @@ namespace BrunConsoleSimple
             //IHost host = CreateHostBuilder(args).Build();
             //host.Run();
         }
+        //TODO 直接对接第三方监控
         static void UsingProcess()
         {
             //Console.WriteLine("所有进程TotalProcessorTime:" + Process.GetProcesses().Sum(m=>m.UserProcessorTime.TotalMilliseconds));

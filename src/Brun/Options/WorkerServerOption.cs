@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,14 @@ namespace Brun
     public class WorkerServerOption
     {
         /// <summary>
-        /// WorkerServer的配置
+        /// WorkerServer Start之前的配置
         /// </summary>
-        public Action<WorkerServer> WorkerServer { get; set; }
+        public Action<WorkerServer> ConfigreWorkerServer { get; set; }
+        /// <summary>
+        /// 程序启动时配置初始化Worker和BackRun
+        /// </summary>
+        public Action<IWorkerService> InitWorkers { get; set; }
+
         /// <summary>
         /// 储存类型
         /// </summary>
@@ -36,6 +42,10 @@ namespace Brun
         /// UI登录密码，默认admin
         /// </summary>
         public string Password { get; set; } = "admin";
+        /// <summary>
+        /// true：Linux下创建Pid文件方便监控进程（Monit需要pid文件）
+        /// </summary>
+        public bool CreateLinuxPidFile { get; set; } = true;
     }
     /// <summary>
     /// 储存类型

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Brun
 {
-    public interface IPlanTimeWorker : IWorker
+    public interface IPlanWorker : IWorker
     {
 
     }
