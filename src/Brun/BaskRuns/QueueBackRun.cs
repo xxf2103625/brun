@@ -15,10 +15,9 @@ namespace Brun
     /// </summary>
     public abstract class QueueBackRun : BackRun, IQueueRun
     {
-        private ConcurrentQueue<string> _queue;
+        private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         public QueueBackRun(QueueBackRunOption option) : base(option)
         {
-            _queue = new ConcurrentQueue<string>();
         }
         /// <summary>
         /// 业务逻辑

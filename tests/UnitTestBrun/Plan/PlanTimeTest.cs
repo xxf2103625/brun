@@ -1,4 +1,5 @@
-﻿using Brun.Plan;
+﻿using Brun;
+using Brun.Plan;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

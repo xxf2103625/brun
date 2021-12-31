@@ -14,5 +14,8 @@ namespace BrunUI.Models
         public string? TypeFullName { get; set; }
         public string? WorkerKey { get; set; }
         public string? WorkerName { get; set; }
+        public long StartTimes { get; internal set; }
+        public long ErrorTimes { get; internal set; }
+        public long EndTimes { get; internal set; }
     }
 }

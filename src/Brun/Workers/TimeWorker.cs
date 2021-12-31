@@ -5,6 +5,8 @@ using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Models;
 using Brun.Options;
+using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -60,9 +62,6 @@ namespace Brun.Workers
                             TimeBackRun backRun = (TimeBackRun)item.Value;
                             if (backRun.Option.NextTime != null && backRun.Option.NextTime.Value <= DateTime.Now)
                             {
-                                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
-                                //BrunContext brunContext = new BrunContext(backRun);
-                                //_ = Execute(brunContext);
                                 base.taskFactory.StartNew(() =>
                                 {
                                     BrunContext brunContext = new BrunContext(backRun);
@@ -83,7 +82,20 @@ namespace Brun.Workers
         {
             return ((TimeBackRun)context.BackRun).Run(tokenSource.Token);
         }
-        public BrunResultState AddBrun(Type timeBackRunType, TimeBackRunOption option)
+        public Task<ITimeWorker> AddBrun(Type timeBackRunType, TimeBackRunOption option)
+        {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var timeBrunService = scope.ServiceProvider.GetRequiredService<ITimeBrunService>();
+                return timeBrunService.AddTimeBrun(this, timeBackRunType, option);
+            }
+        }
+        public Task<ITimeWorker> AddBrun<TTimeBackRun>(TimeBackRunOption option) where TTimeBackRun : TimeBackRun
+        {
+            return this.AddBrun(typeof(TTimeBackRun), option);
+        }
+        //对外隐藏
+        internal ITimeWorker ProtectAddBrun(Type timeBackRunType, TimeBackRunOption option)
         {
             if (timeBackRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "timeBackRunType can not be null.");
@@ -96,9 +108,10 @@ namespace Brun.Workers
 
             if (_backRuns.Any(m => m.Key == option.Id))
             {
-                _logger.LogError("the TimeWorker key:'{0}' has allready added timeBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, timeBackRunType.FullName);
+                throw new BrunException(BrunErrorCode.AllreadyKey, "the TimeWorker key:'{0}' has allready added timeBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, timeBackRunType.FullName);
+                //_logger.LogError("the TimeWorker key:'{0}' has allready added timeBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, timeBackRunType.FullName);
                 //return this;
-                return BrunResultState.IdBeUsed;
+                //return BrunResultState.IdBeUsed;
             }
             else
             {
@@ -112,13 +125,14 @@ namespace Brun.Workers
                 {
                     InitPreTimeBackRun(timeBackRun);
                     _logger.LogInformation("the TimeWorker with key:'{0}' added TimeBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, timeBackRunType.FullName);
-                    //return this;
-                    return BrunResultState.Success;
+                    return this;
+                    //return BrunResultState.Success;
                 }
                 else
                 {
-                    _logger.LogError("the TimeWorker with key:'{0}' add TimeBackRun by id:'{1}' with type:'{2}' error,_backRuns.TryAdd return false.", this.Key, option.Id, timeBackRunType.FullName);
-                    return BrunResultState.UnKnow;
+                    throw new BrunException(BrunErrorCode.UnKnow, "the TimeWorker with key:'{0}' add TimeBackRun by id:'{1}' with type:'{2}' error,_backRuns.TryAdd return false.", this.Key, option.Id, timeBackRunType.FullName);
+                    //_logger.LogError("the TimeWorker with key:'{0}' add TimeBackRun by id:'{1}' with type:'{2}' error,_backRuns.TryAdd return false.", this.Key, option.Id, timeBackRunType.FullName);
+                    //return BrunResultState.UnKnow;
                 }
             }
         }

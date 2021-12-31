@@ -39,8 +39,11 @@ namespace BrunUI.Controllers
                 Id = m.Key,
                 Name = m.Value.Name,
                 TypeName = m.Value.GetType().Name,
-                WorkerKey = ((BackRun)m.Value).WorkerContext.Key,
-                WorkerName = ((BackRun)m.Value).WorkerContext.Name,
+                WorkerKey = m.Value.WorkerContext.Key,
+                WorkerName = m.Value.WorkerContext.Name,
+                StartTimes = m.Value.StartTimes,
+                ErrorTimes = m.Value.ErrorTimes,
+                EndTimes = m.Value.EndTimes,
             });
             return new TableResult(data, total);
         }
@@ -48,11 +51,8 @@ namespace BrunUI.Controllers
         public async Task<BrunResultState> AddBrun(BrunCreateModel model)
         {
             var bType = BrunTool.GetTypeByFullName(model.BrunType);
-            OnceBackRun? onceBrun = await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new Brun.Options.OnceBackRunOption(model.Id, model.Name));
-            if (onceBrun == null)
-                return BrunResultState.Error;
-            else
-                return BrunResultState.Success;
+            await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new OnceBackRunOption(model.Id, model.Name));
+            return BrunResultState.Success;
         }
         [HttpPost]
         public async Task<BrunResultState> Run(BrunKeyModel model)

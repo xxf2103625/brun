@@ -1,6 +1,7 @@
 ﻿using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Models;
+using Brun.Observers;
 using Brun.Workers;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,22 @@ namespace Brun.Services
         {
             this.workerServer = workerServer;
         }
-        public virtual Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true)
+        public virtual Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
         {
             if (workerServer.Worders.ContainsKey(config.Key))
             {
                 throw new BrunException(BrunErrorCode.AllreadyKey, $"worker key '{config.Key}' duplicate");
             }
+            if (addRunDetailObserver)
+            {
+                config.AddWorkerObserver(new List<WorkerObserver>()
+                    {
+                        new WorkerStartRunInMemoryObserver(),
+                        new WorkerExceptRunInMemoryObserver(),
+                        new WorkerEndRunInMemoryObserver(),
+                    });
+            }
+
             IWorker worker = (IWorker)Commons.BrunTool.CreateInstance(workerType, config);
             workerServer.Worders.Add(worker.Key, worker);
             if (autoStart)

@@ -2,6 +2,7 @@
 using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Models;
+using Brun.Observers;
 using Brun.Services;
 using Brun.Store.Entities;
 using Brun.Workers;
@@ -44,8 +45,18 @@ namespace Brun.Store.Services
             }
             throw new BrunException(BrunErrorCode.ObjectIsNull, $"the worker type in db '' is not supported");
         }
-        public override async Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true)
+        public override async Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
         {
+            if (addRunDetailObserver)
+            {
+                config.AddWorkerObserver(new List<WorkerObserver>()
+                {
+                    //TODO 换成Store Observer
+                    new WorkerStartRunInMemoryObserver(),
+                    new WorkerExceptRunInMemoryObserver(),
+                    new WorkerEndRunInMemoryObserver(),
+                });
+            }
             try
             {
                 db.BeginTran();
@@ -61,7 +72,7 @@ namespace Brun.Store.Services
                 if (dbr == 0)
                     throw new BrunException(BrunErrorCode.StoreServiceError, "store add worker return 0");
                 //调用基类内存操作,autoStart=false,避免重复Start
-                IWorker baseResult = await base.AddWorker(config, workerType, false);
+                IWorker baseResult = await base.AddWorker(config, workerType, false, false);
                 if (baseResult == null)
                     throw new BrunException(BrunErrorCode.MemoryServiceError, "memory add worker is not success");
                 else

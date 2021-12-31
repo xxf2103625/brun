@@ -10,6 +10,8 @@ using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Options;
 using Brun.Plan;
+using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Brun.Workers
@@ -85,9 +87,6 @@ namespace Brun.Workers
                                  _logger.LogWarning("the {0} in PlanWorker with id:'{1}' nextRunTime is null,delete this PlanWorker.", backRun.GetType(), backRun.Id);
                                  //执行一次 下一轮会移除
                              }
-                             //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
-                             //BrunContext brunContext = new BrunContext(backRun);
-                             //_ = Execute(brunContext);
                              base.taskFactory.StartNew(() =>
                              {
                                  BrunContext brunContext = new BrunContext(backRun);
@@ -112,7 +111,19 @@ namespace Brun.Workers
             Stop();
             base.Dispose();
         }
-        public PlanWorker AddBrun(Type planBackRunType, PlanBackRunOption option)
+        public Task<IPlanWorker> AddBrun(Type planBackRunType, PlanBackRunOption option)
+        {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var planBrunService = scope.ServiceProvider.GetRequiredService<IPlanBrunService>();
+                return planBrunService.AddPlanBrun(this, planBackRunType, option);
+            }
+        }
+        public Task<IPlanWorker> AddBrun<TPlanBackRun>(PlanBackRunOption option) where TPlanBackRun : PlanBackRun
+        {
+            return this.AddBrun(typeof(TPlanBackRun), option);
+        }
+        internal IPlanWorker ProtectAddBrun(Type planBackRunType, PlanBackRunOption option)
         {
             if (planBackRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "planBackRunType can not be null.");
@@ -124,8 +135,9 @@ namespace Brun.Workers
             }
             if (_backRuns.Any(m => m.Key == option.Id))
             {
-                _logger.LogError("the PlanWorker key:'{0}' has allready added PlanBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, planBackRunType.FullName);
-                return this;
+                throw new BrunException(BrunErrorCode.AllreadyKey, "the PlanWorker key:'{0}' has allready added PlanBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, planBackRunType.FullName);
+                //_logger.LogError("the PlanWorker key:'{0}' has allready added PlanBackRun by id:'{1}' with type:'{2}'.", this.Key, option.Id, planBackRunType.FullName);
+                //return this;
             }
             else
             {

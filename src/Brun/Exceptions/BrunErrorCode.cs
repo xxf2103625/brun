@@ -12,6 +12,10 @@ namespace Brun.Exceptions
     public enum BrunErrorCode
     {
         /// <summary>
+        /// 未知异常
+        /// </summary>
+        UnKnow,
+        /// <summary>
         /// 类型异常
         /// </summary>
         TypeError,

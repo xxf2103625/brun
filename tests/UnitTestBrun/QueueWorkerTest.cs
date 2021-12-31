@@ -25,9 +25,10 @@ namespace UnitTestBrun
                 string key = nameof(TestExcept);
                 services.AddBrunService(options =>
                 {
-                    options.ConfigreWorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = async workerServer =>
                     {
-                        workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                        var wk = await workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
+                        await wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };
                 });
             });
@@ -57,9 +58,10 @@ namespace UnitTestBrun
                 string key = nameof(TestStartAndStopAsync);
                 services.AddBrunService(options =>
                 {
-                    options.ConfigreWorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = async workerServer =>
                     {
-                        workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption()).AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                        var wk=await workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
+                        await wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };
                 });
                 //WorkerBuilder
@@ -70,7 +72,7 @@ namespace UnitTestBrun
                 //   ;
                 //services.AddBrunService();
             });
-            var worker= (IQueueWorker)GetWorkerByKey(key);
+            var worker = (IQueueWorker)GetWorkerByKey(key);
             for (int i = 0; i < 1; i++)
             {
                 worker.Enqueue($"测试消息:{i}");

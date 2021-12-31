@@ -14,31 +14,6 @@
             共享的自定义数据，修改时请自己加锁
             </summary>
         </member>
-        <member name="P:Brun.BaskRuns.BackRunServicePrivoder.ServiceProvider">
-            <summary>
-            Host注册的服务，跟asp.net一样使用，只是Scope要自己创建管理
-            </summary>
-        </member>
-        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.GetRequiredService``1">
-            <summary>
-            获取host注入的Service,找不到会异常，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope"/>里获取
-            </summary>
-            <typeparam name="TService"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.GetService``1">
-            <summary>
-            获取host注入的Service,可能返回null，这里不能获取Scope的Service，必须从<see cref="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope"/>里获取
-            </summary>
-            <typeparam name="TService"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.BaskRuns.BackRunServicePrivoder.NewScope">
-            <summary>
-            创建一个Scope来自己管理Scoped服务的生存周期，单例和瞬时的服务不需要用这个
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:Brun.BaskRuns.IBackRun">
             <summary>
             所有后台任务的接口
@@ -54,10 +29,29 @@
             BackRun的Name
             </summary>
         </member>
+        <member name="P:Brun.BaskRuns.IBackRun.StartTimes">
+            <summary>
+            启动总次数
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.ErrorTimes">
+            <summary>
+            异常次数
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.LastErrorId">
+            <summary>
+            最后一次异常Id
+            </summary>
+        </member>
         <member name="P:Brun.BaskRuns.IBackRun.Data">
             <summary>
-            TODO 是否移入上下文
             单个Worker实例中的共享数据
+            </summary>
+        </member>
+        <member name="P:Brun.BaskRuns.IBackRun.WorkerContext">
+            <summary>
+            Worker实例上下文
             </summary>
         </member>
         <member name="T:Brun.BaskRuns.IQueueRun">
@@ -202,6 +196,18 @@
             Worker配置项
             </summary>
         </member>
+        <member name="M:Brun.WorkerConfig.#ctor">
+            <summary>
+            持久化模式用代码初始化时别用这个,每次会随机Id创建新的Worker
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerConfig.#ctor(System.String,System.String)">
+            <summary>
+            持久化模式用代码初始化时请保证key不要改变，不然每次启动程序会创建新的Worker
+            </summary>
+            <param name="key"></param>
+            <param name="name"></param>
+        </member>
         <member name="P:Brun.WorkerConfig.WorkerContextMaxExcept">
             <summary>
             内存中保存的最大异常数量
@@ -285,6 +291,16 @@
         <member name="P:Brun.Contexts.BrunContext.BackRun">
             <summary>
             BackRun的实例
+            </summary>
+        </member>
+        <member name="P:Brun.Contexts.BrunContext.WorkerContext">
+            <summary>
+            当前Worker上下文
+            </summary>
+        </member>
+        <member name="P:Brun.Contexts.BrunContext.ServiceProvider">
+            <summary>
+            Ioc容器
             </summary>
         </member>
         <member name="P:Brun.Contexts.BrunContext.ServiceScope">
@@ -375,6 +391,11 @@
         <member name="T:Brun.Exceptions.BrunErrorCode">
             <summary>
             Brun异常码
+            </summary>
+        </member>
+        <member name="F:Brun.Exceptions.BrunErrorCode.UnKnow">
+            <summary>
+            未知异常
             </summary>
         </member>
         <member name="F:Brun.Exceptions.BrunErrorCode.TypeError">
@@ -572,6 +593,16 @@
             Worker状态
             </summary>
         </member>
+        <member name="T:Brun.Observers.WorkerEndRunInMemoryObserver">
+            <summary>
+            内存模式BackRun每次运行结束的拦截器
+            </summary>
+        </member>
+        <member name="T:Brun.Observers.WorkerExceptRunInMemoryObserver">
+            <summary>
+            内存模式BackRun运行异常拦截器
+            </summary>
+        </member>
         <member name="T:Brun.Observers.WorkerObserver">
             <summary>
             backrun运行拦截器
@@ -589,12 +620,17 @@
             <param name="workerEvent"><see cref="T:Brun.Enums.WorkerEvents"/></param>
             <param name="order">越小先执行，默认100，100以内为组件内部拦截器</param>
         </member>
+        <member name="T:Brun.Observers.WorkerStartRunInMemoryObserver">
+            <summary>
+            内存模式添加的拦截器，记录运行历史信息
+            </summary>
+        </member>
         <member name="T:Brun.Observers.WorkerStartRunObserver">
             <summary>
             BackRun开始执行前的拦截器
             </summary>
         </member>
-        <member name="T:Brun.Options.TimeBackRunOption">
+        <member name="T:Brun.TimeBackRunOption">
             <summary>
             TimeBackRun配置
             </summary>
@@ -758,63 +794,12 @@
             是否星期，和日期互斥
             </summary>
         </member>
-        <member name="T:Brun.Plan.PlanTime">
-            <summary>
-            时间计划
-            </summary>
-        </member>
-        <member name="M:Brun.Plan.PlanTime.#ctor(Brun.Plan.IPlanTimeParser)">
-            <summary>
-            需要自己调用Parse方法
-            </summary>
-            <param name="planTimeParser"></param>
-        </member>
-        <member name="M:Brun.Plan.PlanTime.#ctor(System.String,System.Nullable{System.DateTimeOffset},Brun.Plan.IPlanTimeParser)">
-            <summary>
-            内部已经调用Parse方法
-            </summary>
-            <param name="strExpression"></param>
-            <param name="beginTime"></param>
-            <param name="planTimeParser"></param>
-        </member>
-        <member name="M:Brun.Plan.PlanTime.Parse(System.String)">
-            <summary>
-            解析时间计划表达式
-            </summary>
-            <param name="strExpression"></param>
-            <returns>true：success，false：error</returns>
-        </member>
-        <member name="P:Brun.Plan.PlanTime.Expression">
-            <summary>
-            表达式字符串
-            </summary>
-        </member>
-        <member name="P:Brun.Plan.PlanTime.IsParsed">
-            <summary>
-            是否已解析
-            </summary>
-        </member>
-        <member name="P:Brun.Plan.PlanTime.IsSuccess">
-            <summary>
-            是否成功
-            </summary>
-        </member>
-        <member name="P:Brun.Plan.PlanTime.Errors">
-            <summary>
-            解析失败的异常信息
-            </summary>
-        </member>
-        <member name="P:Brun.Plan.PlanTime.Times">
-            <summary>
-            解析后的结果，仅储存原始字符串和计划策略
-            </summary>
-        </member>
         <member name="T:Brun.Plan.PlanTimeComputer">
             <summary>
             计算PlanTime下次执行时间
             </summary>
         </member>
-        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(Brun.Plan.PlanTime,System.DateTimeOffset)">
+        <member name="M:Brun.Plan.PlanTimeComputer.GetNextTime(Brun.PlanTime,System.DateTimeOffset)">
             <summary>
             计算下一次计划时间
             </summary>
@@ -926,7 +911,7 @@
             计算PlanTime下次执行时间，计算流程需要单独控制，特殊情况会递归
             </summary>
         </member>
-        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},Brun.Plan.PlanTime)">
+        <member name="M:Brun.Plan.TimeComputers.BasePlanTimeComputer.Compute(System.Nullable{System.DateTimeOffset},Brun.PlanTime)">
             <summary>
             计算下次执行时间
             </summary>
@@ -1155,6 +1140,64 @@
             L 只能在日期域中出现，最后一天，5L：当月最后一天再倒数5天
             </summary>
         </member>
+        <member name="T:Brun.PlanTime">
+            <summary>
+            时间计划
+            </summary>
+        </member>
+        <member name="M:Brun.PlanTime.#ctor(Brun.Plan.IPlanTimeParser)">
+            <summary>
+            需要自己调用Parse方法
+            </summary>
+            <param name="planTimeParser">除非用自定义的时间计划解析器，否则传null，默认使用<see href="https://gitee.com/2103625/brun#cro"></see></param>
+        </member>
+        <member name="M:Brun.PlanTime.#ctor(System.String,System.Nullable{System.DateTimeOffset},Brun.Plan.IPlanTimeParser)">
+            <summary>
+            PlanBackRun的时间计划，0 * * * *表示每分种执行一次
+            </summary>
+            <param name="strExpression">0 * * * *表示每分种执行一次，详细格式<see href="https://gitee.com/2103625/brun#cro"></see></param>
+            <param name="beginTime">自定义开始时间，null为Worker启动时间</param>
+            <param name="planTimeParser">留空，后期扩展预留参数</param>
+        </member>
+        <member name="M:Brun.PlanTime.Create(System.String)">
+            <summary>
+            PlanBackRun的时间计划，0 * * * *表示每分种执行一次
+            </summary>
+            <param name="strExpression">0 * * * *表示每分种执行一次，详细格式<see href="https://gitee.com/2103625/brun#cro"></see></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.PlanTime.Parse(System.String)">
+            <summary>
+            解析时间计划表达式
+            </summary>
+            <param name="strExpression"></param>
+            <returns>true：success，false：error</returns>
+        </member>
+        <member name="P:Brun.PlanTime.Expression">
+            <summary>
+            表达式字符串
+            </summary>
+        </member>
+        <member name="P:Brun.PlanTime.IsParsed">
+            <summary>
+            是否已解析
+            </summary>
+        </member>
+        <member name="P:Brun.PlanTime.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:Brun.PlanTime.Errors">
+            <summary>
+            解析失败的异常信息
+            </summary>
+        </member>
+        <member name="P:Brun.PlanTime.Times">
+            <summary>
+            解析后的结果，仅储存原始字符串和计划策略
+            </summary>
+        </member>
         <member name="T:Brun.Services.BackRunDetailService">
             <summary>
             BackRun运行历史相关服务
@@ -1181,7 +1224,7 @@
         </member>
         <member name="T:Brun.Services.BackRunObserverService">
             <summary>
-            BackRun运行记录相关服务,拦截器中使用
+            BackRun内存模式运行记录相关服务，注册单例,拦截器中使用
             </summary>
         </member>
         <member name="P:Brun.Services.BackRunObserverService.list">
@@ -1194,11 +1237,6 @@
             记录异常
             </summary>
             <param name="brunContext"></param>
-        </member>
-        <member name="T:Brun.Services.BaseWorkerService`1">
-            <summary>
-            封装Brun实例对象常用操作
-            </summary>
         </member>
         <member name="T:Brun.Services.IBackRunDetailService">
             <summary>
@@ -1259,20 +1297,6 @@
             </summary>
             <param name="brunContext"></param>
         </member>
-        <member name="M:Brun.Services.IBackRunObserverService.GetExceptNb(System.String)">
-            <summary>
-            获取该BackRun异常数量(+1)
-            </summary>
-            <param name="brunId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Brun.Services.IBackRunObserverService.GetStartNb(System.String)">
-            <summary>
-            获取该BackRun开始序号
-            </summary>
-            <param name="brunId"></param>
-            <returns></returns>
-        </member>
         <member name="M:Brun.Services.IBackRunObserverService.Start(Brun.Contexts.BrunContext)">
             <summary>
             BackRun开始执行拦截器操作
@@ -1284,7 +1308,7 @@
             管理OnceBackRun的接口
             </summary>
         </member>
-        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(System.String,System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(System.String,System.Type,Brun.OnceBackRunOption)">
             <summary>
             添加OnceBrun
             </summary>
@@ -1293,7 +1317,16 @@
             <param name="option"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun``1(System.String,Brun.OnceBackRunOption)">
+            <summary>
+            添加OnceBrun 泛型
+            </summary>
+            <typeparam name="TOnceBackRun"></typeparam>
+            <param name="onceWorkerId"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IOnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.OnceBackRunOption)">
             <summary>
             添加OnceBrun
             </summary>
@@ -1329,18 +1362,60 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Brun.Services.IPlanBrunService.AddPlanBrun(Brun.IPlanWorker,System.Type,Brun.PlanBackRunOption)">
+            <summary>
+            添加PlanBackRun
+            </summary>
+            <param name="planWorker"></param>
+            <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IPlanBrunService.AddPlanBrun``1(Brun.IPlanWorker,Brun.PlanBackRunOption)">
+            <summary>
+            添加PlanBackRun
+            </summary>
+            <typeparam name="TPlanBackRun"></typeparam>
+            <param name="planWorker"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brun.Services.IQueueBrunService">
+            <summary>
+            队列任务相关服务
+            </summary>
+        </member>
+        <member name="M:Brun.Services.IQueueBrunService.AddQueueBrun(Brun.IQueueWorker,System.Type,Brun.QueueBackRunOption)">
+            <summary>
+            添加QueueBackRun
+            </summary>
+            <param name="queueWorker"></param>
+            <param name="queueBackRunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.IQueueBrunService.AddQueueBrun``1(Brun.IQueueWorker,Brun.QueueBackRunOption)">
+            <summary>
+            添加QueueBackRun
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <param name="queueWorker"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
         <member name="T:Brun.Services.IWorkerService">
             <summary>
             所有Worker的操作接口
             </summary>
         </member>
-        <member name="M:Brun.Services.IWorkerService.AddWorker(Brun.WorkerConfig,System.Type,System.Boolean)">
+        <member name="M:Brun.Services.IWorkerService.AddWorker(Brun.WorkerConfig,System.Type,System.Boolean,System.Boolean)">
             <summary>
             添加worker
             </summary>
             <param name="config"></param>
             <param name="workerType"></param>
             <param name="autoStart"></param>
+            <param name="addRunDetailObserver"></param>
             <returns></returns>
         </member>
         <member name="M:Brun.Services.IWorkerService.AddWorker``1(Brun.WorkerConfig,System.Boolean)">
@@ -1403,12 +1478,21 @@
             内存模式管理OnceBrun
             </summary>
         </member>
-        <member name="M:Brun.Services.OnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Services.OnceBrunService.AddOnceBrun(Brun.IOnceWorker,System.Type,Brun.OnceBackRunOption)">
             <summary>
             添加OnceBrun
             </summary>
             <param name="onceWorker"></param>
             <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.OnceBrunService.AddOnceBrun``1(Brun.IOnceWorker,Brun.OnceBackRunOption)">
+            <summary>
+            添加OnceBrun
+            </summary>
+            <typeparam name="TOnceBackRun"></typeparam>
+            <param name="onceWorker"></param>
             <param name="option"></param>
             <returns></returns>
         </member>
@@ -1418,12 +1502,21 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Brun.Services.TimeBrunService.AddTimeBrun(Brun.Workers.TimeWorker,System.Type,Brun.Options.TimeBackRunOption)">
+        <member name="M:Brun.Services.TimeBrunService.AddTimeBrun(Brun.ITimeWorker,System.Type,Brun.TimeBackRunOption)">
             <summary>
             添加TimeWorker
             </summary>
             <param name="timeWorker"></param>
             <param name="brunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.Services.TimeBrunService.AddTimeBrun``1(Brun.ITimeWorker,Brun.TimeBackRunOption)">
+            <summary>
+            添加TimeWorker
+            </summary>
+            <typeparam name="TTimeBackRun"></typeparam>
+            <param name="timeWorker"></param>
             <param name="option"></param>
             <returns></returns>
         </member>
@@ -1653,6 +1746,7 @@
         </member>
         <member name="M:Brun.Workers.OnceWorker.SetData(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
             <summary>
+            //TODO 迁移到基类
             设置共享数据(会覆盖)
             </summary>
             <param name="sharedData"></param>
@@ -1660,12 +1754,13 @@
         </member>
         <member name="M:Brun.Workers.OnceWorker.AddData(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.String})">
             <summary>
+            //TODO 迁移到基类
             添加共享数据(已有不会覆盖)
             </summary>
             <param name="sharedData"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun(System.Type,Brun.OnceBackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
@@ -1674,13 +1769,22 @@
             <returns></returns>
             <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
-        <member name="M:Brun.Workers.OnceWorker.AddBrun``1(Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.Workers.OnceWorker.AddBrun``1(Brun.OnceBackRunOption)">
             <summary>
             添加Brun实现类
             </summary>
             <typeparam name="TBackRun"></typeparam>
             <param name="option"></param>
             <returns></returns>
+        </member>
+        <member name="M:Brun.Workers.OnceWorker.ProtectAddBrun(System.Type,Brun.OnceBackRunOption)">
+            <summary>
+            保护内存操作，不对外开放
+            </summary>
+            <param name="backRunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+            <exception cref="T:Brun.Exceptions.BrunException"></exception>
         </member>
         <member name="T:Brun.Workers.PlanWorker">
             <summary>
@@ -1724,7 +1828,7 @@
             <param name="queueBackRunType"></param>
             <param name="message"></param>
         </member>
-        <member name="M:Brun.Workers.QueueWorker.Enqueue(System.String,System.String)">
+        <member name="M:Brun.Workers.QueueWorker.EnqueueByType(System.String,System.String)">
             <summary>
             指定QueueBackRun类型的消息后台任务
             </summary>
@@ -1792,7 +1896,7 @@
             <param name="backRunType">backRun类型,必须继承自OnceBackRun</param>
             <returns></returns>
         </member>
-        <member name="M:Brun.IOnceWorker.AddBrun(System.Type,Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.IOnceWorker.AddBrun(System.Type,Brun.OnceBackRunOption)">
             <summary>
             添加自己实现的的OnceBackRun
             </summary>
@@ -1800,7 +1904,7 @@
             <param name="option"></param>
             <returns></returns>
         </member>
-        <member name="M:Brun.IOnceWorker.AddBrun``1(Brun.Options.OnceBackRunOption)">
+        <member name="M:Brun.IOnceWorker.AddBrun``1(Brun.OnceBackRunOption)">
             <summary>
             添加自己实现的的OnceBackRun
             </summary>
@@ -1808,10 +1912,41 @@
             <param name="option">为null时随机Id，Name为类型名称</param>
             <returns></returns>
         </member>
+        <member name="M:Brun.IPlanWorker.AddBrun(System.Type,Brun.PlanBackRunOption)">
+            <summary>
+            添加PlanBackRun
+            </summary>
+            <param name="planBackRunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
         <member name="T:Brun.IQueueWorker">
             <summary>
             消息队列Worker
             </summary>
+        </member>
+        <member name="M:Brun.IQueueWorker.AddBrun(System.Type,Brun.QueueBackRunOption)">
+            <summary>
+            添加QueueBackRun
+            </summary>
+            <param name="queueBackRunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IQueueWorker.AddBrun``1(Brun.QueueBackRunOption)">
+            <summary>
+            添加QueueBackRun
+            </summary>
+            <typeparam name="TQueueBackRun"></typeparam>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.IQueueWorker.Enqueue(System.String,System.String)">
+            <summary>
+            给Id为brunId的QueueBackRun发送消息
+            </summary>
+            <param name="brunId"></param>
+            <param name="message"></param>
         </member>
         <member name="M:Brun.IQueueWorker.Enqueue(System.String)">
             <summary>
@@ -1833,7 +1968,7 @@
             <param name="queueBackRunType"></param>
             <param name="message"></param>
         </member>
-        <member name="M:Brun.IQueueWorker.Enqueue(System.String,System.String)">
+        <member name="M:Brun.IQueueWorker.EnqueueByType(System.String,System.String)">
             <summary>
             给指定类型的QueueBackRun发送消息
             </summary>
@@ -1844,6 +1979,22 @@
             <summary>
             时间周期执行的Worker
             </summary>
+        </member>
+        <member name="M:Brun.ITimeWorker.AddBrun(System.Type,Brun.TimeBackRunOption)">
+            <summary>
+            添加TimeBackRun
+            </summary>
+            <param name="timeBackRunType"></param>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brun.ITimeWorker.AddBrun``1(Brun.TimeBackRunOption)">
+            <summary>
+            添加TimeBackRun
+            </summary>
+            <typeparam name="TTimeBackRun"></typeparam>
+            <param name="option"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

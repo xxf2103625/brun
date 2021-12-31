@@ -4,6 +4,8 @@ using Brun.Contexts;
 using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Options;
+using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -61,10 +63,6 @@ namespace Brun.Workers
                             QueueBackRun backRun = (QueueBackRun)item.Value;
                             if (backRun.Queue.TryDequeue(out string msg))
                             {
-                                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会等待
-                                //var context = new BrunContext(item.Value);
-                                //context.Message = msg;
-                                //_ = Execute(context);
                                 base.taskFactory.StartNew(() =>
                                 {
                                     var context = new BrunContext(item.Value);
@@ -81,6 +79,23 @@ namespace Brun.Workers
                 _logger.LogInformation("the {0} key:'{1}' is started.", GetType().Name, _context.Key);
             }
 
+        }
+        public void Enqueue(string brunId, string message)
+        {
+            if (message == null)
+            {
+                _logger.LogWarning($"enqueue message  is null, the QueueWorker by key:'{this.Key}' will not execute it.if you want run with empty msg please enqueue ''");
+                return;
+            }
+            if (this._backRuns.ContainsKey(brunId))
+            {
+                ((QueueBackRun)(this._backRuns[brunId])).Queue.Enqueue(message);
+            }
+            else
+            {
+                //_logger.LogError($"the QueueWorker key:'{this.Key}' has no QueuBackRun");
+                throw new BrunException(BrunErrorCode.NotFoundKey, $"the QueueWorker key:'{this.Key}' has no QueuBackRun");
+            }
         }
         /// <summary>
         /// 默认的QueueBackRun,添加消息到后台任务
@@ -128,7 +143,7 @@ namespace Brun.Workers
         /// </summary>
         /// <param name="queueBackRunTypeFullName">包含命名空间的类型名称</param>
         /// <param name="message"></param>
-        public void Enqueue(string queueBackRunTypeFullName, string message)
+        public void EnqueueByType(string queueBackRunTypeFullName, string message)
         {
             var type = Type.GetType(queueBackRunTypeFullName);
             Enqueue(type, message);
@@ -139,7 +154,20 @@ namespace Brun.Workers
             QueueBackRun backrun = (QueueBackRun)context.BackRun;
             return backrun.Run(context.Message, tokenSource.Token);
         }
-        public QueueWorker AddBrun(Type queueBackRunType, QueueBackRunOption option)
+        public Task<IQueueWorker> AddBrun(Type queueBackRunType, QueueBackRunOption option)
+        {
+            using (var scope = _context.ServiceProvider.CreateScope())
+            {
+                var queueBrunService = scope.ServiceProvider.GetRequiredService<IQueueBrunService>();
+                return queueBrunService.AddQueueBrun(this, queueBackRunType, option);
+            }
+        }
+        public Task<IQueueWorker> AddBrun<TQueueBackRun>(QueueBackRunOption option) where TQueueBackRun : QueueBackRun
+        {
+            return this.AddBrun(typeof(TQueueBackRun), option);
+        }
+        //对外隐藏，通过服务调用
+        internal QueueWorker ProtectAddBrun(Type queueBackRunType, QueueBackRunOption option)
         {
             if (queueBackRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "queueBackRunType can not be null.");
@@ -162,10 +190,15 @@ namespace Brun.Workers
                     option.Name = queueBackRunType.Name;
                 QueueBackRun queueBackRun = (QueueBackRun)BrunTool.CreateInstance(queueBackRunType, option);
                 queueBackRun.SetWorkerContext(_context);
-                _backRuns.TryAdd(queueBackRun.Id, queueBackRun);
-                //InitPreTimeBackRun(queueBackRun);
-                _logger.LogInformation("the QueueWorker with key:'{0}' added QueueBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, queueBackRunType.FullName);
-                return this;
+                if (_backRuns.TryAdd(queueBackRun.Id, queueBackRun))
+                {
+                    _logger.LogInformation("the QueueWorker with key:'{0}' added QueueBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, queueBackRunType.FullName);
+                    return this;
+                }
+                else
+                {
+                    throw new BrunException(BrunErrorCode.UnKnow, string.Format("the QueueWorker with key:'{0}' added QueueBackRun by id:'{1}' with type:'{2}' success.", this.Key, option.Id, queueBackRunType.FullName));
+                }
             }
         }
         public override void Dispose()
@@ -174,5 +207,7 @@ namespace Brun.Workers
             this.Stop();
             base.Dispose();
         }
+
+
     }
 }

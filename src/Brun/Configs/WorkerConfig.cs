@@ -49,6 +49,17 @@ namespace Brun
         {
             observers.Add(workerObserver);
         }
+        public void RemoveWorkerObserver(Type workerObserverType)
+        {
+            if (observers.Any(m => m.GetType() == workerObserverType))
+            {
+                observers.Remove(observers.First(m => m.GetType() == workerObserverType));
+            }
+            else
+            {
+                Console.WriteLine($"the workerconfig by key:'{Key}' dont have any observer for type '{workerObserverType}',can not remove it.");
+            }
+        }
         public void AddWorkerObserver(IEnumerable<WorkerObserver> workerObservers)
         {
             observers.AddRange(workerObservers);

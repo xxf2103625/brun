@@ -23,10 +23,10 @@ namespace UnitTestBrun
             {
                 m.AddBrunService(options =>
                 {
-                    options.ConfigreWorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = async workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig(key, name))
-                            .AddBrun(typeof(SimpleBackRun),new Brun.Options.OnceBackRunOption());
+                        await workerServer.CreateOnceWorker(new WorkerConfig(key, name))
+                            .AddBrun(typeof(SimpleBackRun),new OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder.Create<SimpleBackRun>()
@@ -45,10 +45,10 @@ namespace UnitTestBrun
             {
                 m.AddBrunService(options =>
                 {
-                    options.ConfigreWorkerServer = workerServer =>
+                    options.ConfigreWorkerServer = async workerServer =>
                     {
-                        workerServer.CreateOnceWorker(new WorkerConfig())
-                        .AddBrun(typeof(SimpleBackRun),new Brun.Options.OnceBackRunOption());
+                        await workerServer.CreateOnceWorker(new WorkerConfig())
+                        .AddBrun(typeof(SimpleBackRun),new OnceBackRunOption());
                     };
                 });
                 //WorkerBuilder.Create<SimpleBackRun>()

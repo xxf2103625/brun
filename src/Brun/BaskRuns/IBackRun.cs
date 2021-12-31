@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
@@ -21,10 +22,31 @@ namespace Brun.BaskRuns
         /// </summary>
         string Name { get; }
         /// <summary>
-        /// TODO 是否移入上下文
+        /// 启动总次数
+        /// </summary>
+        long StartTimes { get; }
+        /// <summary>
+        /// 异常次数
+        /// </summary>
+        public long ErrorTimes { get; }
+        public long EndTimes { get; }
+        /// <summary>
+        /// 最后一次异常Id
+        /// </summary>
+        public string LastErrorId { get; }
+        /// <summary>
         /// 单个Worker实例中的共享数据
         /// </summary>
         ConcurrentDictionary<string, string> Data { get; }
+        /// <summary>
+        /// Worker实例上下文
+        /// </summary>
         WorkerContext WorkerContext { get; }
+        IServiceProvider ServiceProvider { get; }
+        TService GetRequiredService<TService>();
+        TService GetService<TService>();
+        object GetService(Type serviceType);
+        IServiceScope CreateScope();
+        AsyncServiceScope CreateAsyncScope(Type serviceType);
     }
 }

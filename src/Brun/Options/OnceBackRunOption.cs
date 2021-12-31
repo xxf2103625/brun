@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Brun.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Brun.Options
+namespace Brun
 {
     public class OnceBackRunOption : BackRunOption
     {

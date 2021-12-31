@@ -45,5 +45,9 @@ namespace Brun.Services
             };
             return Task.FromResult(r);
         }
+        public Task<List<BackRunContextNumberModel>> GetBackRunDetailNumbers(List<string> brunIds)
+        {
+            throw new Exception();
+        }
     }
 }

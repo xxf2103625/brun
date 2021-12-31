@@ -20,7 +20,15 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<OnceBackRun> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option);
+        Task<IOnceWorker> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option);
+        /// <summary>
+        /// 添加OnceBrun 泛型
+        /// </summary>
+        /// <typeparam name="TOnceBackRun"></typeparam>
+        /// <param name="onceWorkerId"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
         /// <summary>
         /// 添加OnceBrun
         /// </summary>
@@ -28,7 +36,8 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<OnceBackRun> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
+        Task<IOnceWorker> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
+        Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
         /// <summary>
         /// 执行指定Worker中指定Id的OnceBackrun
         /// </summary>

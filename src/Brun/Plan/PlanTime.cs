@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Brun.Plan;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Brun.Plan
+namespace Brun
 {
     /// <summary>
     /// 时间计划
@@ -23,18 +24,18 @@ namespace Brun.Plan
         /// <summary>
         /// 需要自己调用Parse方法
         /// </summary>
-        /// <param name="planTimeParser"></param>
+        /// <param name="planTimeParser">除非用自定义的时间计划解析器，否则传null，默认使用<see href="https://gitee.com/2103625/brun#cro"></see></param>
         public PlanTime(IPlanTimeParser planTimeParser = null)
         {
             if (planTimeParser == null)
                 parser = WorkerServer.Instance.PlanTimeParser;
         }
         /// <summary>
-        /// 内部已经调用Parse方法
+        /// PlanBackRun的时间计划，0 * * * *表示每分种执行一次
         /// </summary>
-        /// <param name="strExpression"></param>
-        /// <param name="beginTime"></param>
-        /// <param name="planTimeParser"></param>
+        /// <param name="strExpression">0 * * * *表示每分种执行一次，详细格式<see href="https://gitee.com/2103625/brun#cro"></see></param>
+        /// <param name="beginTime">自定义开始时间，null为Worker启动时间</param>
+        /// <param name="planTimeParser">留空，后期扩展预留参数</param>
         public PlanTime(string strExpression, DateTimeOffset? beginTime = null, IPlanTimeParser planTimeParser = null) : this(planTimeParser)
         {
             this.expression = strExpression;
@@ -47,6 +48,15 @@ namespace Brun.Plan
                 begin = beginTime.Value;
             }
             Parse(strExpression);
+        }
+        /// <summary>
+        /// PlanBackRun的时间计划，0 * * * *表示每分种执行一次
+        /// </summary>
+        /// <param name="strExpression">0 * * * *表示每分种执行一次，详细格式<see href="https://gitee.com/2103625/brun#cro"></see></param>
+        /// <returns></returns>
+        public static PlanTime Create(string strExpression)
+        {
+            return new PlanTime(strExpression);
         }
         public PlanTime(IEnumerable<TimeCloumn> timeCloumns)
         {

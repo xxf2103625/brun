@@ -25,7 +25,7 @@ namespace BrunUI.Auths
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (_options.CurrentValue.AuthType == BrunAuthType.BrunSimpleToken)
+            if (_options.CurrentValue.AuthType == AuthType.SimpleToken)
             {
                 if (this.Context.Request.Headers.TryGetValue(_options.CurrentValue.HeadName, out Microsoft.Extensions.Primitives.StringValues tokenValues))
                 {
@@ -57,7 +57,7 @@ namespace BrunUI.Auths
         /// <summary>
         /// 认证类型
         /// </summary>
-        public BrunAuthType AuthType { get; set; }
+        public AuthType AuthType { get; set; }
         /// <summary>
         /// 前端head传入token的key值
         /// </summary>
@@ -69,13 +69,5 @@ namespace BrunUI.Auths
 
         public string UserName { get; set; } = "admin";
         public string Password { get; set; } = "admin";
-    }
-    public enum BrunAuthType
-    {
-        /// <summary>
-        /// 使用Brun的简单token认证
-        /// </summary>
-        BrunSimpleToken,
-
     }
 }

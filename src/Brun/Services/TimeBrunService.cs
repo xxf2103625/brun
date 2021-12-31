@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Brun.Services
 {
-    public class TimeBrunService
+    public class TimeBrunService : ITimeBrunService
     {
         public TimeBrunService()
         {
@@ -22,11 +22,22 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public BrunResultState AddTimeBrun(TimeWorker timeWorker, Type brunType, TimeBackRunOption option)
+        public Task<ITimeWorker> AddTimeBrun(ITimeWorker timeWorker, Type brunType, TimeBackRunOption option)
         {
-            return timeWorker.AddBrun(brunType, option);
+            return Task.FromResult(((TimeWorker)timeWorker).ProtectAddBrun(brunType, option));
         }
-        public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
+        /// <summary>
+        /// 添加TimeWorker
+        /// </summary>
+        /// <typeparam name="TTimeBackRun"></typeparam>
+        /// <param name="timeWorker"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public Task<ITimeWorker> AddTimeBrun<TTimeBackRun>(ITimeWorker timeWorker, TimeBackRunOption option) where TTimeBackRun : TimeBackRun
+        {
+            return this.AddTimeBrun(timeWorker, typeof(TTimeBackRun), option);
+        }
+        public IEnumerable<KeyValuePair<string, IBackRun>> GetTimeBruns()
         {
             throw new NotImplementedException();
         }

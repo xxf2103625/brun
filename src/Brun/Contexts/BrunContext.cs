@@ -65,7 +65,7 @@ namespace Brun.Contexts
         /// <summary>
         /// 结束时间
         /// </summary>
-        public DateTime EndDateTime { get; set; }
+        public DateTime? EndDateTime { get; set; }
         /// <summary>
         /// QueueBackRun中传入的Message
         /// </summary>
@@ -86,7 +86,14 @@ namespace Brun.Contexts
         /// BackRun的实例
         /// </summary>
         public IBackRun BackRun => backRun;
+        /// <summary>
+        /// 当前Worker上下文
+        /// </summary>
         public WorkerContext WorkerContext => BackRun.WorkerContext;
+        /// <summary>
+        /// Ioc容器
+        /// </summary>
+        public IServiceProvider ServiceProvider => WorkerContext.ServiceProvider;
         /// <summary>
         /// 持久化需要创建Scope来保证拦截器中的事务一致性
         /// </summary>

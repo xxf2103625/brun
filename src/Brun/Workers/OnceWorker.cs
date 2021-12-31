@@ -5,6 +5,8 @@ using Brun.Enums;
 using Brun.Exceptions;
 using Brun.Models;
 using Brun.Options;
+using Brun.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -49,11 +51,7 @@ namespace Brun.Workers
         {
             if (_backRuns.TryGetValue(id, out IBackRun backRun))
             {
-                //TODO 危险代码，BackRun返回async/Task.CompletedTask 执行流程不同,可能会优化成同步模式
-                //_ = Execute(new BrunContext(backRun));
-
                 base.taskFactory.StartNew(() => Execute(new BrunContext(backRun)));
-
                 _logger.LogInformation($"OnceWorker with key '{this.Key}' is executing,backrun name:'{backRun.Name}',id:'{id}'.");
             }
             else
@@ -106,6 +104,7 @@ namespace Brun.Workers
             //return (T)r;
         }
         /// <summary>
+        /// //TODO 迁移到基类
         /// 设置共享数据(会覆盖)
         /// </summary>
         /// <param name="sharedData"></param>
@@ -116,6 +115,7 @@ namespace Brun.Workers
             return this;
         }
         /// <summary>
+        /// //TODO 迁移到基类
         /// 添加共享数据(已有不会覆盖)
         /// </summary>
         /// <param name="sharedData"></param>
@@ -139,26 +139,44 @@ namespace Brun.Workers
         /// <param name="option"></param>
         /// <returns></returns>
         /// <exception cref="BrunException"></exception>
-        public OnceBackRun AddBrun(Type backRunType, OnceBackRunOption option = null)
+        public async Task<IOnceWorker> AddBrun(Type backRunType, OnceBackRunOption option = null)
         {
-            //TODO 迁移到服务，支持持久化
+            using (var scope = _context.ServiceProvider.CreateScope())
+            {
+                var onceBrunService = scope.ServiceProvider.GetRequiredService<IOnceBrunService>();
+                return await onceBrunService.AddOnceBrun(this, backRunType, option);
+            }
+        }
+        /// <summary>
+        /// 添加Brun实现类
+        /// </summary>
+        /// <typeparam name="TBackRun"></typeparam>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public async Task<IOnceWorker> AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun
+        {
+            return await this.AddBrun(typeof(TBackRun), option);
+        }
+        /// <summary>
+        /// 保护内存操作，不对外开放
+        /// </summary>
+        /// <param name="backRunType"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        /// <exception cref="BrunException"></exception>
+        internal IOnceWorker ProtectAddBrun(Type backRunType, OnceBackRunOption option = null)
+        {
             if (backRunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, "backRunType can not be null.");
             if (option == null)
                 option = new OnceBackRunOption();
-            //throw new BrunException(BrunErrorCode.ObjectIsNull, "BackRunOption can not be null.");
-            //_logger.LogDebug($"the OnceWorker with key:'{this.Key}' is adding '{backRunType.FullName}'");
             if (!backRunType.IsSubclassOf(typeof(OnceBackRun)))
             {
                 throw new BrunException(BrunErrorCode.TypeError, $"{backRunType.FullName} can not add to OnceWorker,must be SubclassOf OnceBackRun");
             }
             if (!string.IsNullOrEmpty(option.Id) && _backRuns.ContainsKey(option.Id))
             {
-                //已包含
-                //throw new BrunException(BrunErrorCode.AllreadyKey, $"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
-
-                _logger.LogWarning($"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
-                throw new BrunException(BrunErrorCode.AllreadyKey, "the once backRun key is allready in system");
+                throw new BrunException(BrunErrorCode.AllreadyKey, $"the OnceWorker with key:'{this.Key}' has allready contains BackRun type:'{backRunType.FullName}'.");
             }
             else
             {
@@ -175,26 +193,13 @@ namespace Brun.Workers
                         this.defuatBackRun = brun;
                     }
                     _logger.LogInformation("the OnceWorker with key:'{0}' added BackRun:'{1}'.", this.Key, backRunType.FullName);
-                    return brun;
+                    return this;
                 }
                 else
                 {
                     throw new BrunException(BrunErrorCode.TypeError, string.Format("can not add {0} to OnceWorker.", backRunType.FullName));
                 }
             }
-        }
-        /// <summary>
-        /// 添加Brun实现类
-        /// </summary>
-        /// <typeparam name="TBackRun"></typeparam>
-        /// <param name="option"></param>
-        /// <returns></returns>
-        public OnceBackRun AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun
-        {
-            if (option == null)
-                return this.AddBrun(typeof(TBackRun), new OnceBackRunOption());
-            else
-                return this.AddBrun(typeof(TBackRun), option);
         }
     }
 }

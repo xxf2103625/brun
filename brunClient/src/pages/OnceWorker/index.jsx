@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, message, Input, Drawer, Popconfirm, Tooltip } from 'antd';
+import { Button, message, Tag, Popconfirm, Tooltip } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -10,8 +10,6 @@ const OnceWorker = () => {
   const actionRef = useRef();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleCreateModalVisible] = useState(false);
-  /**每列运行数量 */
-  const [contextNumber, handeContextNumber] = useState([]);
   const columns = [
     { title: 'ID', dataIndex: 'id', ellipsis: true },
     { title: '名称', dataIndex: 'name' },
@@ -27,14 +25,13 @@ const OnceWorker = () => {
     {
       title: '启动|异常|运行中',
       render: (dom, record) => {
-        if (contextNumber && contextNumber[record.id])
-          return (
-            <>
-              {contextNumber[record.id].start}|{contextNumber[record.id].except}|
-              {contextNumber[record.id].running}
-            </>
-          );
-        else return <>加载中</>;
+        return (
+          <>
+            <Tag color="default">{record.startTimes}</Tag>
+            <Tag color="error">{record.errorTimes}</Tag>
+            <Tag color="processing">{record.startTimes - record.endTimes}</Tag>
+          </>
+        );
       },
     },
     {
@@ -77,7 +74,7 @@ const OnceWorker = () => {
     },
   ];
   return (
-    <PageContainer header={{ subTitle: 'OnceWorker - 代码中调用一次运行一次的后台任务' }}>
+    <PageContainer header={{ subTitle: 'OnceWorker - 调用一次运行一次的后台任务' }}>
       <CreateForm
         createModalVisible={createModalVisible}
         onCancel={() => handleCreateModalVisible(false)}
@@ -120,20 +117,7 @@ const OnceWorker = () => {
           </Button>,
         ]}
         columns={columns}
-        request={async (params) => {
-          let r = await querylist(params);
-          return r;
-        }} //{querylist}
-        onLoad={(data) => {
-          data.forEach((model) => {
-            getbrundetailnumber({ brunId: model.id }).then((record) => {
-              handeContextNumber((value) => {
-                value[model.id] = record;
-                return value;
-              });
-            });
-          });
-        }}
+        request={querylist}
       />
     </PageContainer>
   );

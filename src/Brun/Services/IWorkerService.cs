@@ -18,8 +18,9 @@ namespace Brun.Services
         /// <param name="config"></param>
         /// <param name="workerType"></param>
         /// <param name="autoStart"></param>
+        /// <param name="addRunDetailObserver"></param>
         /// <returns></returns>
-        Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true);
+        Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true);
         /// <summary>
         /// 添加worker
         /// </summary>

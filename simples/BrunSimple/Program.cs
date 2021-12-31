@@ -1,8 +1,5 @@
 using Brun;
 using BrunUI;
-using BrunTestHelper.BackRuns;
-using System.Collections.Concurrent;
-using Brun.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,25 +27,31 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddBrunService(options =>
 {
-    //options.UseRedis("192.168.1.8");
+    //options.UseRedis("192.168.1.4");
     options.UseInMemory();
     //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
-
+    //程序启动时创建Worker和BackRun
     options.InitWorkers = async workerService =>
     {
+        //添加Worker
         IOnceWorker onceworker = await workerService.AddOnceWorker(new WorkerConfig("once_1", ""));
         var queueWorker = await workerService.AddQueueWorker(new WorkerConfig("queue_1", ""));
         var timeWorker = await workerService.AddTimeWorker(new WorkerConfig());
         var planWorker = await workerService.AddPlanWorker(new WorkerConfig());
 
-        //TODO AddBrun迁移到Service 支持持久化
-        onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new Brun.Options.OnceBackRunOption("onceB_1", "onceB_Name"));
+        //添加BackRun
+        await onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
+        await queueWorker.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
+        await timeWorker.AddBrun<BrunTestHelper.LogTimeBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));
+        await planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(new PlanTime("0 * * * *")));
+        await planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(PlanTime.Create("0/5 * * * *")));
     };
-}).AddBrunUI(authoptions =>
+}).AddBrunUI(authoptions =>//启动UI组件
 {
-    authoptions.AuthType = BrunUI.Auths.BrunAuthType.BrunSimpleToken;
+    authoptions.AuthType = AuthType.SimpleToken;
     authoptions.UserName = "admin";
     authoptions.Password = "admin";
+
     //或者appsetting中配置选项，key：BrunAuthenticationScheme，文档：https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#use-ioptionssnapshot-to-read-updated-data
 });
 

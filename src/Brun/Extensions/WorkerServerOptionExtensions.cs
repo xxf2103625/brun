@@ -17,13 +17,16 @@ namespace Brun
             {
                 //操作worker相关服务
                 services.AddScoped<IWorkerService, WorkerService>();
-                //操作OnceBackRun相关服务
+                //操作BackRun相关服务
                 services.AddScoped<IOnceBrunService, OnceBrunService>();
+                services.AddScoped<IQueueBrunService, QueueBrunService>();
+                services.AddScoped<ITimeBrunService, TimeBrunService>();
+                services.AddScoped<IPlanBrunService, PlanBrunService>();
                 //查询BackRun运行时信息相关服务
                 services.AddScoped<IBackRunDetailService, BackRunDetailService>();
 
 
-                //记录BackRun运行时信息相关服务,Client端不需要使用这个，单例减少创建Ioc'Scope消耗的资源
+                //记录BackRun运行时信息相关服务,Client端不需要使用这个，内存模式单例减少创建Ioc'Scope消耗的资源
                 services.AddSingleton<IBackRunObserverService, BackRunObserverService>();
             };
             return workerServerOption;

@@ -15,5 +15,9 @@ namespace Brun.Exceptions
         {
 
         }
+        public BrunException(BrunErrorCode errorCode, string message, params object[] args) : base(string.Format(message, args))
+        {
+
+        }
     }
 }

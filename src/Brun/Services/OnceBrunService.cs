@@ -23,14 +23,18 @@ namespace Brun.Services
             this.workerService = workerService;
             this.backRunFilterService = backRunFilterService;
         }
-        public async Task<OnceBackRun> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option)
+        public virtual async Task<IOnceWorker> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option)
         {
             if (brunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, $"add once brun error,OnceBackrun Type is null");
             var worker = await workerService.GetOnceWorkerByKey(onceWorkerId);
             if (worker == null)
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"add once brun error,can not find OnceWorker by key:'{onceWorkerId}'");
-            return worker.AddBrun(brunType, option);
+            return ((OnceWorker)worker).ProtectAddBrun(brunType, option);
+        }
+        public virtual Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
+        {
+            return this.AddOnceBrun(onceWorkerId, typeof(TOnceBackRun), option);
         }
         /// <summary>
         /// 添加OnceBrun
@@ -39,9 +43,20 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public Task<OnceBackRun> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
+        public virtual Task<IOnceWorker> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
-            return Task.FromResult(onceWorker.AddBrun(brunType, option));
+            return Task.FromResult(((OnceWorker)onceWorker).ProtectAddBrun(brunType, option));
+        }
+        /// <summary>
+        /// 添加OnceBrun
+        /// </summary>
+        /// <typeparam name="TOnceBackRun"></typeparam>
+        /// <param name="onceWorker"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public virtual Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
+        {
+            return this.AddOnceBrun(onceWorker, typeof(TOnceBackRun), option);
         }
         public async Task Run(string onceBackRunId)
         {
@@ -84,7 +99,5 @@ namespace Brun.Services
         {
             return backRunFilterService.GetOnceBackRunTypes().Select(m => new ValueLabel(m.FullName, m.Name));
         }
-
-
     }
 }
