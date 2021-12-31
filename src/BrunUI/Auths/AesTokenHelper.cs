@@ -23,12 +23,13 @@ namespace BrunUI.Auths
         /// <param name="brunUser"></param>
         /// <param name="aesKey">必须是32个字符串，为空使用默认的字符串(不安全)</param>
         /// <returns></returns>
-        public static string GetToken(BrunUser brunUser, string? aesKey = null)
+        public static string GetToken(BrunUser brunUser, string aesKey = null)
         {
             if (aesKey == null)
             {
                 aesKey = _aesKey;
             }
+            //TODO 版本降级，需要安装Json序列化器
             var str = System.Text.Json.JsonSerializer.Serialize(brunUser);
             return AesEncrypt(str, aesKey, _aesIV);
         }
@@ -38,9 +39,9 @@ namespace BrunUI.Auths
         /// <param name="token"></param>
         /// <param name="aesKey">必须是32个字符串，为空使用默认的随机字符串</param>
         /// <returns></returns>
-        public static BrunUser? GetUser(string token, string? aesKey = null)
+        public static BrunUser GetUser(string token, string aesKey = null)
         {
-            if (string.IsNullOrEmpty(token)||token=="null")
+            if (string.IsNullOrEmpty(token) || token == "null")
             {
                 return null;
             }
@@ -93,8 +94,8 @@ namespace BrunUI.Auths
                 if (iv.Length < 16) throw new Exception("指定的向量长度不能少于16位。");
             }
 
-            byte[]? _keyByte = Encoding.UTF8.GetBytes(key);
-            byte[]? _valueByte = Convert.FromBase64String(value);
+            byte[] _keyByte = Encoding.UTF8.GetBytes(key);
+            byte[] _valueByte = Convert.FromBase64String(value);
             using (var aes = Aes.Create())
             {
                 aes.IV = Encoding.UTF8.GetBytes(iv);
@@ -103,7 +104,7 @@ namespace BrunUI.Auths
                 aes.Padding = PaddingMode.PKCS7;
                 using (var cryptoTransform = aes.CreateDecryptor())
                 {
-                    byte[]? resultArray = cryptoTransform.TransformFinalBlock(_valueByte, 0, _valueByte.Length);
+                    byte[] resultArray = cryptoTransform.TransformFinalBlock(_valueByte, 0, _valueByte.Length);
                     return Encoding.UTF8.GetString(resultArray);
                 }
             }

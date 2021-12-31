@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+//前端开发环境配置
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("brun", builder =>
@@ -38,7 +38,6 @@ builder.Services.AddBrunService(options =>
         var queueWorker = await workerService.AddQueueWorker(new WorkerConfig("queue_1", ""));
         var timeWorker = await workerService.AddTimeWorker(new WorkerConfig());
         var planWorker = await workerService.AddPlanWorker(new WorkerConfig());
-
         //添加BackRun
         await onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
         await queueWorker.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
@@ -51,7 +50,6 @@ builder.Services.AddBrunService(options =>
     authoptions.AuthType = AuthType.SimpleToken;
     authoptions.UserName = "admin";
     authoptions.Password = "admin";
-
     //或者appsetting中配置选项，key：BrunAuthenticationScheme，文档：https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#use-ioptionssnapshot-to-read-updated-data
 });
 
@@ -60,7 +58,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-
     app.UseExceptionHandler("/Home/Error");
 }
 else
@@ -70,12 +67,13 @@ else
 
 app.UseStaticFiles();
 
-
-
 app.UseBrunUI();
 
 app.UseRouting();
+
+//前端开发环境配置
 app.UseCors("brun");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

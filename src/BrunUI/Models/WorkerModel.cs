@@ -12,11 +12,11 @@ namespace BrunUI.Models
         /// <summary>
         /// key为空时为随机字符串
         /// </summary>
-        public string? Key { get; set; }
+        public string Key { get; set; }
         /// <summary>
         /// 为空时为类型名称字符串
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Worker类型
         /// </summary>

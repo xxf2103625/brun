@@ -1,4 +1,5 @@
 ﻿using Brun.Enums;
+using Brun.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Brun.Models
         /// <summary>
         /// 类型
         /// </summary>
-        public WorkerType? WorkerType => string.IsNullOrEmpty(TypeName) ? null : Commons.BrunTool.GetWorkerType(TypeName);
+        public WorkerType WorkerType => string.IsNullOrEmpty(TypeName) ? throw new BrunException(BrunErrorCode.TypeError, "TypeName is null or empty.") : Commons.BrunTool.GetWorkerType(TypeName);
         /// <summary>
         /// Worker唯一标识Key
         /// </summary>

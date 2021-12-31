@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace BrunUI
 {
@@ -27,10 +29,10 @@ namespace BrunUI
                 if (query.EndsWith(staticEnds[i]))
                 {
                     string sourceKey = query.Substring(1);//删除开头的/
-                    string? content = "";
+                    string content = "";
                     if (staticEnds[i] == ".svg" || staticEnds[i] == ".ico")
                     {
-                        byte[]? buffer = (byte[]?)Dist.ResourceManager.GetObject(sourceKey);
+                        byte[] buffer = (byte[])Dist.ResourceManager.GetObject(sourceKey);
                         if (buffer == null)
                         {
                             throw new Exception($"path:{query},sourceKey:{sourceKey}");
@@ -38,7 +40,7 @@ namespace BrunUI
                         else
                         {
                             context.Response.Headers.Add("Content-Type", "image/svg+xml");
-                            await context.Response.Body.WriteAsync(buffer);
+                            await context.Response.Body.WriteAsync(buffer, 0, buffer.Length);
                             return;
                         }
                     }

@@ -27,19 +27,19 @@ namespace Brun.Services
         /// <returns></returns>
         public Task<BackRunContextNumberModel> GetBackRunDetailNumber(string backRunId)
         {
-            BrunContext m = BrunContexts.Where(m => m.BrunId == backRunId).OrderByDescending(m => m.Ct).FirstOrDefault();
+            BrunContext brunContext = BrunContexts.Where(m => m.BrunId == backRunId).OrderByDescending(m => m.Ct).FirstOrDefault();
             var lastErrorContext = BrunContexts.Where(m => m.BrunId == backRunId && m.Exception != null).OrderByDescending(m => m.Ct).FirstOrDefault();
             long errorNumber = 0;
             if (lastErrorContext != null)
                 errorNumber = lastErrorContext.ExceptNb;
-            if (m == null)
+            if (brunContext == null)
             {
                 return Task.FromResult(new BackRunContextNumberModel());
             }
             var r = new BackRunContextNumberModel()
             {
-                BackRunId = m.BrunId,
-                Start = m.StartNb,
+                BackRunId = brunContext.BrunId,
+                Start = brunContext.StartNb,
                 Except = errorNumber,
                 Running = BrunContexts.Where(m => m.BrunId == backRunId && !m.IsEnd).LongCount()
             };

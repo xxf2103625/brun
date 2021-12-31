@@ -28,12 +28,12 @@ namespace Brun.BaskRuns
         /// <summary>
         /// 异常次数
         /// </summary>
-        public long ErrorTimes { get; }
-        public long EndTimes { get; }
+        long ErrorTimes { get; }
+        long EndTimes { get; }
         /// <summary>
         /// 最后一次异常Id
         /// </summary>
-        public string LastErrorId { get; }
+        string LastErrorId { get; }
         /// <summary>
         /// 单个Worker实例中的共享数据
         /// </summary>

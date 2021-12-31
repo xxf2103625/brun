@@ -355,7 +355,7 @@ namespace UnitTestBrun
             {
                 work.Run();
             }
-            Assert.AreEqual(0, work.Context.startNb);
+            Assert.AreNotEqual(10, work.Context.startNb);
             Assert.AreEqual(0, work.Context.exceptNb);
             Assert.AreEqual(0, work.Context.endNb);
             Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb},except:{work.Context.exceptNb}");
@@ -379,9 +379,6 @@ namespace UnitTestBrun
                         await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
                     };
                 });
-                //WorkerBuilder.Create<DataBackRun>()//await
-                //    .SetData(data)
-                //   .BuildOnceWorker();
             });
             OnceWorker work = (OnceWorker)GetOnceWorkerByName(nameof(OnceWorker)).First();
             for (int i = 0; i < 10; i++)
@@ -389,7 +386,7 @@ namespace UnitTestBrun
                 work.Run();
             }
             //Assert.AreEqual(0, work.Context.startNb);
-            Assert.AreEqual(0, work.Context.endNb);
+            Assert.AreNotEqual(10, work.Context.endNb);
             Console.WriteLine($"before start:{work.Context.startNb},end:{work.Context.endNb}");
             //等待
             WaitForBackRun();

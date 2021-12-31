@@ -31,8 +31,8 @@ namespace BrunUI.Controllers
         [HttpPost]
         public object Login(BrunLoginModel model)
         {
-            HttpContext.Items.TryGetValue("BrunUser", out object? testName);
-            string? t = (string?)testName;
+            HttpContext.Items.TryGetValue("BrunUser", out object testName);
+            string t = (string)testName;
             //Console.WriteLine(t);
             //if (model.UserName != _workerServer.Option.UserName || model.Password != _workerServer.Option.Password)
             //{
