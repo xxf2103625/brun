@@ -27,8 +27,8 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        var wk = await workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
-                        await wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                        var wk =  workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
+                        wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };
                 });
             });
@@ -60,8 +60,8 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        var wk=await workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
-                        await wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
+                        var wk= workerServer.CreateQueueWorker(new WorkerConfig(key, "name")).AddBrun(typeof(LogQueueBackRun), new QueueBackRunOption());
+                         wk.AddBrun(typeof(ErrorQueueBackRun), new QueueBackRunOption());
                     };
                 });
                 //WorkerBuilder

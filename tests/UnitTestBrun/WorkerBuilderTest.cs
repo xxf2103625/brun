@@ -25,7 +25,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig(key, name))
+                         workerServer.CreateOnceWorker(new WorkerConfig(key, name))
                             .AddBrun(typeof(SimpleBackRun),new OnceBackRunOption());
                     };
                 });
@@ -47,7 +47,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig())
+                         workerServer.CreateOnceWorker(new WorkerConfig())
                         .AddBrun(typeof(SimpleBackRun),new OnceBackRunOption());
                     };
                 });

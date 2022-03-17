@@ -46,19 +46,19 @@ namespace UnitTestBrun
         protected IWorker GetWorkerByKey(string key)
         {
             //var workerService = host.Services.GetRequiredService<IWorkerService>();
-            return workerService.GetWorkerByKey(key).Result;
+            return workerService.GetWorkerByKey(key);
             //return WorkerServer.Instance.GetWorker(key);
         }
         public IEnumerable<IWorker> GetWorkerByName(string name)
         {
             //var workerService = host.Services.GetRequiredService<IWorkerService>();
-            return workerService.GetWorkerByName(name).Result;
+            return workerService.GetWorkerByName(name);
             //return WorkerServer.Instance.GetWokerByName(name);
         }
         public IEnumerable<IOnceWorker> GetOnceWorkerByName(string name)
         {
             //var workerService = host.Services.GetRequiredService<IWorkerService>();
-            return workerService.GetWorkerByName(name).Result.Cast<IOnceWorker>();
+            return workerService.GetWorkerByName(name).Cast<IOnceWorker>();
             //return WorkerServer.Instance.GetWokerByName(name).Cast<IOnceWorker>();
         }
 

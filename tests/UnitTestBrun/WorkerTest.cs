@@ -24,7 +24,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun), new Brun.OnceBackRunOption());
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun(typeof(SimpleNumberRun), new Brun.OnceBackRunOption());
                     };
                 });
                 // WorkerBuilder
@@ -48,7 +48,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<SimpleNumberRun>();
                     };
                 });
                 //WorkerBuilder
@@ -74,7 +74,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
                     };
                 });
 
@@ -100,7 +100,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
                     };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()// 内部有await
@@ -125,7 +125,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
                     };
                 });
                 // WorkerBuilder.Create<SimpNbDelayBefore>()// 内部await
@@ -150,7 +150,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
                     };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
@@ -176,7 +176,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        _ = await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                        _ = workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
                     };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBeforeTask>() //内部没有await
@@ -201,7 +201,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
                     };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
@@ -226,7 +226,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBefore>();
                     };
                 });
                 //WorkerBuilder.Create<SimpNbDelayBefore>()//run内使用了async
@@ -251,7 +251,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()
+                        workerServer.CreateOnceWorker(new WorkerConfig()
                         {
                             TimeWaitForBrun = TimeSpan.FromSeconds(5)
                         }).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
@@ -284,7 +284,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpNbDelayBeforeTask>();
                     };
                 });
                 //IOnceWorker work = WorkerBuilder.Create<SimpNbDelayBeforeTask>() //return Task.CompletedTask;
@@ -308,7 +308,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig(key, "n")).AddBrun<ErrorBackRun3>();
+                        workerServer.CreateOnceWorker(new WorkerConfig(key, "n")).AddBrun<ErrorBackRun3>();
                     };
                 });
                 //WorkerBuilder.Create<ErrorBackRun3>() //await
@@ -343,7 +343,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<ErrorBackRun3>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<ErrorBackRun3>();
                     };
                 });
                 //WorkerBuilder.Create<ErrorBackRun3>() //await
@@ -376,7 +376,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
                     };
                 });
             });
@@ -409,7 +409,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<DataBackRun>();
                     };
                 });
                 //WorkerBuilder.Create<DataBackRun>()//await
@@ -439,7 +439,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(10) }).SetData(data).AddBrun<ErrorLongBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(10) }).SetData(data).AddBrun<ErrorLongBackRun>();
                     };
                 });
                 //WorkerBuilder.Create<ErrorLongBackRun>() //await
@@ -474,7 +474,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(5) }).SetData(data).AddBrun<ErrorBackRun4>();
+                        workerServer.CreateOnceWorker(new WorkerConfig() { TimeWaitForBrun = TimeSpan.FromSeconds(5) }).SetData(data).AddBrun<ErrorBackRun4>();
                     };
                 });
                 //WorkerBuilder.Create<ErrorBackRun4>()
@@ -506,7 +506,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<ErrorBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).AddBrun<ErrorBackRun>();
                     };
                 });
                 // WorkerBuilder.Create<ErrorBackRun>()
@@ -664,7 +664,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
                     };
                 });
                 //WorkerBuilder.Create<CuntomDataBackRun>(data)
@@ -695,7 +695,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<CuntomDataBackRun>();
                     };
                 });
                 //WorkerBuilder.Create<CuntomDataBackRun>()
@@ -727,9 +727,9 @@ namespace UnitTestBrun
                     options.ConfigreWorkerServer = async workerServer =>
                     {
                         var worker = workerServer.CreateOnceWorker(new WorkerConfig());
-                        await worker.AddBrun<SimpleNumberRun>();
-                        await worker.AddBrun<SimpNbDelayBefore>();
-                        await worker.AddBrun<SimpNbDelayAfter>();
+                        worker.AddBrun<SimpleNumberRun>();
+                        worker.AddBrun<SimpNbDelayBefore>();
+                        worker.AddBrun<SimpNbDelayAfter>();
                     };
                 });
                 //WorkerBuilder
@@ -760,9 +760,9 @@ namespace UnitTestBrun
                     options.ConfigreWorkerServer = async workerServer =>
                     {
                         var worker = workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data);
-                        await worker.AddBrun<SimpleNumberRun>();
-                        await worker.AddBrun<SimpNbDelayBefore>();
-                        await worker.AddBrun<SimpNbDelayAfter>();
+                        worker.AddBrun<SimpleNumberRun>();
+                        worker.AddBrun<SimpNbDelayBefore>();
+                        worker.AddBrun<SimpNbDelayAfter>();
                     };
                 });
                 //WorkerBuilder
@@ -795,7 +795,7 @@ namespace UnitTestBrun
                 {
                     options.ConfigreWorkerServer = async workerServer =>
                     {
-                        await workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>();
+                        workerServer.CreateOnceWorker(new WorkerConfig()).SetData(data).AddBrun<SimpleNumberRun>();
                     };
                 });
                 //WorkerBuilder

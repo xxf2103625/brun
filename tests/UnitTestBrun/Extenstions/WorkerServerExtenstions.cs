@@ -49,7 +49,7 @@ namespace Brun
             if (config.Name == null)
                 config.Name = workerType.Name;
             var workerService = workerServer.ServiceProvider.GetRequiredService<IWorkerService>();
-            var worker = workerService.AddWorker(config, workerType).Result;
+            var worker = workerService.AddWorker(config, workerType);
             worker.Start();
             return worker;
         }
