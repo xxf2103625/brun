@@ -53,13 +53,13 @@ namespace Brun
         /// <param name="backRunType">必须继承自OnceBackRun</param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IOnceWorker> AddBrun(Type backRunType, OnceBackRunOption option = null);
+        IOnceWorker AddBrun(Type backRunType, OnceBackRunOption option = null);
         /// <summary>
         /// 添加自己实现的的OnceBackRun
         /// </summary>
         /// <typeparam name="TBackRun"></typeparam>
         /// <param name="option">为null时随机Id，Name为类型名称</param>
         /// <returns></returns>
-        Task<IOnceWorker> AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun;
+        IOnceWorker AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun;
     }
 }

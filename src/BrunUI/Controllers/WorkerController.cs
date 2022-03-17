@@ -20,7 +20,7 @@ namespace BrunUI.Controllers
             this.workerService = workerService;
         }
         [HttpPost]
-        public async Task<BrunResultState> AddWorker(WorkerModel model)
+        public  BrunResultState AddWorker(WorkerModel model)
         {
             Type type = BrunTool.GetWorkerType(model.WorkerType);
             if (model.Key == null)
@@ -31,16 +31,16 @@ namespace BrunUI.Controllers
             {
                 model.Name = type.Name;
             }
-            var wk = await workerService.AddWorker(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
+            var wk = workerService.AddWorker(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
             if (wk != null)
                 return BrunResultState.Success;
             else
                 return BrunResultState.UnKnow;
         }
         [HttpGet]
-        public async Task<TableResult> GetWorkers(int current, int pageSize)
+        public TableResult GetWorkers(int current, int pageSize)
         {
-            var data = await workerService.GetWorkerInfos(current, pageSize);
+            var data = workerService.GetWorkerInfos(current, pageSize);
             return new TableResult(data.Item1, data.Item2);
         }
     }

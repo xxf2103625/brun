@@ -30,9 +30,9 @@ namespace BrunUI.Controllers
             this.backRunDetailService = backRunDetailService;
         }
         [HttpGet]
-        public async Task<TableResult> QueryList(int current, int pageSize)
+        public  TableResult QueryList(int current, int pageSize)
         {
-            var list = await onceBrunService.GetOnceBruns();
+            var list = onceBrunService.GetOnceBruns();
             int total = list.Count();
             var data = list.Skip(pageSize * (current - 1)).Take(pageSize).Select(m => new BackRunInfoModel()
             {
@@ -48,16 +48,16 @@ namespace BrunUI.Controllers
             return new TableResult(data, total);
         }
         [HttpPost]
-        public async Task<BrunResultState> AddBrun(BrunCreateModel model)
+        public  BrunResultState AddBrun(BrunCreateModel model)
         {
             var bType = BrunTool.GetTypeByFullName(model.BrunType);
-            await onceBrunService.AddOnceBrun(model.WorkerKey, bType, new OnceBackRunOption(model.Id, model.Name));
+            onceBrunService.AddOnceBrun(model.WorkerKey, bType, new OnceBackRunOption(model.Id, model.Name));
             return BrunResultState.Success;
         }
         [HttpPost]
-        public async Task<BrunResultState> Run(BrunKeyModel model)
+        public BrunResultState Run(BrunKeyModel model)
         {
-            await onceBrunService.Run(model.BrunId);
+             onceBrunService.Run(model.BrunId);
             return BrunResultState.Success;
         }
         /// <summary>
@@ -65,15 +65,15 @@ namespace BrunUI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<ValueLabel>> GetOnceWorkersInfo()
+        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
         {
-            var workers = await workerService.GetAllOnceWorkers();
+            var workers = workerService.GetAllOnceWorkers();
             return workers.Select(m => new ValueLabel(m.Key, m.Name));
         }
         [HttpGet]
-        public async Task<BackRunContextNumberModel> GetBrunDetailNumber(string brunId)
+        public  BackRunContextNumberModel GetBrunDetailNumber(string brunId)
         {
-            return await backRunDetailService.GetBackRunDetailNumber(brunId);
+            return  backRunDetailService.GetBackRunDetailNumber(brunId);
         }
     }
 }

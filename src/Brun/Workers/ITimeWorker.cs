@@ -15,13 +15,13 @@ namespace Brun
         /// <param name="timeBackRunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<ITimeWorker> AddBrun(Type timeBackRunType, TimeBackRunOption option);
+        ITimeWorker AddBrun(Type timeBackRunType, TimeBackRunOption option);
         /// <summary>
         /// 添加TimeBackRun
         /// </summary>
         /// <typeparam name="TTimeBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<ITimeWorker> AddBrun<TTimeBackRun>(TimeBackRunOption option) where TTimeBackRun : TimeBackRun;
+        ITimeWorker AddBrun<TTimeBackRun>(TimeBackRunOption option) where TTimeBackRun : TimeBackRun;
     }
 }

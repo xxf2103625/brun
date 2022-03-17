@@ -19,8 +19,7 @@ namespace Brun
         {
             //TODO 检测数据库，创建数据库等
             DatabaseHelper.ExistDatabase(connectionString, dbType);
-            //TODO 初始化加载其它程序集
-            Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
+            
 
             SqlSugar.ConnectionConfig connectionConfig = new ConnectionConfig()
             {

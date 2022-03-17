@@ -42,8 +42,7 @@ namespace Brun
             }
             worker.Option = option;
 
-            //TODO 初始化加载未包含的程序集
-            Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
+            
 
             services.AddSingleton<WorkerServer>(m => worker);
             services.AddSingleton<IBackRunFilterService, BackRunFilterService>();

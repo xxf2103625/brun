@@ -25,7 +25,7 @@ namespace Brun.Services
         /// </summary>
         /// <param name="backRunId"></param>
         /// <returns></returns>
-        public Task<BackRunContextNumberModel> GetBackRunDetailNumber(string backRunId)
+        public BackRunContextNumberModel GetBackRunDetailNumber(string backRunId)
         {
             BrunContext brunContext = BrunContexts.Where(m => m.BrunId == backRunId).OrderByDescending(m => m.Ct).FirstOrDefault();
             var lastErrorContext = BrunContexts.Where(m => m.BrunId == backRunId && m.Exception != null).OrderByDescending(m => m.Ct).FirstOrDefault();
@@ -34,7 +34,7 @@ namespace Brun.Services
                 errorNumber = lastErrorContext.ExceptNb;
             if (brunContext == null)
             {
-                return Task.FromResult(new BackRunContextNumberModel());
+                return new BackRunContextNumberModel();
             }
             var r = new BackRunContextNumberModel()
             {
@@ -43,11 +43,11 @@ namespace Brun.Services
                 Except = errorNumber,
                 Running = BrunContexts.Where(m => m.BrunId == backRunId && !m.IsEnd).LongCount()
             };
-            return Task.FromResult(r);
+            return r;
         }
-        public Task<List<BackRunContextNumberModel>> GetBackRunDetailNumbers(List<string> brunIds)
+        public List<BackRunContextNumberModel> GetBackRunDetailNumbers(List<string> brunIds)
         {
-            throw new Exception();
+            throw new NotImplementedException();
         }
     }
 }

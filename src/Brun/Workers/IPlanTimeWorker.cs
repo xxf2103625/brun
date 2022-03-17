@@ -14,7 +14,7 @@ namespace Brun
         /// <param name="planBackRunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IPlanWorker> AddBrun(Type planBackRunType, PlanBackRunOption option);
-        Task<IPlanWorker> AddBrun<TPlanBackRun>(PlanBackRunOption option) where TPlanBackRun : PlanBackRun;
+        IPlanWorker AddBrun(Type planBackRunType, PlanBackRunOption option);
+        IPlanWorker AddBrun<TPlanBackRun>(PlanBackRunOption option) where TPlanBackRun : PlanBackRun;
     }
 }

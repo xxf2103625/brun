@@ -23,16 +23,16 @@ namespace Brun.Services
             this.workerService = workerService;
             this.backRunFilterService = backRunFilterService;
         }
-        public virtual async Task<IOnceWorker> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option)
+        public virtual IOnceWorker AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option)
         {
             if (brunType == null)
                 throw new BrunException(BrunErrorCode.ObjectIsNull, $"add once brun error,OnceBackrun Type is null");
-            var worker = await workerService.GetOnceWorkerByKey(onceWorkerId);
+            var worker = workerService.GetOnceWorkerByKey(onceWorkerId);
             if (worker == null)
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"add once brun error,can not find OnceWorker by key:'{onceWorkerId}'");
             return ((OnceWorker)worker).ProtectAddBrun(brunType, option);
         }
-        public virtual Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
+        public virtual IOnceWorker AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
         {
             return this.AddOnceBrun(onceWorkerId, typeof(TOnceBackRun), option);
         }
@@ -43,9 +43,9 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public virtual Task<IOnceWorker> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
+        public virtual IOnceWorker AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option)
         {
-            return Task.FromResult(((OnceWorker)onceWorker).ProtectAddBrun(brunType, option));
+            return ((OnceWorker)onceWorker).ProtectAddBrun(brunType, option);
         }
         /// <summary>
         /// 添加OnceBrun
@@ -54,13 +54,13 @@ namespace Brun.Services
         /// <param name="onceWorker"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public virtual Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
+        public virtual IOnceWorker AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun
         {
             return this.AddOnceBrun(onceWorker, typeof(TOnceBackRun), option);
         }
-        public async Task Run(string onceBackRunId)
+        public  void Run(string onceBackRunId)
         {
-            IEnumerable<IOnceWorker> workers = await workerService.GetAllOnceWorkers();
+            IEnumerable<IOnceWorker> workers = workerService.GetAllOnceWorkers();
             foreach (OnceWorker worker in workers)
             {
                 if (worker.BackRuns.ContainsKey(onceBackRunId))
@@ -71,17 +71,17 @@ namespace Brun.Services
             }
             throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find online OnceBackRun by id:'{onceBackRunId}'");
         }
-        public async Task Run(string workerId, string onceBackRunId)
+        public void Run(string workerId, string onceBackRunId)
         {
-            IOnceWorker worker = await workerService.GetOnceWorkerByKey(workerId);
+            IOnceWorker worker = workerService.GetOnceWorkerByKey(workerId);
             if (worker == null)
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find OnceWorker by key:'{workerId}'");
             worker.Run(onceBackRunId);
         }
-        public async Task<IEnumerable<KeyValuePair<string, IBackRun>>> GetOnceBruns()
+        public IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns()
         {
             var result = new List<KeyValuePair<string, IBackRun>>();
-            var workers = await workerService.GetAllOnceWorkers();
+            var workers = workerService.GetAllOnceWorkers();
             foreach (OnceWorker item in workers)
             {
                 foreach (var brun in item.BackRuns)

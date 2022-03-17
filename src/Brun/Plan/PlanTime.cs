@@ -41,7 +41,8 @@ namespace Brun
             this.expression = strExpression;
             if (beginTime == null)
             {
-                begin = DateTimeOffset.Now;
+                //TODO 默认不自动运行
+                begin = DateTimeOffset.Now.AddSeconds(3);
             }
             else
             {

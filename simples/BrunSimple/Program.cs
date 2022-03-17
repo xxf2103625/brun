@@ -25,8 +25,12 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
     });
 });
+
+
 builder.Services.AddBrunService(options =>
 {
+    //TODO 初始化加载其它程序集
+    Brun.Commons.BrunTool.LoadFile("BrunTestHelper.dll");
     //options.UseRedis("192.168.1.4");
     options.UseInMemory();
     //options.UseStore(builder.Configuration.GetConnectionString("brun"), DbType.PostgreSQL);
@@ -34,16 +38,16 @@ builder.Services.AddBrunService(options =>
     options.InitWorkers = async workerService =>
     {
         //添加Worker
-        IOnceWorker onceworker = await workerService.AddOnceWorker(new WorkerConfig("once_1", ""));
-        var queueWorker = await workerService.AddQueueWorker(new WorkerConfig("queue_1", ""));
-        var timeWorker = await workerService.AddTimeWorker(new WorkerConfig());
-        var planWorker = await workerService.AddPlanWorker(new WorkerConfig());
+        IOnceWorker onceworker =  workerService.AddOnceWorker(new WorkerConfig("once_1", ""));
+        var queueWorker =  workerService.AddQueueWorker(new WorkerConfig("queue_1", ""));
+        var timeWorker =  workerService.AddTimeWorker(new WorkerConfig());
+        var planWorker =  workerService.AddPlanWorker(new WorkerConfig());
         //添加BackRun
-        await onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
-        await queueWorker.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
-        await timeWorker.AddBrun<BrunTestHelper.LogTimeBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));
-        await planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(new PlanTime("0 * * * *")));
-        await planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(PlanTime.Create("0/5 * * * *")));
+        onceworker.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
+        queueWorker.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
+        timeWorker.AddBrun<BrunTestHelper.LogTimeBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));
+         planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(new PlanTime("0 * * * *")));
+         planWorker.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(PlanTime.Create("0/5 * * * *")));
     };
 }).AddBrunUI(authoptions =>//启动UI组件
 {

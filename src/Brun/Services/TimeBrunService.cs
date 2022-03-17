@@ -22,9 +22,9 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public Task<ITimeWorker> AddTimeBrun(ITimeWorker timeWorker, Type brunType, TimeBackRunOption option)
+        public ITimeWorker AddTimeBrun(ITimeWorker timeWorker, Type brunType, TimeBackRunOption option)
         {
-            return Task.FromResult(((TimeWorker)timeWorker).ProtectAddBrun(brunType, option));
+            return ((TimeWorker)timeWorker).ProtectAddBrun(brunType, option);
         }
         /// <summary>
         /// 添加TimeWorker
@@ -33,7 +33,7 @@ namespace Brun.Services
         /// <param name="timeWorker"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public Task<ITimeWorker> AddTimeBrun<TTimeBackRun>(ITimeWorker timeWorker, TimeBackRunOption option) where TTimeBackRun : TimeBackRun
+        public ITimeWorker AddTimeBrun<TTimeBackRun>(ITimeWorker timeWorker, TimeBackRunOption option) where TTimeBackRun : TimeBackRun
         {
             return this.AddTimeBrun(timeWorker, typeof(TTimeBackRun), option);
         }

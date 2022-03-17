@@ -154,7 +154,7 @@ namespace Brun.Workers
             QueueBackRun backrun = (QueueBackRun)context.BackRun;
             return backrun.Run(context.Message, tokenSource.Token);
         }
-        public Task<IQueueWorker> AddBrun(Type queueBackRunType, QueueBackRunOption option)
+        public IQueueWorker AddBrun(Type queueBackRunType, QueueBackRunOption option)
         {
             using (var scope = _context.ServiceProvider.CreateScope())
             {
@@ -162,7 +162,7 @@ namespace Brun.Workers
                 return queueBrunService.AddQueueBrun(this, queueBackRunType, option);
             }
         }
-        public Task<IQueueWorker> AddBrun<TQueueBackRun>(QueueBackRunOption option) where TQueueBackRun : QueueBackRun
+        public IQueueWorker AddBrun<TQueueBackRun>(QueueBackRunOption option) where TQueueBackRun : QueueBackRun
         {
             return this.AddBrun(typeof(TQueueBackRun), option);
         }

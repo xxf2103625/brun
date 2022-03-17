@@ -82,7 +82,7 @@ namespace Brun.Workers
         {
             return ((TimeBackRun)context.BackRun).Run(tokenSource.Token);
         }
-        public Task<ITimeWorker> AddBrun(Type timeBackRunType, TimeBackRunOption option)
+        public ITimeWorker AddBrun(Type timeBackRunType, TimeBackRunOption option)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -90,7 +90,7 @@ namespace Brun.Workers
                 return timeBrunService.AddTimeBrun(this, timeBackRunType, option);
             }
         }
-        public Task<ITimeWorker> AddBrun<TTimeBackRun>(TimeBackRunOption option) where TTimeBackRun : TimeBackRun
+        public ITimeWorker AddBrun<TTimeBackRun>(TimeBackRunOption option) where TTimeBackRun : TimeBackRun
         {
             return this.AddBrun(typeof(TTimeBackRun), option);
         }

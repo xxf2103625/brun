@@ -15,7 +15,7 @@ namespace Brun.Services
         /// <param name="queueBackRunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IQueueWorker> AddQueueBrun(IQueueWorker queueWorker, Type queueBackRunType, QueueBackRunOption option);
+        IQueueWorker AddQueueBrun(IQueueWorker queueWorker, Type queueBackRunType, QueueBackRunOption option);
         /// <summary>
         /// 添加QueueBackRun
         /// </summary>
@@ -23,6 +23,6 @@ namespace Brun.Services
         /// <param name="queueWorker"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IQueueWorker> AddQueueBrun<TQueueBackRun>(IQueueWorker queueWorker, QueueBackRunOption option) where TQueueBackRun : QueueBackRun;
+        IQueueWorker AddQueueBrun<TQueueBackRun>(IQueueWorker queueWorker, QueueBackRunOption option) where TQueueBackRun : QueueBackRun;
     }
 }

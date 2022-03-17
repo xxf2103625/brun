@@ -22,7 +22,7 @@ namespace Brun.Services
         {
             this.workerServer = workerServer;
         }
-        public virtual Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
+        public virtual IWorker AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
         {
             if (workerServer.Worders.ContainsKey(config.Key))
             {
@@ -42,58 +42,58 @@ namespace Brun.Services
             workerServer.Worders.Add(worker.Key, worker);
             if (autoStart)
                 this.Start(worker.Key);
-            return Task.FromResult(worker);
+            return worker;
         }
-        public virtual async Task<TWorker> AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker
+        public virtual  TWorker AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker
         {
-            return (TWorker)(await AddWorker(config, typeof(TWorker), autoStart));
+            return (TWorker)(AddWorker(config, typeof(TWorker), autoStart));
         }
-        public virtual async Task<IOnceWorker> AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public virtual  IOnceWorker AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
-            return await AddWorker<OnceWorker>(workerConfig, autoStart);
+            return AddWorker<OnceWorker>(workerConfig, autoStart);
         }
-        public virtual async Task<ITimeWorker> AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public virtual  ITimeWorker AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
-            return await AddWorker<TimeWorker>(workerConfig, autoStart);
+            return AddWorker<TimeWorker>(workerConfig, autoStart);
         }
-        public virtual async Task<IQueueWorker> AddQueueWorker(WorkerConfig config, bool autoStart = true)
+        public virtual IQueueWorker AddQueueWorker(WorkerConfig config, bool autoStart = true)
         {
-            return await AddWorker<QueueWorker>(config, autoStart);
+            return AddWorker<QueueWorker>(config, autoStart);
         }
-        public virtual async Task<IPlanWorker> AddPlanWorker(WorkerConfig config, bool autoStart = true)
+        public virtual  IPlanWorker AddPlanWorker(WorkerConfig config, bool autoStart = true)
         {
-            return await AddWorker<PlanWorker>(config, autoStart);
+            return AddWorker<PlanWorker>(config, autoStart);
         }
-        public virtual Task<IWorker> GetWorkerByKey(string key)
+        public virtual IWorker GetWorkerByKey(string key)
         {
             if (workerServer.Worders.ContainsKey(key))
             {
-                return Task.FromResult(workerServer.Worders[key]);
+                return workerServer.Worders[key];
             }
             else
             {
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find worker by key:'{key}'");
             }
         }
-        public virtual async Task<IOnceWorker> GetOnceWorkerByKey(string key)
+        public virtual  IOnceWorker GetOnceWorkerByKey(string key)
         {
-            var worker = await GetWorkerByKey(key);
+            var worker = GetWorkerByKey(key);
             if (worker.GetType() != typeof(OnceWorker))
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"the worker by key:'{key}' is not OnceWorker");
             return (IOnceWorker)worker;
         }
-        public virtual async Task<IQueueWorker> GetQueueWorker(string key)
+        public virtual IQueueWorker GetQueueWorker(string key)
         {
-            var worker = await GetWorkerByKey(key);
+            var worker = GetWorkerByKey(key);
             if (worker.GetType() != typeof(QueueWorker))
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"the worker by key:'{key}' is not QueueWorker");
             return (IQueueWorker)worker;
         }
-        public virtual Task<IEnumerable<IWorker>> GetWorkerByName(string name)
+        public virtual IEnumerable<IWorker> GetWorkerByName(string name)
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(x => x.Name == name));
+            return workerServer.Worders.Values.Where(x => x.Name == name);
         }
-        public virtual Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize)
+        public virtual (IEnumerable<WorkerInfo>, int) GetWorkerInfos(int current, int pageSize)
         {
             var list = workerServer.Worders.Values.OrderBy(m => m.Name).Skip(pageSize * (current - 1)).Take(pageSize).Select(m => new WorkerInfo()
             {
@@ -102,23 +102,23 @@ namespace Brun.Services
                 TypeName = m.GetType().Name,
                 State = m.State
             });
-            return Task.FromResult((list, workerServer.Worders.Count));
+            return (list, workerServer.Worders.Count);
         }
-        public virtual Task<IEnumerable<IWorker>> GetAllWorkers()
+        public virtual IEnumerable<IWorker> GetAllWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.AsEnumerable());
+            return workerServer.Worders.Values.AsEnumerable();
         }
-        public virtual Task<IEnumerable<OnceWorker>> GetAllOnceWorkers()
+        public virtual IEnumerable<OnceWorker> GetAllOnceWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).Cast<OnceWorker>().AsEnumerable());
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).Cast<OnceWorker>().AsEnumerable();
         }
-        public virtual Task<IEnumerable<IWorker>> GetAllTimeWorkers()
+        public virtual IEnumerable<IWorker> GetAllTimeWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker)).AsEnumerable());
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker));
         }
-        public virtual Task<IEnumerable<IWorker>> GetQueueTimeWorkers()
+        public virtual IEnumerable<IWorker> GetQueueTimeWorkers()
         {
-            return Task.FromResult(workerServer.Worders.Values.Where(m => m.GetType() == typeof(QueueWorker)).AsEnumerable());
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(QueueWorker));
         }
         public virtual void Start(string key)
         {

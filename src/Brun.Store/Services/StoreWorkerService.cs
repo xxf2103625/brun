@@ -45,7 +45,7 @@ namespace Brun.Store.Services
             }
             throw new BrunException(BrunErrorCode.ObjectIsNull, $"the worker type in db '' is not supported");
         }
-        public override async Task<IWorker> AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
+        public override  IWorker AddWorker(WorkerConfig config, Type workerType, bool autoStart = true, bool addRunDetailObserver = true)
         {
             if (addRunDetailObserver)
             {
@@ -60,7 +60,7 @@ namespace Brun.Store.Services
             try
             {
                 db.BeginTran();
-                bool hasWorker = await db.Queryable<WorkerEntity>().AnyAsync(m => m.Id == config.Key);
+                bool hasWorker =  db.Queryable<WorkerEntity>().Any(m => m.Id == config.Key);
                 if (hasWorker)
                     throw new BrunException(BrunErrorCode.AllreadyKey, $"store worker allready has key '{config.Key}'");
                 WorkerEntity entity = new WorkerEntity();
@@ -68,11 +68,11 @@ namespace Brun.Store.Services
                 entity.Name = config.Name;
                 entity.Type = workerType.Name;
                 entity.State = WorkerState.Started;
-                int dbr = await db.Insertable(entity).ExecuteCommandAsync();
+                int dbr =  db.Insertable(entity).ExecuteCommand();
                 if (dbr == 0)
                     throw new BrunException(BrunErrorCode.StoreServiceError, "store add worker return 0");
                 //调用基类内存操作,autoStart=false,避免重复Start
-                IWorker baseResult = await base.AddWorker(config, workerType, false, false);
+                IWorker baseResult = base.AddWorker(config, workerType, false, false);
                 if (baseResult == null)
                     throw new BrunException(BrunErrorCode.MemoryServiceError, "memory add worker is not success");
                 else
@@ -92,36 +92,36 @@ namespace Brun.Store.Services
             }
         }
 
-        public override async Task<TWorker> AddWorker<TWorker>(WorkerConfig config, bool autoStart = true)
+        public override  TWorker AddWorker<TWorker>(WorkerConfig config, bool autoStart = true)
         {
-            return (TWorker)(await AddWorker(config, typeof(TWorker), autoStart));
+            return (TWorker)(AddWorker(config, typeof(TWorker), autoStart));
         }
-        public override async Task<IOnceWorker> AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public override IOnceWorker AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
-            return await AddWorker<OnceWorker>(workerConfig, autoStart);
+            return  AddWorker<OnceWorker>(workerConfig, autoStart);
         }
-        public override async Task<ITimeWorker> AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public override ITimeWorker AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
-            return await AddWorker<TimeWorker>(workerConfig, autoStart);
+            return  AddWorker<TimeWorker>(workerConfig, autoStart);
         }
-        public override async Task<IQueueWorker> AddQueueWorker(WorkerConfig config, bool autoStart = true)
+        public override IQueueWorker AddQueueWorker(WorkerConfig config, bool autoStart = true)
         {
-            return await AddWorker<QueueWorker>(config, autoStart);
+            return  AddWorker<QueueWorker>(config, autoStart);
         }
-        public override async Task<IPlanWorker> AddPlanWorker(WorkerConfig config, bool autoStart = true)
+        public override IPlanWorker AddPlanWorker(WorkerConfig config, bool autoStart = true)
         {
-            return await AddWorker<PlanWorker>(config, autoStart);
+            return AddWorker<PlanWorker>(config, autoStart);
         }
-        public override async Task<(IEnumerable<WorkerInfo>, int)> GetWorkerInfos(int current, int pageSize)
+        public override  (IEnumerable<WorkerInfo>, int) GetWorkerInfos(int current, int pageSize)
         {
-            int total = await db.Queryable<WorkerEntity>().CountAsync();
-            var data = await db.Queryable<WorkerEntity>().OrderBy(m => m.Name).Skip(pageSize * (current - 1)).Take(pageSize).Select<WorkerInfo>(m => new WorkerInfo()
+            int total =  db.Queryable<WorkerEntity>().Count();
+            var data = db.Queryable<WorkerEntity>().OrderBy(m => m.Name).Skip(pageSize * (current - 1)).Take(pageSize).Select<WorkerInfo>(m => new WorkerInfo()
             {
                 Key = m.Id,
                 Name = m.Name,
                 TypeName = m.Type,
                 State = m.State
-            }).ToListAsync();
+            }).ToList();
             return (data, total);
         }
 

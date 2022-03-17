@@ -139,12 +139,12 @@ namespace Brun.Workers
         /// <param name="option"></param>
         /// <returns></returns>
         /// <exception cref="BrunException"></exception>
-        public async Task<IOnceWorker> AddBrun(Type backRunType, OnceBackRunOption option = null)
+        public IOnceWorker AddBrun(Type backRunType, OnceBackRunOption option = null)
         {
             using (var scope = _context.ServiceProvider.CreateScope())
             {
                 var onceBrunService = scope.ServiceProvider.GetRequiredService<IOnceBrunService>();
-                return await onceBrunService.AddOnceBrun(this, backRunType, option);
+                return onceBrunService.AddOnceBrun(this, backRunType, option);
             }
         }
         /// <summary>
@@ -153,9 +153,9 @@ namespace Brun.Workers
         /// <typeparam name="TBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        public async Task<IOnceWorker> AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun
+        public IOnceWorker AddBrun<TBackRun>(OnceBackRunOption option = null) where TBackRun : OnceBackRun
         {
-            return await this.AddBrun(typeof(TBackRun), option);
+            return this.AddBrun(typeof(TBackRun), option);
         }
         /// <summary>
         /// 保护内存操作，不对外开放

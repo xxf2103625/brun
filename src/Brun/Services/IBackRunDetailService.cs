@@ -13,6 +13,6 @@ namespace Brun.Services
         /// </summary>
         /// <param name="backRunId"></param>
         /// <returns></returns>
-        Task<BackRunContextNumberModel> GetBackRunDetailNumber(string backRunId);
+        BackRunContextNumberModel GetBackRunDetailNumber(string backRunId);
     }
 }

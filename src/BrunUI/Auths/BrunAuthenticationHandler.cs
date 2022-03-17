@@ -47,7 +47,6 @@ namespace BrunUI.Auths
                         }
                     }
                 }
-
             }
             return Task.FromResult(AuthenticateResult.Fail("无权访问"));
         }

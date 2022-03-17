@@ -111,7 +111,7 @@ namespace Brun.Workers
             Stop();
             base.Dispose();
         }
-        public Task<IPlanWorker> AddBrun(Type planBackRunType, PlanBackRunOption option)
+        public IPlanWorker AddBrun(Type planBackRunType, PlanBackRunOption option)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -119,7 +119,7 @@ namespace Brun.Workers
                 return planBrunService.AddPlanBrun(this, planBackRunType, option);
             }
         }
-        public Task<IPlanWorker> AddBrun<TPlanBackRun>(PlanBackRunOption option) where TPlanBackRun : PlanBackRun
+        public IPlanWorker AddBrun<TPlanBackRun>(PlanBackRunOption option) where TPlanBackRun : PlanBackRun
         {
             return this.AddBrun(typeof(TPlanBackRun), option);
         }

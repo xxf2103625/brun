@@ -12,7 +12,7 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IPlanWorker> AddPlanBrun(IPlanWorker planWorker, Type brunType, PlanBackRunOption option);
+        IPlanWorker AddPlanBrun(IPlanWorker planWorker, Type brunType, PlanBackRunOption option);
         /// <summary>
         /// 添加PlanBackRun
         /// </summary>
@@ -20,6 +20,6 @@ namespace Brun.Services
         /// <param name="planWorker"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IPlanWorker> AddPlanBrun<TPlanBackRun>(IPlanWorker planWorker, PlanBackRunOption option) where TPlanBackRun : PlanBackRun;
+        IPlanWorker AddPlanBrun<TPlanBackRun>(IPlanWorker planWorker, PlanBackRunOption option) where TPlanBackRun : PlanBackRun;
     }
 }

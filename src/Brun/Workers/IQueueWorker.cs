@@ -18,14 +18,14 @@ namespace Brun
         /// <param name="queueBackRunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IQueueWorker> AddBrun(Type queueBackRunType, QueueBackRunOption option);
+        IQueueWorker AddBrun(Type queueBackRunType, QueueBackRunOption option);
         /// <summary>
         /// 添加QueueBackRun
         /// </summary>
         /// <typeparam name="TQueueBackRun"></typeparam>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IQueueWorker> AddBrun<TQueueBackRun>(QueueBackRunOption option) where TQueueBackRun : QueueBackRun;
+        IQueueWorker AddBrun<TQueueBackRun>(QueueBackRunOption option) where TQueueBackRun : QueueBackRun;
         /// <summary>
         /// 给Id为brunId的QueueBackRun发送消息
         /// </summary>

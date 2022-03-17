@@ -20,7 +20,7 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IOnceWorker> AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option);
+        IOnceWorker AddOnceBrun(string onceWorkerId, Type brunType, OnceBackRunOption option);
         /// <summary>
         /// 添加OnceBrun 泛型
         /// </summary>
@@ -28,7 +28,7 @@ namespace Brun.Services
         /// <param name="onceWorkerId"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
+        IOnceWorker AddOnceBrun<TOnceBackRun>(string onceWorkerId, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
         /// <summary>
         /// 添加OnceBrun
         /// </summary>
@@ -36,26 +36,26 @@ namespace Brun.Services
         /// <param name="brunType"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        Task<IOnceWorker> AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
-        Task<IOnceWorker> AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
+        IOnceWorker AddOnceBrun(IOnceWorker onceWorker, Type brunType, OnceBackRunOption option);
+        IOnceWorker AddOnceBrun<TOnceBackRun>(IOnceWorker onceWorker, OnceBackRunOption option) where TOnceBackRun : OnceBackRun;
         /// <summary>
         /// 执行指定Worker中指定Id的OnceBackrun
         /// </summary>
         /// <param name="workerId"></param>
         /// <param name="onceBackRunId"></param>
         /// <returns></returns>
-        Task Run(string workerId, string onceBackRunId);
+        void Run(string workerId, string onceBackRunId);
         /// <summary>
         /// 执行指定Id的OnceBackRun（多一步查询worker）
         /// </summary>
         /// <param name="onceBackRunId"></param>
         /// <returns></returns>
-        Task Run(string onceBackRunId);
+        void Run(string onceBackRunId);
         /// <summary>
         /// 获取所有已配置的OnceBrun
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<KeyValuePair<string, IBackRun>>> GetOnceBruns();
+        IEnumerable<KeyValuePair<string, IBackRun>> GetOnceBruns();
         /// <summary>
         /// 获取所有可用的OnceBrun
         /// </summary>
