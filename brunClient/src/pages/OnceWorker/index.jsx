@@ -7,6 +7,17 @@ import CreateForm from './components/CreateForm';
 import { querylist, addBrun, runBrun, getbrundetailnumber } from '@/services/onceBrunService';
 
 const OnceWorker = () => {
+  const runBrunHander = async (data) => {
+    let r = await runBrun(data);
+    if (r === 1) {
+      message.success('触发成功，任务将在后台执行');
+      actionRef.current?.reload();
+    } else if (r === -7) {
+      message.error('找不到任务');
+    } else {
+      message.error('操作失败');
+    }
+  };
   const actionRef = useRef();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleCreateModalVisible] = useState(false);
@@ -14,7 +25,7 @@ const OnceWorker = () => {
     { title: 'ID', dataIndex: 'id', ellipsis: true },
     { title: '名称', dataIndex: 'name' },
     {
-      title: '类型',
+      title: '类名',
       dataIndex: 'typeName',
       render: (dom, record) => (
         <Tooltip title={record.typeFullName}>
@@ -24,6 +35,7 @@ const OnceWorker = () => {
     },
     {
       title: '启动|异常|运行中',
+      hideInSearch: true,
       render: (dom, record) => {
         return (
           <>
@@ -53,14 +65,7 @@ const OnceWorker = () => {
             title="是否手动执行该任务?"
             onConfirm={async (e) => {
               if (e) {
-                let r = await runBrun({ workerKey: record.workerKey, brunId: record.id });
-                if (r === 1) {
-                  message.success('触发成功，任务将在后台执行');
-                } else if (r === -7) {
-                  message.error('找不到任务');
-                } else {
-                  message.error('操作失败');
-                }
+                await runBrunHander({ workerKey: record.workerKey, brunId: record.id });
               }
             }}
             okText="确认"
@@ -81,7 +86,7 @@ const OnceWorker = () => {
         onFinish={async (values) => {
           let r = await addBrun(values);
           if (r === 1) {
-            actionRef.current.reload();
+            actionRef.current?.reload();
             message.success('添加成功');
             handleCreateModalVisible(false);
           } else if (r === -8) {

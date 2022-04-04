@@ -33,6 +33,7 @@ export async function getInitialState() {
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
+      //获取用户信息的函数
       fetchUserInfo,
       currentUser,
       token: '',
@@ -50,9 +51,9 @@ export const layout = ({ initialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
-    // waterMarkProps: {
-    //   content: initialState?.currentUser?.name,
-    // },
+    waterMarkProps: {
+      content: 'Brun', //initialState?.currentUser?.name,
+    },
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history; // 如果没有登录，重定向到 login
@@ -66,10 +67,10 @@ export const layout = ({ initialState }) => {
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    // childrenRender: (children) => {
-    //   if (initialState.loading) return <PageLoading />;
-    //   return children;
-    // },
+    childrenRender: (children) => {
+      if (initialState.loading) return <PageLoading />;
+      return children;
+    },
     ...initialState?.settings,
   };
 };
