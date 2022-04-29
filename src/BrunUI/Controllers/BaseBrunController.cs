@@ -16,7 +16,7 @@ namespace BrunUI.Controllers
     [ApiController]
     [TypeFilter(typeof(BrunExceptionFilter))]
     [Authorize(AuthenticationSchemes = "Brun")]
-    [Route(template: "/brunapi/{controller=Home}/{action=Index}/{id?}")]
+    [Route(template: "/brunapi/{controller=Home}/{action=Index}")]
     public class BaseBrunController : ControllerBase
     {
 

@@ -44,15 +44,15 @@ namespace Brun.Services
                 this.Start(worker.Key);
             return worker;
         }
-        public virtual  TWorker AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker
+        public virtual TWorker AddWorker<TWorker>(WorkerConfig config, bool autoStart = true) where TWorker : AbstractWorker
         {
             return (TWorker)(AddWorker(config, typeof(TWorker), autoStart));
         }
-        public virtual  IOnceWorker AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public virtual IOnceWorker AddOnceWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
             return AddWorker<OnceWorker>(workerConfig, autoStart);
         }
-        public virtual  ITimeWorker AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
+        public virtual ITimeWorker AddTimeWorker(WorkerConfig workerConfig, bool autoStart = true)
         {
             return AddWorker<TimeWorker>(workerConfig, autoStart);
         }
@@ -60,7 +60,7 @@ namespace Brun.Services
         {
             return AddWorker<QueueWorker>(config, autoStart);
         }
-        public virtual  IPlanWorker AddPlanWorker(WorkerConfig config, bool autoStart = true)
+        public virtual IPlanWorker AddPlanWorker(WorkerConfig config, bool autoStart = true)
         {
             return AddWorker<PlanWorker>(config, autoStart);
         }
@@ -75,7 +75,7 @@ namespace Brun.Services
                 throw new BrunException(BrunErrorCode.NotFoundKey, $"can not find worker by key:'{key}'");
             }
         }
-        public virtual  IOnceWorker GetOnceWorkerByKey(string key)
+        public virtual IOnceWorker GetOnceWorkerByKey(string key)
         {
             var worker = GetWorkerByKey(key);
             if (worker.GetType() != typeof(OnceWorker))
@@ -112,9 +112,9 @@ namespace Brun.Services
         {
             return workerServer.Worders.Values.Where(m => m.GetType() == typeof(OnceWorker)).Cast<OnceWorker>().AsEnumerable();
         }
-        public virtual IEnumerable<IWorker> GetAllTimeWorkers()
+        public virtual IEnumerable<TimeWorker> GetAllTimeWorkers()
         {
-            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker));
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker)).Cast<TimeWorker>();
         }
         public virtual IEnumerable<IWorker> GetQueueTimeWorkers()
         {

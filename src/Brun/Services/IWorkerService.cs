@@ -74,6 +74,7 @@ namespace Brun.Services
         (IEnumerable<WorkerInfo>, int) GetWorkerInfos(int current, int pageSize);
         IEnumerable<IWorker> GetAllWorkers();
         IEnumerable<OnceWorker> GetAllOnceWorkers();
+        IEnumerable<TimeWorker> GetAllTimeWorkers();
         void Start(string key);
         void StartAll();
         void StartByName(string name);

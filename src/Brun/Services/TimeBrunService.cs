@@ -12,8 +12,10 @@ namespace Brun.Services
 {
     public class TimeBrunService : ITimeBrunService
     {
-        public TimeBrunService()
+        IWorkerService workerService;
+        public TimeBrunService(IWorkerService workerService)
         {
+            this.workerService = workerService;
         }
         /// <summary>
         /// 添加TimeWorker
@@ -39,7 +41,16 @@ namespace Brun.Services
         }
         public IEnumerable<KeyValuePair<string, IBackRun>> GetTimeBruns()
         {
-            throw new NotImplementedException();
+            var result = new List<KeyValuePair<string, IBackRun>>();
+            var workers = workerService.GetAllTimeWorkers();
+            foreach (TimeWorker item in workers)
+            {
+                foreach (var brun in item.BackRuns)
+                {
+                    result.Add(brun);
+                }
+            }
+            return result;
         }
     }
 }
