@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Brun.BaskRuns;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Brun.Services
@@ -21,5 +23,6 @@ namespace Brun.Services
         /// <param name="option"></param>
         /// <returns></returns>
         IPlanWorker AddPlanBrun<TPlanBackRun>(IPlanWorker planWorker, PlanBackRunOption option) where TPlanBackRun : PlanBackRun;
+        IEnumerable<KeyValuePair<string, IBackRun>> GetPlanBruns();
     }
 }

@@ -39,14 +39,16 @@ builder.Services.AddBrunService(options =>
     options.InitWorkers = workers =>
     {
         //添加Worker
-        IOnceWorker once = workers.AddOnceWorker(new WorkerConfig("once_1", ""));
+       // IOnceWorker once = workers.AddOnceWorker(new WorkerConfig("once_1", ""));
         IQueueWorker queue = workers.AddQueueWorker(new WorkerConfig("queue_1", ""));
         ITimeWorker time = workers.AddTimeWorker(new WorkerConfig());
         IPlanWorker plan = workers.AddPlanWorker(new WorkerConfig());
         //配置BackRun
-        once.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
+        //once.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
         queue.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
         time.AddBrun<BrunTestHelper.LogTimeBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));//5秒执行一次
+        time.AddBrun<BrunTestHelper.TimeErrorBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));//5秒执行一次 
+        time.AddBrun<BrunTestHelper.LogTimeLongBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));//5秒执行一次
         plan.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(new PlanTime("0 * * * *")));//每分钟执行
         plan.AddBrun<BrunTestHelper.LogPlanBackRun>(new PlanBackRunOption(PlanTime.Create("0/5 * * * *")));//5秒执行一次
     };

@@ -1403,6 +1403,12 @@
             <param name="option"></param>
             <returns></returns>
         </member>
+        <member name="M:Brun.Services.IQueueBrunService.GetQueueBruns">
+            <summary>
+            获取所有QueueBackRun
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Brun.Services.IWorkerService">
             <summary>
             所有Worker的操作接口

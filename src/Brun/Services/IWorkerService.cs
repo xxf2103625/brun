@@ -75,6 +75,8 @@ namespace Brun.Services
         IEnumerable<IWorker> GetAllWorkers();
         IEnumerable<OnceWorker> GetAllOnceWorkers();
         IEnumerable<TimeWorker> GetAllTimeWorkers();
+        IEnumerable<QueueWorker> GetAllQueueWorkers();
+        IEnumerable<PlanWorker> GetAllPlanWorkers();
         void Start(string key);
         void StartAll();
         void StartByName(string name);

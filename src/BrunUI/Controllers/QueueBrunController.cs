@@ -1,5 +1,4 @@
 ﻿using Brun;
-using Brun.Models;
 using Brun.Services;
 using BrunUI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,25 +9,24 @@ using System.Text;
 
 namespace BrunUI.Controllers
 {
-    public class TimeBrunController : BaseBrunController
+    public class QueueBrunController : BaseBrunController
     {
         IWorkerService workerService;
-        ITimeBrunService timeBrunService;
-        public TimeBrunController(ITimeBrunService timeBrunService, IWorkerService workerService)
+        IQueueBrunService queueBrunService;
+        public QueueBrunController(IWorkerService workerService, IQueueBrunService queueBrunService)
         {
-            this.timeBrunService = timeBrunService;
             this.workerService = workerService;
+            this.queueBrunService = queueBrunService;
         }
         [HttpGet]
         public TableResult QueryList(int current, int pageSize)
         {
-            var list = timeBrunService.GetTimeBruns();
+            var list = queueBrunService.GetQueueBruns();
             int total = list.Count();
             var data = list.Skip(pageSize * (current - 1)).Take(pageSize).Select(m =>
             {
-                TimeBackRun brun = (TimeBackRun)m.Value;
-                double cycle= brun.Option.Cycle.TotalSeconds;
-                return new TimeBackRunInfoModel()
+                QueueBackRun brun = (QueueBackRun)m.Value;
+                return new BackRunInfoModel()
                 {
                     Id = m.Key,
                     Name = m.Value.Name,
@@ -38,16 +36,9 @@ namespace BrunUI.Controllers
                     StartTimes = m.Value.StartTimes,
                     ErrorTimes = m.Value.ErrorTimes,
                     EndTimes = m.Value.EndTimes,
-                    TotalSeconds=cycle,
                 };
             });
             return new TableResult(data, total);
-        }
-        [HttpGet]
-        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
-        {
-            var workers = workerService.GetAllTimeWorkers();
-            return workers.Select(m => new ValueLabel(m.Key, m.Name));
         }
     }
 }

@@ -20,6 +20,10 @@ const index = () => {
       ),
     },
     {
+      title: '周期(秒)',
+      dataIndex: 'totalSeconds',
+    },
+    {
       title: '启动|异常|运行中',
       hideInSearch: true,
       render: (dom, record) => {
@@ -41,28 +45,28 @@ const index = () => {
         </Tooltip>
       ),
     },
-    {
-      title: '操作',
-      valueType: 'option',
-      render: (dom, record) => {
-        return [
-          <Popconfirm
-            key="run"
-            title="是否手动执行该任务?"
-            onConfirm={async (e) => {
-              if (e) {
-                await runBrunHander({ workerKey: record.workerKey, brunId: record.id });
-              }
-            }}
-            okText="确认"
-            cancelText="取消"
-          >
-            <a>执行</a>
-          </Popconfirm>,
-          <a key="edit">编辑</a>,
-        ];
-      },
-    },
+    // {
+    //   title: '操作',
+    //   valueType: 'option',
+    //   render: (dom, record) => {
+    //     return [
+    //       <Popconfirm
+    //         key="run"
+    //         title="是否手动执行该任务?"
+    //         onConfirm={async (e) => {
+    //           if (e) {
+    //             await runBrunHander({ workerKey: record.workerKey, brunId: record.id });
+    //           }
+    //         }}
+    //         okText="确认"
+    //         cancelText="取消"
+    //       >
+    //         <a>执行</a>
+    //       </Popconfirm>,
+    //       <a key="edit">编辑</a>,
+    //     ];
+    //   },
+    // },
   ];
   return (
     <PageContainer header={{ subTitle: 'TimeWorker - 简单的时间循环后台任务' }}>
@@ -74,12 +78,14 @@ const index = () => {
             type="primary"
             key="primary"
             onClick={() => {
+              message.warn('暂未实现');
               //handleCreateModalVisible(true);
             }}
           >
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        search={false}
         columns={columns}
         request={querylist}
       />

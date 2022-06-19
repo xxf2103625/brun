@@ -10,8 +10,15 @@ namespace Brun
 {
     public class PlanBackRunOption : BackRunOption
     {
+        public PlanBackRunOption(string cro):this(null,null,PlanTime.Create(cro))
+        {
+        }
         public PlanBackRunOption(PlanTime planTime) : this(null, null, planTime)
         {
+        }
+        public PlanBackRunOption(string id,string name,string cro) : this(id, name, PlanTime.Create(cro))
+        {
+
         }
         public PlanBackRunOption(string id, string name, PlanTime planTime) : base(id, name)
         {

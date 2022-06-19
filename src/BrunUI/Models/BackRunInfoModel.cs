@@ -18,4 +18,8 @@ namespace BrunUI.Models
         public long ErrorTimes { get; internal set; }
         public long EndTimes { get; internal set; }
     }
+    public class TimeBackRunInfoModel: BackRunInfoModel
+    {
+        public double TotalSeconds { get; set; }
+    }
 }

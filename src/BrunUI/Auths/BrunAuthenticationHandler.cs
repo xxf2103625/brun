@@ -25,6 +25,11 @@ namespace BrunUI.Auths
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            //TODO [AllowAnonymous]无效
+            if (this.Request.Path== "/brunapi/user/login")
+            {
+                return Task.FromResult(AuthenticateResult.NoResult());
+            }
             if (_options.CurrentValue.AuthType == AuthType.SimpleToken)
             {
                 if (this.Context.Request.Headers.TryGetValue(_options.CurrentValue.HeadName, out Microsoft.Extensions.Primitives.StringValues tokenValues))

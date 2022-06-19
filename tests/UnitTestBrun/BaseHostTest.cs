@@ -70,7 +70,7 @@ namespace UnitTestBrun
         {
             Console.WriteLine("WaitForBackRun 开始");
             WorkerServer server = WorkerServer.Instance;
-            Thread.Sleep(TimeSpan.FromSeconds(0.1));
+            //Thread.Sleep(TimeSpan.FromSeconds(0.1));
             while (server.Worders.Values.Any(m => m.Context.endNb < m.Context.startNb) || (server.Worders.Values.First().Context.RunningTasks.Count != 0))
             {
                 Thread.Sleep(50);

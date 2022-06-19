@@ -73,7 +73,6 @@ const OnceWorker = () => {
           >
             <a>执行</a>
           </Popconfirm>,
-          <a key="edit">编辑</a>,
         ];
       },
     },
@@ -121,6 +120,7 @@ const OnceWorker = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        search={false}
         columns={columns}
         request={querylist}
       />

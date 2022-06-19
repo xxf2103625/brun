@@ -3,6 +3,7 @@ using BrunTestHelper.BackRuns;
 using BrunTestHelper.WorkerObservers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,9 +28,12 @@ namespace UnitTestBrun.WorkerObservers
                         var config = new WorkerConfig(key, "name");
                         config.AddWorkerObserver(new List<Brun.Observers.WorkerObserver>()
                         {
-                        new TestStartWorkerObserver_20(),new TestStartWorkerObserver_30()
+                        new TestStartWorkerObserver_20(),
+                            new TestStartWorkerObserver_30()
                         });
-                        workerServer.CreateOnceWorker(config).AddBrun<LogBackRun>();
+                        var data=new ConcurrentDictionary<string, string>();
+                        data.TryAdd("Order", "0");
+                        workerServer.CreateOnceWorker(config).SetData(data).AddBrun<LogBackRun>();
                     };
                 });
             });

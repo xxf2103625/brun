@@ -116,9 +116,13 @@ namespace Brun.Services
         {
             return workerServer.Worders.Values.Where(m => m.GetType() == typeof(TimeWorker)).Cast<TimeWorker>();
         }
-        public virtual IEnumerable<IWorker> GetQueueTimeWorkers()
+        public virtual IEnumerable<QueueWorker> GetAllQueueWorkers()
         {
-            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(QueueWorker));
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(QueueWorker)).Cast<QueueWorker>();
+        }
+        public virtual IEnumerable<PlanWorker> GetAllPlanWorkers()
+        {
+            return workerServer.Worders.Values.Where(m => m.GetType() == typeof(PlanWorker)).Cast<PlanWorker>();
         }
         public virtual void Start(string key)
         {

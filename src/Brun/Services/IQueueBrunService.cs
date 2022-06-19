@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Brun.BaskRuns;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Brun.Services
@@ -24,5 +26,10 @@ namespace Brun.Services
         /// <param name="option"></param>
         /// <returns></returns>
         IQueueWorker AddQueueBrun<TQueueBackRun>(IQueueWorker queueWorker, QueueBackRunOption option) where TQueueBackRun : QueueBackRun;
+        /// <summary>
+        /// 获取所有QueueBackRun
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<KeyValuePair<string, IBackRun>> GetQueueBruns();
     }
 }
