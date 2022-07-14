@@ -1531,85 +1531,6 @@
             Worker管理，内存中对象操作
             </summary>
         </member>
-        <member name="T:Brun.WorkerServer">
-            <summary>
-            进程单例，暂时只考虑单机运行
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.Option">
-            <summary>
-            配置
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.ServerConfig">
-            <summary>
-            server配置，用于设置系统默认配置
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.Worders">
-            <summary>
-            所有运行中的worker，不要直接操作这个
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.ServiceProvider">
-            <summary>
-            IOC容器
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.LoggerFactory">
-            <summary>
-            日志工厂
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.StartTime">
-            <summary>
-            WorkerServer在本次进程中的 启动时间
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.PlanTimeParser">
-            <summary>
-            计划时间计算器，暂时只实现了Cro表达式.
-            TODO Cron表达式解析及计算
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerServer.Init(System.IServiceProvider)">
-            <summary>
-            必须配置初始化
-            </summary>
-            <param name="serviceProvider">Ioc容器</param>
-        </member>
-        <member name="M:Brun.WorkerServer.SetLogFactory(Microsoft.Extensions.Logging.ILoggerFactory)">
-            <summary>
-            可选，自定义日志工厂
-            </summary>
-            <param name="loggerFactory"></param>
-        </member>
-        <member name="M:Brun.WorkerServer.Start(System.Threading.CancellationToken)">
-            <summary>
-            启动Brun Server
-            </summary>
-            <param name="stoppingToken"></param>
-        </member>
-        <member name="M:Brun.WorkerServer.Stop">
-            <summary>
-            结束Brun Server
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerServer.CreatePidFile">
-            <summary>
-            创建Linux下Pid文件
-            </summary>
-        </member>
-        <member name="M:Brun.WorkerServer.DeletePidFile">
-            <summary>
-            删除Linux下Pid文件
-            </summary>
-        </member>
-        <member name="P:Brun.WorkerServer.Instance">
-            <summary>
-            进程单例
-            </summary>
-        </member>
         <member name="T:Brun.Workers.AbstractWorker">
             <summary>
             工作中心基类，可以创建多个，不同实例里面的Context不同
@@ -2001,6 +1922,85 @@
             <typeparam name="TTimeBackRun"></typeparam>
             <param name="option"></param>
             <returns></returns>
+        </member>
+        <member name="T:Brun.WorkerServer">
+            <summary>
+            进程单例，暂时只考虑单机运行
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Option">
+            <summary>
+            配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServerConfig">
+            <summary>
+            server配置，用于设置系统默认配置
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Worders">
+            <summary>
+            所有运行中的worker，不要直接操作这个
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.ServiceProvider">
+            <summary>
+            IOC容器
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.LoggerFactory">
+            <summary>
+            日志工厂
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.StartTime">
+            <summary>
+            WorkerServer在本次进程中的 启动时间
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.PlanTimeParser">
+            <summary>
+            计划时间计算器，暂时只实现了Cro表达式.
+            TODO Cron表达式解析及计算
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.Init(System.IServiceProvider)">
+            <summary>
+            必须配置初始化
+            </summary>
+            <param name="serviceProvider">Ioc容器</param>
+        </member>
+        <member name="M:Brun.WorkerServer.SetLogFactory(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            可选，自定义日志工厂
+            </summary>
+            <param name="loggerFactory"></param>
+        </member>
+        <member name="M:Brun.WorkerServer.Start(System.Threading.CancellationToken)">
+            <summary>
+            启动Brun Server
+            </summary>
+            <param name="stoppingToken"></param>
+        </member>
+        <member name="M:Brun.WorkerServer.Stop">
+            <summary>
+            结束Brun Server
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.CreatePidFile">
+            <summary>
+            创建Linux下Pid文件
+            </summary>
+        </member>
+        <member name="M:Brun.WorkerServer.DeletePidFile">
+            <summary>
+            删除Linux下Pid文件
+            </summary>
+        </member>
+        <member name="P:Brun.WorkerServer.Instance">
+            <summary>
+            进程单例
+            </summary>
         </member>
     </members>
 </doc>
