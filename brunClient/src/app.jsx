@@ -80,7 +80,7 @@ export const request = {
     (url, options) => {
       //console.log('token:', getToken(), 'options', options);
       // eslint-disable-next-line no-param-reassign
-      url = 'http://localhost:5000' + url;
+      //url = 'http://localhost:5000' + url;
       const headers = {
         'Content-Type': 'application/json',
         Accept: 'application/json',

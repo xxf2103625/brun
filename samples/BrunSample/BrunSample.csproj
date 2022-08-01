@@ -8,6 +8,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'BrunSimple' " />
   <ItemGroup>
     <ProjectReference Include="..\..\src\Brun.Redis\Brun.Redis.csproj" />
     <ProjectReference Include="..\..\src\Brun.Store\Brun.Store.csproj" />

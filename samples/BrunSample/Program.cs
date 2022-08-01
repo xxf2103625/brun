@@ -20,7 +20,8 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(config =>
     {
-        config.WithOrigins(builder.Configuration.GetValue<string>("Cors"))
+        var cors = builder.Configuration.GetValue<string>("Cors").Split(",");
+        config.WithOrigins(cors)
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -39,12 +40,12 @@ builder.Services.AddBrunService(options =>
     options.InitWorkers = workers =>
     {
         //����Worker
-       // IOnceWorker once = workers.AddOnceWorker(new WorkerConfig("once_1", ""));
+        IOnceWorker once = workers.AddOnceWorker(new WorkerConfig("once_1", ""));
         IQueueWorker queue = workers.AddQueueWorker(new WorkerConfig("queue_1", ""));
         ITimeWorker time = workers.AddTimeWorker(new WorkerConfig());
         IPlanWorker plan = workers.AddPlanWorker(new WorkerConfig());
         //����BackRun
-        //once.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
+        once.AddBrun<BrunTestHelper.BackRuns.AwaitErrorBackRun>(new OnceBackRunOption("onceB_1", "onceB_Name"));
         queue.AddBrun<BrunTestHelper.QueueBackRuns.LogQueueBackRun>(new QueueBackRunOption());
         time.AddBrun<BrunTestHelper.LogTimeBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));//5��ִ��һ��
         time.AddBrun<BrunTestHelper.TimeErrorBackRun>(new TimeBackRunOption(TimeSpan.FromSeconds(5)));//5��ִ��һ�� 
