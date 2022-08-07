@@ -202,14 +202,12 @@ namespace Brun.Workers
         public virtual void Dispose()
         {
             DateTime now = DateTime.Now;
-            while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
+            while ( _context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
             {
-                now = now.AddSeconds(0.1);
                 Thread.Sleep(TimeSpan.FromSeconds(0.1));
             };
             tokenSource.Cancel();
             this.Context.Dispose();
-            //WorkerServer.Instance.Worders.Remove(this);
         }
     }
 }
