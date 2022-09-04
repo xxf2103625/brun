@@ -71,15 +71,28 @@ namespace UnitTestBrun
             Console.WriteLine("WaitForBackRun 开始");
             WorkerServer server = WorkerServer.Instance;
             //Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            while (server.Worders.Values.Any(m => m.Context.endNb < m.Context.startNb) || (server.Worders.Values.First().Context.RunningTasks.Count != 0))
-            {
-                Thread.Sleep(50);
-            }
-            while (runCount > 0 && server.Worders.Values.Any(m => m.Context.endNb < runCount))
-            {
-                Thread.Sleep(50);
-            }
+            // while (server.Worders.Values.Any(m => m.Context.endNb < m.Context.startNb) || (server.Worders.Values.First().Context.RunningTasks.Count != 0))
+            // {
+            //     Thread.Sleep(50);
+            // }
+            
             //Console.WriteLine(server.GetAllWorker().FirstOrDefault());
+            while (WorkerServer.BrunIsStart==false)
+            {
+                Thread.Sleep(50);
+            }
+            while (server.Worders.Values.Any(m => m.Context.endNb < m.Context.startNb))
+            {
+                Thread.Sleep(50);
+            }
+            if (runCount > 0)
+            {
+                while (server.Worders.Values.Sum(m=>m.Context.endNb)<runCount)
+                {
+                    //保证所有任务已完成  等待runCount个任务完成
+                    Thread.Sleep(50);
+                }
+            }
             Console.WriteLine("WaitForBackRun 结束");
         }
         protected void WiatAfter(TimeSpan timeSpan)
@@ -98,11 +111,12 @@ namespace UnitTestBrun
             if (host != null)
             {
                 scope?.Dispose();
-                Task task = host.StopAsync(cancellationToken);
+                Task task = host.StopAsync();
                 await task.ContinueWith(t =>
                 {
-                    Console.WriteLine("stop");
+                    Console.WriteLine("test stop!");
                 });
+                await task;
             }
         }
     }

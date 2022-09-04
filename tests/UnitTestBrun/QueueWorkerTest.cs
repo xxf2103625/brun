@@ -77,7 +77,7 @@ namespace UnitTestBrun
             {
                 worker.Enqueue($"测试消息:{i}");
             }
-            WaitForBackRun();
+            WaitForBackRun(1);
             Assert.AreEqual(1, worker.Context.endNb);
 
             worker.Stop();

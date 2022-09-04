@@ -41,7 +41,7 @@ namespace UnitTestBrun.WorkerObservers
             IOnceWorker worker = (IOnceWorker)GetWorkerByKey(key);
             //Brun.BaskRuns.IBackRun worker =onceWorkerService.().First(m => m.Key == key).Value;
             worker.Run();
-            WaitForBackRun();
+            WaitForBackRun(1);
             Assert.AreEqual("30", worker.GetData()["Order"]);
         }
     }

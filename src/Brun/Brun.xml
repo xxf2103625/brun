@@ -1964,6 +1964,11 @@
             TODO Cron表达式解析及计算
             </summary>
         </member>
+        <member name="P:Brun.WorkerServer.BrunIsStart">
+            <summary>
+            配合单元测试,避免任务还没开始 host进程直接结束
+            </summary>
+        </member>
         <member name="M:Brun.WorkerServer.Init(System.IServiceProvider)">
             <summary>
             必须配置初始化

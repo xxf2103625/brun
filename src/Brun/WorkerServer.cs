@@ -62,6 +62,11 @@ namespace Brun
         /// TODO Cron表达式解析及计算
         /// </summary>
         public Plan.IPlanTimeParser PlanTimeParser { get; set; } = new Plan.CroParser();
+
+        /// <summary>
+        /// 配合单元测试,避免任务还没开始 host进程直接结束
+        /// </summary>
+        public static bool BrunIsStart { get; set; } 
         /// <summary>
         /// 必须配置初始化
         /// </summary>

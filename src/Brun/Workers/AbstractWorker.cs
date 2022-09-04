@@ -25,27 +25,34 @@ namespace Brun.Workers
         /// 包含的Backrun
         /// </summary>
         protected ConcurrentDictionary<string, IBackRun> _backRuns;
+
         /// <summary>
         /// 配置
         /// </summary>
         protected WorkerConfig _config;
+
         /// <summary>
         /// worker上下文
         /// </summary>
         protected WorkerContext _context;
+
         /// <summary>
         /// 管理单个实例的token
         /// </summary>
         protected CancellationTokenSource tokenSource;
+
         /// <summary>
         /// 统一配置实例内的Task
         /// </summary>
         protected TaskFactory taskFactory;
+
         /// <summary>
         /// 状态锁
         /// </summary>
         protected object State_LOCK = new object();
+
         protected ILogger _logger;
+
         /// <summary>
         /// 统一构造函数
         /// </summary>
@@ -67,10 +74,12 @@ namespace Brun.Workers
             RunningTasks = new BlockingCollection<Task>();
             _context.RunningTasks = RunningTasks;
         }
+
         /// <summary>
         /// 内存对象start，对外隐藏
         /// </summary>
         internal abstract void ProtectStart();
+
         /// <summary>
         /// 启动
         /// </summary>
@@ -84,6 +93,7 @@ namespace Brun.Workers
                 workerService.Start(this.Key);
             }
         }
+
         /// <summary>
         /// 统一流程控制
         /// </summary>
@@ -93,18 +103,19 @@ namespace Brun.Workers
         {
             if (_context.State != WorkerState.Started)
             {
-                _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key, runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
+                _logger.LogWarning("the {3} key:'{0}' is not started while {1} is {2} time run", this.Key,
+                    runContext.BackRun.GetType(), runContext.StartNb, this.GetType().Name);
                 return;
             }
+            //TODO 完善单元测试后移除(防止单元测试直接结束进程)
+            if (WorkerServer.BrunIsStart==false)
+                WorkerServer.BrunIsStart = true;
             await Observe(runContext, WorkerEvents.StartRun);
             try
             {
                 Task brun = Brun(runContext);
                 RunningTasks.TryAdd(brun);
-                _ = brun.ContinueWith(t =>
-                 {
-                     RunningTasks.TryTake(out t);
-                 });
+                _ = brun.ContinueWith(t => { RunningTasks.TryTake(out t); });
                 await brun;
             }
             catch (Exception ex)
@@ -117,20 +128,23 @@ namespace Brun.Workers
                 await Observe(runContext, WorkerEvents.EndRun);
             }
         }
+
         /// <summary>
         /// 执行BackRun.Run
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
+
         /// <summary>
         /// 内部Stop，对外隐藏
         /// </summary>
-        internal  void ProtectStop()
+        internal void ProtectStop()
         {
             _context.State = WorkerState.Stoped;
             _logger.LogInformation("the worker  {0} by key:{1} is stoped", GetType().Name, _context.Key);
         }
+
         /// <summary>
         /// 停止
         /// </summary>
@@ -143,6 +157,7 @@ namespace Brun.Workers
                 workerService.Stop(this.Key);
             }
         }
+
         /// <summary>
         /// 添加拦截器
         /// </summary>
@@ -156,6 +171,7 @@ namespace Brun.Workers
                 await observer.Todo(brunContext);
             }
         }
+
         public string GetData(string key)
         {
             if (_context.Items == null)
@@ -163,49 +179,64 @@ namespace Brun.Workers
                 _logger.LogError("the {0} by key:'{1}' has not config Data.", this.GetType(), key);
                 return null;
             }
+
             if (_context.Items.ContainsKey(key))
                 return _context.Items[key];
             else
                 return null;
         }
+
         /// <summary>
         /// 工作中心的Key/Id
         /// </summary>
         public string Key => _config.Key;
+
         /// <summary>
         /// 工作中心名称
         /// </summary>
         public string Name => _config.Name;
+
         /// <summary>
         /// 上下文
         /// </summary>
         public WorkerContext Context => _context;
+
         /// <summary>
         /// 状态
         /// </summary>
         public WorkerState State => _context.State;
+
         /// <summary>
         /// 包含的Backrun
         /// </summary>
         public ConcurrentDictionary<string, IBackRun> BackRuns => _backRuns;
+
         /// <summary>
         /// 正在运行的任务
         /// </summary>
         public BlockingCollection<Task> RunningTasks { get; private set; }
+
         /// <summary>
         /// Ioc容器
         /// </summary>
         protected IServiceProvider ServiceProvider => WorkerServer.Instance.ServiceProvider;
+
         /// <summary>
         /// 释放单个Worker
         /// </summary>
         public virtual void Dispose()
         {
             DateTime now = DateTime.Now;
-            while ( _context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
+            Console.WriteLine("now:" + now);
+            while (_context.endNb < _context.startNb && DateTime.Now - now < _config.TimeWaitForBrun)
             {
+                Console.WriteLine("wait for worker bruns end time:" + DateTime.Now);
+                Console.WriteLine("base config : {0} left : {1} ", _config.TimeWaitForBrun,
+                    (DateTime.Now - now).TotalMilliseconds);
                 Thread.Sleep(TimeSpan.FromSeconds(0.1));
-            };
+            }
+
+            ;
             tokenSource.Cancel();
             this.Context.Dispose();
         }
