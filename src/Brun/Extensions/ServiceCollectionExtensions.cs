@@ -41,9 +41,6 @@ namespace Brun
                 option.ServicesConfigure(services);
             }
             worker.Option = option;
-
-            
-
             services.AddSingleton<WorkerServer>(m => worker);
             services.AddSingleton<IBackRunFilterService, BackRunFilterService>();
             services.AddHostedService<BrunBackgroundService>();

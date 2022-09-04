@@ -20,7 +20,7 @@ namespace BrunUI.Controllers
             this.workerService = workerService;
         }
         [HttpPost]
-        public  BrunResultState AddWorker(WorkerModel model)
+        public  InfoResult AddWorker(WorkerModel model)
         {
             Type type = BrunTool.GetWorkerType(model.WorkerType);
             if (model.Key == null)
@@ -33,15 +33,15 @@ namespace BrunUI.Controllers
             }
             var wk = workerService.AddWorker(new WorkerConfig() { Key = model.Key, Name = model.Name }, type);
             if (wk != null)
-                return BrunResultState.Success;
+                return  InfoResult.Ok(BrunResultState.Success);
             else
-                return BrunResultState.UnKnow;
+                return InfoResult.Error (BrunResultState.UnKnow);
         }
         [HttpGet]
-        public TableResult GetWorkers(int current, int pageSize)
+        public InfoResult GetWorkers(int current, int pageSize)
         {
             var data = workerService.GetWorkerInfos(current, pageSize);
-            return new TableResult(data.Item1, data.Item2);
+            return InfoResult.Ok( new TableResult(data.Item1, data.Item2));
         }
     }
 }

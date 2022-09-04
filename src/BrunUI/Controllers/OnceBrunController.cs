@@ -30,7 +30,7 @@ namespace BrunUI.Controllers
             this.backRunDetailService = backRunDetailService;
         }
         [HttpGet]
-        public  TableResult QueryList(int current, int pageSize)
+        public  InfoResult QueryList(int current, int pageSize)
         {
             var list = onceBrunService.GetOnceBruns();
             int total = list.Count();
@@ -45,35 +45,35 @@ namespace BrunUI.Controllers
                 ErrorTimes = m.Value.ErrorTimes,
                 EndTimes = m.Value.EndTimes,
             });
-            return new TableResult(data, total);
+            return InfoResult.Ok( new TableResult(data, total));
         }
         [HttpPost]
-        public  BrunResultState AddBrun(BrunCreateModel model)
+        public  InfoResult AddBrun(BrunCreateModel model)
         {
             var bType = BrunTool.GetTypeByFullName(model.BrunType);
             onceBrunService.AddOnceBrun(model.WorkerKey, bType, new OnceBackRunOption(model.Id, model.Name));
-            return BrunResultState.Success;
+            return InfoResult.Ok(BrunResultState.Success);
         }
         [HttpPost]
-        public BrunResultState Run(BrunKeyModel model)
+        public InfoResult Run(BrunKeyModel model)
         {
              onceBrunService.Run(model.BrunId);
-            return BrunResultState.Success;
+            return InfoResult.Ok( BrunResultState.Success);
         }
         /// <summary>
         /// url: /brunapi/onceworker/getonceworkersinfo
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        public InfoResult GetOnceWorkersInfo()
         {
             var workers = workerService.GetAllOnceWorkers();
-            return workers.Select(m => new ValueLabel(m.Key, m.Name));
+            return InfoResult.Ok( workers.Select(m => new ValueLabel(m.Key, m.Name)));
         }
         [HttpGet]
-        public  BackRunContextNumberModel GetBrunDetailNumber(string brunId)
+        public  InfoResult GetBrunDetailNumber(string brunId)
         {
-            return  backRunDetailService.GetBackRunDetailNumber(brunId);
+            return InfoResult.Ok(backRunDetailService.GetBackRunDetailNumber(brunId));
         }
     }
 }

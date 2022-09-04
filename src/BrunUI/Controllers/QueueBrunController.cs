@@ -19,7 +19,7 @@ namespace BrunUI.Controllers
             this.queueBrunService = queueBrunService;
         }
         [HttpGet]
-        public TableResult QueryList(int current, int pageSize)
+        public InfoResult QueryList(int current, int pageSize)
         {
             var list = queueBrunService.GetQueueBruns();
             int total = list.Count();
@@ -38,7 +38,7 @@ namespace BrunUI.Controllers
                     EndTimes = m.Value.EndTimes,
                 };
             });
-            return new TableResult(data, total);
+            return InfoResult.Ok(new TableResult(data, total));
         }
     }
 }

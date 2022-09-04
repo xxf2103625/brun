@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>2103625@qq.com</Authors>
     <Description>dotnet background task</Description>
     <Copyright>2103625@qq.com</Copyright>
@@ -13,6 +12,7 @@
     <Version>1.1.2</Version>
     <Configurations>Release;Debug</Configurations>
     <LangVersion>default</LangVersion>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

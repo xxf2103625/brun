@@ -17,7 +17,7 @@ namespace BrunUI.Controllers
             this.workerService = workerService;
             this.planBrunService = planBrunService;
         }
-        public TableResult QueryList(int current,int pageSize)
+        public InfoResult QueryList(int current,int pageSize)
         {
             var list = planBrunService.GetPlanBruns();
             int total = list.Count();
@@ -36,7 +36,7 @@ namespace BrunUI.Controllers
                     EndTimes = m.Value.EndTimes,
                 };
             });
-            return new TableResult(data, total);
+            return InfoResult.Ok(new TableResult(data, total));
         }
     }
 }

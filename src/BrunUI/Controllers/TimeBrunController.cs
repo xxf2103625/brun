@@ -20,7 +20,7 @@ namespace BrunUI.Controllers
             this.workerService = workerService;
         }
         [HttpGet]
-        public TableResult QueryList(int current, int pageSize)
+        public InfoResult QueryList(int current, int pageSize)
         {
             var list = timeBrunService.GetTimeBruns();
             int total = list.Count();
@@ -41,13 +41,13 @@ namespace BrunUI.Controllers
                     TotalSeconds=cycle,
                 };
             });
-            return new TableResult(data, total);
+            return InfoResult.Ok(new TableResult(data, total));
         }
         [HttpGet]
-        public IEnumerable<ValueLabel> GetOnceWorkersInfo()
+        public InfoResult GetOnceWorkersInfo()
         {
             var workers = workerService.GetAllTimeWorkers();
-            return workers.Select(m => new ValueLabel(m.Key, m.Name));
+            return InfoResult.Ok( workers.Select(m => new ValueLabel(m.Key, m.Name)));
         }
     }
 }

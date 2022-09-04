@@ -124,12 +124,12 @@ namespace Brun.Workers
         /// <returns></returns>
         protected abstract Task Brun(BrunContext context);
         /// <summary>
-        /// 内存对象Stop，对外隐藏
+        /// 内部Stop，对外隐藏
         /// </summary>
-        internal virtual void ProtectStop()
+        internal  void ProtectStop()
         {
             _context.State = WorkerState.Stoped;
-            _logger.LogInformation("the {0} key:{1} is stoped", GetType().Name, _context.Key);
+            _logger.LogInformation("the worker  {0} by key:{1} is stoped", GetType().Name, _context.Key);
         }
         /// <summary>
         /// 停止

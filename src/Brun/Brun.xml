@@ -1599,7 +1599,7 @@
         </member>
         <member name="M:Brun.Workers.AbstractWorker.ProtectStop">
             <summary>
-            内存对象Stop，对外隐藏
+            内部Stop，对外隐藏
             </summary>
         </member>
         <member name="M:Brun.Workers.AbstractWorker.Stop">
