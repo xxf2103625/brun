@@ -4,6 +4,12 @@ import proxy from './proxy';
 import { NavTheme } from '../src/constants';
 export default defineConfig({
   history: { type: 'hash' },
+  outputPath:'../src/BrunUI/Resources',
+  //base: '/brun/',
+  publicPath:'/brun/',
+  extraBabelPlugins: process.env.NODE_ENV === 'production' 
+    ? ['babel-plugin-dynamic-import-node'] 
+    : [],
   antd: {},
   access: {},
   model: {},

@@ -16,18 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Dist.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Dist.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Dist.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Dist.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <None Remove="Resources\index.html" />
+    <EmbeddedResource Include="Resources\index.html" />
+    <None Remove="Resources\umi.css" />
+    <EmbeddedResource Include="Resources\umi.css" />
+    <None Remove="Resources\umi.js" />
+    <EmbeddedResource Include="Resources\umi.js" />
   </ItemGroup>
 
 </Project>

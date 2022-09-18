@@ -22,7 +22,7 @@ namespace BrunUI.Filters
         public void OnException(ExceptionContext context)
         {
             logger.LogError(context.Exception, context.Exception.Message);
-            var result = new JsonResult(new { Success = false, ErrorMessage = "服务器异常:" + context.Exception.Message });
+            var result = new JsonResult(new { Success = false, ErrorMessage = "brun server error,msg:" + context.Exception.Message });
             context.Result = result;
         }
     }
