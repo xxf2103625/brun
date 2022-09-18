@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Authors>2103625@qq.com</Authors>
+    <Description>dotnet background task</Description>
+    <Copyright>2103625@qq.com</Copyright>
+    <PackageProjectUrl>https://gitee.com/2103625/brun.git</PackageProjectUrl>
+    <PackageTags>netcore 后台任务 background task</PackageTags>
+    <RepositoryUrl>https://gitee.com/2103625/brun.git</RepositoryUrl>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReleaseNotes>移除不必要的多线程开销</PackageReleaseNotes>
+    <Version>1.1.2</Version>
+    <Configurations>Release;Debug</Configurations>
+    <LangVersion>default</LangVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>Brun.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Brun.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>
