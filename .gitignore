@@ -339,3 +339,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database 
 healthchecksdb
+/brunClient/dist
+/brunClient/src/.umi
+/src/Brun/Brun.xml
